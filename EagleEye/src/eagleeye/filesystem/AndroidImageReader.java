@@ -1,12 +1,7 @@
 package eagleeye.filesystem;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import sun.io.Converters;
 
 public class AndroidImageReader implements IBinaryImageReader
 {
