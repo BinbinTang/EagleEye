@@ -1,4 +1,4 @@
-package eagleeye.filesystem;
+package eagleeye.filesystem.read;
 
 import java.io.File;
 import eagleeye.filesystem.exception.InvalidInputFileType;;

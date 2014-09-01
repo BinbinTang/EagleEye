@@ -1,8 +1,8 @@
 package eagleeye;
 
-import eagleeye.filesystem.AndroidImageReader;
-import eagleeye.filesystem.BinaryImageReader;
-import eagleeye.filesystem.EMMCImageReader;
+import eagleeye.filesystem.read.AndroidImageReader;
+import eagleeye.filesystem.read.BinaryImageReader;
+import eagleeye.filesystem.read.EMMCImageReader;
 
 public class EagleEye
 {
@@ -16,8 +16,8 @@ public class EagleEye
 
 		// Case 1
 		
+		String directory = "test";
 		String filePath = "C:\\Users\\Admin\\Downloads\\Case1\\mtdblock3.img";
-		
 		
 		// Case 2
 		//String filePath = "C:\\Users\\Admin\\Desktop\\nc111nt_rodneybeede\\mmcblk0p14.dd";

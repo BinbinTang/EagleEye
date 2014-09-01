@@ -1,4 +1,4 @@
-package eagleeye.filesystem;
+package eagleeye.filesystem.read;
 
 
 public interface IBinaryImageReader 

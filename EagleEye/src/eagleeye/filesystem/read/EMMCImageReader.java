@@ -1,4 +1,4 @@
-package eagleeye.filesystem;
+package eagleeye.filesystem.read;
 
 import java.io.DataInputStream;
 import java.io.File;
