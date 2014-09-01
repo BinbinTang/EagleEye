@@ -1,24 +1,15 @@
 package eagleeye.filesystem;
 
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import eagleeye.filesystem.partition.mtd.MTDCommandLineParser;
 import eagleeye.filesystem.partition.mtd.MTDDefinition;
-import sun.misc.Regexp;
 
 public class AndroidImageReader extends BinaryImageReader
 {

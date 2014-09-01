@@ -1,11 +1,9 @@
 package eagleeye.filesystem;
 
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.zip.CRC32;
 
 public class EMMCImageReader extends BinaryImageReader
 {
@@ -84,6 +82,8 @@ public class EMMCImageReader extends BinaryImageReader
 		System.out.println(crc32OfHeader);
 		
 		System.out.println(inputStream.readInt());
+		
+		inputStream.close();
 		return false;
 	}
 	
