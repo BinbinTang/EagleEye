@@ -9,6 +9,7 @@ import java.nio.ByteOrder;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import eagleeye.filesystem.exception.InvalidInputFileType;
 
 
 public class AndroidImageReader extends BinaryImageReader

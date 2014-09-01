@@ -1,6 +1,7 @@
 package eagleeye.filesystem;
 
 import java.io.File;
+import eagleeye.filesystem.exception.InvalidInputFileType;;
 
 public class BinaryImageReader implements IBinaryImageReader
 {
@@ -13,7 +14,7 @@ public class BinaryImageReader implements IBinaryImageReader
 		
 		if(!file.canRead())
 		{
-			throw new Exception("Cannot read image file!");
+			throw new InvalidInputFileType("Cannot read image file!");
 		}
 		
 		return false;

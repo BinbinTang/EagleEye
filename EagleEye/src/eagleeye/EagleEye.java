@@ -11,9 +11,14 @@ public class EagleEye
 	{
 		// Android Images
 		// https://android.googlesource.com/platform/system/core/+/master/mkbootimg/bootimg.h
-		
+		// Algorithm
+		//http://sandbox.dfrws.org/2011/burenin/Android%20file%20system%20recovering.pdf
+
 		// Case 1
+		
 		String filePath = "C:\\Users\\Admin\\Downloads\\Case1\\mtdblock3.img";
+		
+		
 		// Case 2
 		//String filePath = "C:\\Users\\Admin\\Desktop\\nc111nt_rodneybeede\\mmcblk0p14.dd";
 		
