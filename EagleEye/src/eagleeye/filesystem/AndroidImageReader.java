@@ -8,9 +8,17 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import sun.text.normalizer.UBiDiProps;
+import eagleeye.filesystem.partition.mtd.MTDCommandLineParser;
+import eagleeye.filesystem.partition.mtd.MTDDefinition;
+import sun.misc.Regexp;
 
 public class AndroidImageReader extends BinaryImageReader
 {
@@ -113,29 +121,60 @@ public class AndroidImageReader extends BinaryImageReader
 		System.out.println();
 		
 		System.out.printf("Page Size: %s bytes (%s mb)%n", numberFormat.format(pageSize), numberFormat.format((double)pageSize / 1024 / 1024));
-		
+		System.out.println();
 		
 		byte[] commandLineBytes = new byte[512];
 		
 		inputStream.readFully(commandLineBytes);
 		
 		String commandLine = new String(commandLineBytes);
-		String[] commandLineParameters = commandLine.split(" ");
 		
 		System.out.println("----------------------------------------");
 		System.out.println("COMMAND LINE");
 		System.out.println("----------------------------------------");
 		System.out.println("Full Command Line: " + commandLine);
 		System.out.println();
-		for (String parameter : commandLineParameters)
-		{
-			System.out.println(parameter);
-		}
 		
 		byte[] unsignedIdBytes = new byte[32];
 		inputStream.readFully(unsignedIdBytes);
 		
+		String[] commandLineParameters = commandLine.split(" ");
+		
 		// Try to parse MTD partition info
+		
+		boolean hasMTDDefinition = false;
+		String mtdDefinitionString = "";
+		
+		for (String parameter : commandLineParameters)
+		{
+			String[] parameterKeyValue = parameter.split("=", 2);
+			
+			if(parameterKeyValue.length < 2)
+			{
+				continue;
+			}
+
+			if(parameterKeyValue[0].equals("mtdparts"))
+			{
+				hasMTDDefinition = true;
+				mtdDefinitionString = parameter;
+				break;
+			}
+		}
+		
+		if(!hasMTDDefinition)
+		{
+			System.out.println("Cannot find MTD info!");
+			inputStream.close();
+			return false;
+		}
+		
+		ArrayList<MTDDefinition> mtdDefinitions = MTDCommandLineParser.parse(mtdDefinitionString);
+		
+		for (MTDDefinition mtdDefinition : mtdDefinitions)
+		{
+			mtdDefinition.print();
+		}
 		
 		inputStream.close();
 		

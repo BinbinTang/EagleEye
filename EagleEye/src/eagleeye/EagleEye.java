@@ -16,6 +16,7 @@ public class EagleEye
 		String filePath = "C:\\Users\\Admin\\Downloads\\Case1\\mtdblock3.img";
 		// Case 2
 		//String filePath = "C:\\Users\\Admin\\Downloads\\Case2\\mtd5.dd";
+		// DATA DUMP FROM DENNIS' PHONE - IGNORE FOR NOW
 		// String filePath = "C:\\Users\\Admin\\Desktop\\nc111nt_rodneybeede\\mmcblk0p14.dd";
 		
 		// eMMC Images -- DATA DUMP FROM DENNIS' PHONE - IGNORE FOR NOW

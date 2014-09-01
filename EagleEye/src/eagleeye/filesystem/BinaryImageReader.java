@@ -26,7 +26,7 @@ public class BinaryImageReader implements IBinaryImageReader
 		System.out.println("----------------------------------------");
 		System.out.println("File path: " + file.getAbsolutePath());
 		System.out.println("File name: " + file.getName());
-		System.out.println("File size: " + file.length());
+		System.out.println("File size: " + file.length() + " bytes");
 		System.out.println();
 	}
 	
