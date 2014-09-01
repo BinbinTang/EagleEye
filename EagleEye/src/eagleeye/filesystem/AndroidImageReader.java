@@ -135,6 +135,8 @@ public class AndroidImageReader extends BinaryImageReader
 		byte[] unsignedIdBytes = new byte[32];
 		inputStream.readFully(unsignedIdBytes);
 		
+		// Try to parse MTD partition info
+		
 		inputStream.close();
 		
 		return true;
