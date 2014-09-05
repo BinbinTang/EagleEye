@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.BitSet;
 import java.util.Date;
+import java.util.Vector;
 
 import com.sun.jmx.snmp.Timestamp;
 
@@ -23,6 +24,7 @@ import eagleeye.filesystem.read.EMMCImageReader;
 
 public class EagleEye
 {
+	static Vector<File> listOfFiles = new Vector<File>();
 	public static void main(String[] args)
 	{
 		// Android Images
@@ -33,29 +35,39 @@ public class EagleEye
 		// Case 1
 
 		
-		String directory = "test";
+		String directory = "/Users/BinbinTang/Downloads/Case1";
 		String filePath = "C:\\Users\\Admin\\Downloads\\Case1\\mtdblock3.img";
+		
+
+		final File folder = new File("/home/you/Desktop");
+		listFilesForFolder(folder);
+
 
 		//String filePath = "C:\\Users\\Admin\\Downloads\\Case1\\mtdblock0.img";
 		//String filePath = "C:\\Users\\Admin\\Downloads\\Case1\\mtdblock6.img";
-
 		
 		
-		
-		try
-		{
+		try{
 			//readYAFFSObjectHeader(filePath);
 			//readRaw(filePath);
 			readYAFFSExtTags(filePath);
 		}
-		catch (FileNotFoundException e)
-		{
+		catch (FileNotFoundException e){
 			e.printStackTrace();
-		} catch (IOException e)
-		{
+		} catch (IOException e){
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static void listFilesForFolder (final File folder) {
+	    for (final File fileEntry : folder.listFiles()) {
+	        if (fileEntry.isDirectory()) {
+	            listFilesForFolder(fileEntry);
+	        } else {
+	            listOfFiles.add(fileEntry);
+	        }
+	    }
 	}
 	
 	private static void readRaw(String filePath) throws IOException
