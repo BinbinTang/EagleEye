@@ -20,7 +20,6 @@ public class AndroidImageReader extends BinaryImageReader
 		super.read(imageFilePath);
 				
 		FileInputStream fileInputStream = new FileInputStream(file);
-		
 		DataInputStream inputStream = new DataInputStream(fileInputStream);
 		
 		byte[] magicSignatureBytes = new byte[8];
