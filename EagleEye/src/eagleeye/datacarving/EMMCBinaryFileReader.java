@@ -1,17 +1,18 @@
-package eagleeye.filesystem.read;
+package eagleeye.datacarving;
 
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class EMMCImageReader extends BinaryImageReader
+public class EMMCBinaryFileReader extends BinaryFileReader
 {
 	
 	@Override
-	public boolean read(String imageFilePath) throws Exception
+	public boolean read(File file) throws Exception
 	{
-		super.read(imageFilePath);
+		super.read(file);
 		
 		FileInputStream fileInputStream = new FileInputStream(file);
 		
