@@ -17,20 +17,20 @@ public class FormatIdentifierManager
 		formatIdentifiers.remove(formatIdentifier);
 	}
 	
-	public Format identify(File file)
+	public FormatDescription identify(File file)
 	{
-		Format format = null;
+		FormatDescription formatDescription = null;
 		
 		for (IFormatIdentifier identifier : formatIdentifiers)
 		{
-			format = identifier.identify(file);
+			formatDescription = identifier.identify(file);
 			
-			if(format != null)
+			if(formatDescription != null)
 			{
 				break;
 			}
 		}
 		
-		return format;
+		return formatDescription;
 	}
 }

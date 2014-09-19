@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import eagleeye.datacarving.unpack.DiskImageUnpackerManager;
+import eagleeye.datacarving.unpack.YAFFS2ImageUnpacker;
 import eagleeye.filesystem.format.AndroidBootFormatIdentifier;
-import eagleeye.filesystem.format.Format;
+import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.format.FormatIdentifierManager;
 import eagleeye.filesystem.format.YAFFS2FormatIdentifier;
 import javafx.application.Application;
@@ -22,7 +24,7 @@ public class Main extends Application
 		 * STEP 01 - FORENSIC INVESTIGATOR UPLOADS RAW DATA IMAGES BY SELECTING
 		 * A FOLDER
 		 */
-		String directoryPath = "C:\\Users\\Admin\\Downloads\\Case1";
+		String directoryPath = "C:\\Users\\Admin\\Downloads\\Case2";
 
 		File directory = new File(directoryPath);
 
@@ -40,11 +42,11 @@ public class Main extends Application
 		 */
 		FormatIdentifierManager formatIdentifierManager = new FormatIdentifierManager();
 		
-		// Simulate plug in
+		// Simulate plug ins
 		formatIdentifierManager.load(new AndroidBootFormatIdentifier());
 		formatIdentifierManager.load(new YAFFS2FormatIdentifier());
 		
-		ArrayList<Format> formats = new ArrayList<Format>();
+		ArrayList<FormatDescription> formatDescriptions = new ArrayList<FormatDescription>();
 
 		Arrays.sort(files);
 
@@ -57,20 +59,47 @@ public class Main extends Application
 			
 			for (File file : files)
 			{
-				Format format = formatIdentifierManager.identify(file);
+				FormatDescription formatDescription = formatIdentifierManager.identify(file);
 				String binaryImageType = "-";
 				
-				if(format != null)
+				if(formatDescription != null)
 				{
-					formats.add(format);
-					binaryImageType = format.getBinaryImageType();
+					formatDescriptions.add(formatDescription);
+					binaryImageType = formatDescription.getBinaryImageType();
 				}
 				
 				System.out.printf("%-25s\t%-20s\t%12s KB%n", file.getName(), binaryImageType, file.length());
 			}			
 		}
+
+		/*
+		 * STEP 03 - DATA CARVING BASED ON DATA FROM FILE SYSTEM LAYER, CARVE
+		 * OUT DATA FROM FILE
+		 */
+
+		DiskImageUnpackerManager diskImageUnpackerManager = new DiskImageUnpackerManager();
 		
-		// UI
+		// Simulate plug ins
+		// diskImageUnpackerManager.load(new AndroidBootImageUnpacker());
+		diskImageUnpackerManager.load(new YAFFS2ImageUnpacker());
+		
+		if (formatDescriptions.size() > 0)
+		{
+			System.out.println("------------------");
+			System.out.println("Data Carving Layer");
+			System.out.println("------------------");
+			
+			for (FormatDescription formatDescription : formatDescriptions)
+			{
+				diskImageUnpackerManager.unpack(formatDescription);
+			}
+
+			System.out.println();
+		}
+
+		/*
+		 * User Interface
+		 */
 		try
 		{
 			BorderPane root = new BorderPane();

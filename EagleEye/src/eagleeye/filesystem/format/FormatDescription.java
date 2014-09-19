@@ -2,7 +2,7 @@ package eagleeye.filesystem.format;
 
 import java.io.File;
 
-public class Format
+public class FormatDescription
 {
 	protected File file;
 	protected String operatingSystem;

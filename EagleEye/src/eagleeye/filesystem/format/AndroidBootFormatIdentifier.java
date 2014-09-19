@@ -10,7 +10,7 @@ public class AndroidBootFormatIdentifier implements IFormatIdentifier
 {
 
 	@Override
-	public Format identify(File file)
+	public FormatDescription identify(File file)
 	{
 		FileInputStream fileInputStream;
 		
@@ -41,12 +41,12 @@ public class AndroidBootFormatIdentifier implements IFormatIdentifier
 
 		if (magicSignature.equals("ANDROID!"))
 		{
-			Format format = new Format();
-			format.setFile(file);
-			format.setOperatingSystem("Android");
-			format.setBinaryImageType("AndroidBoot");
+			FormatDescription formatDescription = new FormatDescription();
+			formatDescription.setFile(file);
+			formatDescription.setOperatingSystem("Android");
+			formatDescription.setBinaryImageType("AndroidBoot");
 			
-			return format;
+			return formatDescription;
 		}
 
 		return null;

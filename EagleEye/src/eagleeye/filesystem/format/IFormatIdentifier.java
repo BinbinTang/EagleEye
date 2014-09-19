@@ -4,5 +4,5 @@ import java.io.File;
 
 public abstract interface IFormatIdentifier
 {
-	public Format identify(File file);
+	public FormatDescription identify(File file);
 }

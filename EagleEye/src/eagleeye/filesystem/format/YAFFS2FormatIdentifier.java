@@ -12,7 +12,7 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 {
 	
 	@Override
-	public Format identify(File file)
+	public FormatDescription identify(File file)
 	{
 		FileInputStream fileInputStream;
 		
@@ -84,11 +84,11 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 			}
 		}
 				
-		Format format = new Format();
-		format.setFile(file);
-		format.setBinaryImageType("YAFFS2");
+		FormatDescription formatDescription = new FormatDescription();
+		formatDescription.setFile(file);
+		formatDescription.setBinaryImageType("YAFFS2");
 		
-		return format;
+		return formatDescription;
 	}
 	
 }
