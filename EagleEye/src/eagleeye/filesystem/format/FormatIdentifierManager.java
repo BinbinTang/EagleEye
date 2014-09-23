@@ -23,7 +23,14 @@ public class FormatIdentifierManager
 		
 		for (IFormatIdentifier identifier : formatIdentifiers)
 		{
-			formatDescription = identifier.identify(file);
+			try
+			{
+				formatDescription = identifier.identify(file);
+			}
+			catch (Exception e)
+			{
+				continue;
+			}
 			
 			if(formatDescription != null)
 			{

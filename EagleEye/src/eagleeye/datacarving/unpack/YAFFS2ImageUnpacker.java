@@ -35,14 +35,25 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	
 	public YAFFS2ImageUnpacker()
 	{
-		this.blockSize = 2048;
-		this.oobSize = 64;
+		this.setBlockSize(2048);
 	}
 	
+	public void setBlockSize(int blockSize)
+	{
+		this.blockSize = blockSize;
+		this.oobSize = blockSize / 32;
+	}
+
 	@Override
 	public boolean unpack(FormatDescription formatDescription) throws Exception
 	{
 		this.formatDescription = formatDescription;
+		
+		if(this.formatDescription.getBinaryImageType() != "YAFFS2")
+		{
+			return false;
+		}
+		
 		File file = this.formatDescription.getFile();
 		this.fileInputStream = new FileInputStream(file);
 		this.inputStream = new DataInputStream(this.fileInputStream);
@@ -234,7 +245,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			
 			for(YAFFS2VersionedObject currentParentObject : objects)
 			{
-				if(currentObject.equals(currentParentObject))
+				if(currentObject.equals(currentParentObject) || currentParentObject.getFirstVersion().getType() != YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
 				{
 					continue;
 				}
@@ -262,44 +273,40 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		{
 			return;
 		}
+	
+		YAFFS2Object object = versionedObject.getLatestVersion();
 		
-		int numberOfVersions = versionedObject.getVersionsCount();
+		File file = new File(rootFilePath + versionedObject.getRelativePath());
 		
-		while(-- numberOfVersions >= 0)
+		if(object.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
 		{
-			YAFFS2Object object = versionedObject.getVersion(numberOfVersions);
+			System.out.printf("Creating directory %s%n", file.getPath());
 			
-			File file = new File(rootFilePath + versionedObject.getRelativePath());
-			
-			if(object.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
-			{
-				System.out.printf("Creating directory %s%n", file.getPath());
-				
-				file.mkdirs();
-			}
-			else if(object.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_FILE)
-			{
-				File parent = new File(file.getParentFile().getAbsolutePath());
-				file = new File(file.getParentFile().getAbsolutePath() + File.separator + "V" + numberOfVersions + "_" + object.getName());
-
-				parent.mkdirs();
-				FileOutputStream fileStream = new FileOutputStream(file);
-				
-				System.out.printf("Writing to %s (ObjectID: %s)%n", file.getAbsolutePath(), object.getId());
-				
-				HashMap<Integer, byte[]> dataChunks = object.getDataChunks();
-				
-				for (byte[] dataChunk : dataChunks.values())
-				{
-					if(dataChunk != null)
-					{
-						fileStream.write(dataChunk);
-					}
-				}
-				
-				fileStream.close();
-			}
+			file.mkdirs();
 		}
+		else if(object.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_FILE)
+		{
+			File parent = new File(file.getParentFile().getPath());
+			file = new File(file.getParentFile().getPath() + File.separator + object.getName());
+
+			parent.mkdirs();
+			FileOutputStream fileStream = new FileOutputStream(file);
+			
+			System.out.printf("Writing to %s (ObjectID: %s)%n", file.getAbsolutePath(), object.getId());
+			
+			HashMap<Integer, byte[]> dataChunks = object.getDataChunks();
+			
+			for (byte[] dataChunk : dataChunks.values())
+			{
+				if(dataChunk != null)
+				{
+					fileStream.write(dataChunk);
+				}
+			}
+			
+			fileStream.close();
+		}
+	
 		Enumeration<YAFFS2VersionedObject> enumeration = versionedObject.children();
 		
 		while(enumeration.hasMoreElements())

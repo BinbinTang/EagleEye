@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import eagleeye.datacarving.unpack.AndroidBootImageUnpacker;
 import eagleeye.datacarving.unpack.DiskImageUnpackerManager;
 import eagleeye.datacarving.unpack.YAFFS2ImageUnpacker;
 import eagleeye.filesystem.format.AndroidBootFormatIdentifier;
@@ -72,6 +73,8 @@ public class Main extends Application
 			}			
 		}
 
+		System.out.println();
+
 		/*
 		 * STEP 03 - DATA CARVING BASED ON DATA FROM FILE SYSTEM LAYER, CARVE
 		 * OUT DATA FROM FILE
@@ -80,7 +83,7 @@ public class Main extends Application
 		DiskImageUnpackerManager diskImageUnpackerManager = new DiskImageUnpackerManager();
 		
 		// Simulate plug ins
-		// diskImageUnpackerManager.load(new AndroidBootImageUnpacker());
+		diskImageUnpackerManager.load(new AndroidBootImageUnpacker());
 		diskImageUnpackerManager.load(new YAFFS2ImageUnpacker());
 		
 		if (formatDescriptions.size() > 0)
@@ -88,9 +91,30 @@ public class Main extends Application
 			System.out.println("------------------");
 			System.out.println("Data Carving Layer");
 			System.out.println("------------------");
+			System.out.println();
 			
+			// Always unpack OS images first
+
 			for (FormatDescription formatDescription : formatDescriptions)
 			{
+				if(formatDescription.getOperatingSystem() == null)
+				{
+					continue;
+				}
+				
+				if(diskImageUnpackerManager.unpack(formatDescription))
+				{
+					break;
+				}
+			}
+
+			for (FormatDescription formatDescription : formatDescriptions)
+			{
+				if(formatDescription.getOperatingSystem() != null)
+				{
+					continue;
+				}
+				
 				diskImageUnpackerManager.unpack(formatDescription);
 			}
 
