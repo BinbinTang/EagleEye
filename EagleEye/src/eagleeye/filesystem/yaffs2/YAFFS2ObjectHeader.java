@@ -2,35 +2,33 @@ package eagleeye.filesystem.yaffs2;
 
 public class YAFFS2ObjectHeader
 {
-	protected int chunkId;
-
 	protected YAFFSObjectType type;
 	
-	protected int parentObjectId;
+	protected int parentObjectId = -1;
 	
 	protected String name;
 	protected int mode;
-	protected int userId;
+	protected int userId = -1;
 	
-	protected int groupId;
+	protected int groupId = -1;
 	
-	protected int accessedTime;
-	protected int modifiedTime;
-	protected int createdTime;
-	protected int fileSize;
-	protected int equivalentObjectId;
+	protected int accessedTime = -1;
+	protected int modifiedTime = -1;
+	protected int createdTime = -1;
+	protected int fileSize = -1;
+	protected int equivalentObjectId = -1;
 	
 	protected String alias;
 	
 	protected int rdev;
 	
-	protected long winAccessedTime;
+	protected long winAccessedTime = -1;
 
-	protected long winModifiedTime;
+	protected long winModifiedTime = -1;
 
-	protected long winCreatedTime;
+	protected long winCreatedTime = -1;
 	
-	protected int shadowObject;
+	protected int shadowObject = -1;
 	
 	protected int isShrink;
 	
@@ -44,11 +42,6 @@ public class YAFFS2ObjectHeader
 		return this.alias;
 	}
 	
-	public int getChunkId()
-	{
-		return this.chunkId;
-	}
-
 	public int getCreatedTime()
 	{
 		return this.createdTime;
@@ -137,11 +130,6 @@ public class YAFFS2ObjectHeader
 	public void setAlias(String alias)
 	{
 		this.alias = alias;
-	}
-
-	public void setChunkId(int chunkId)
-	{
-		this.chunkId = chunkId;
 	}
 
 	public void setCreatedTime(int createdTime)
