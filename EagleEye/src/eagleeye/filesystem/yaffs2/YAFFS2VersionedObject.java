@@ -46,7 +46,7 @@ public class YAFFS2VersionedObject implements MutableTreeNode
 			
 			while(-- chunkCount >= 0)
 			{
-				object.dataBlocks.putIfAbsent(chunkCount, data.get(chunkCount));
+				//((Object) object.dataBlocks).putIfAbsent(chunkCount, data.get(chunkCount));
 			}
 		}
 		
