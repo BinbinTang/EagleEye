@@ -26,11 +26,8 @@ public class Main extends Application
 		 * A FOLDER
 		 */
 		
-		//String directory = "/Users/BinbinTang/Downloads/Case1";
-		//String filePath = "C:\\Users\\Admin\\Downloads\\Case1\\mtdblock3.img";
-		
-		
-		String directoryPath = "C:\\Users\\Admin\\Downloads\\Case2";
+		String directoryPath = "/Users/BinbinTang/Downloads/Case2";
+		//String directoryPath = "C:\\Users\\Admin\\Downloads\\Case2";
 
 		File directory = new File(directoryPath);
 
