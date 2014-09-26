@@ -3,8 +3,6 @@ package eagleeye.filesystem.format;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -90,9 +88,11 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 			formatDescription.setFile(file);
 			formatDescription.setBinaryImageType("YAFFS2");
 			
+			dataInputStream.close();
 			return formatDescription;
 		}
-		
+
+		dataInputStream.close();
 		return null;
 	}
 	

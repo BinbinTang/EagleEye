@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -41,12 +42,12 @@ public class YAFFS2VersionedObject implements MutableTreeNode
 		
 		if(latestObject != null)
 		{
-			HashMap<Integer, byte[]> data = latestObject.dataBlocks;
+			TreeMap<Integer, byte[]> data = latestObject.dataChunks;
 			int chunkCount = object.getFileSize() / 2048;
 			
 			while(-- chunkCount >= 0)
 			{
-				object.dataBlocks.putIfAbsent(chunkCount, data.get(chunkCount));
+				object.dataChunks.putIfAbsent(chunkCount, data.get(chunkCount));
 			}
 		}
 		
