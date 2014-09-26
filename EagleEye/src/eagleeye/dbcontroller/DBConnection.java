@@ -3,7 +3,7 @@ package eagleeye.dbcontroller;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class DBconnection {
+public class DBConnection {
 
 	public static Connection dbConnector()
 	{
