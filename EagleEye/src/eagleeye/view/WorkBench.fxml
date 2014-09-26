@@ -92,10 +92,10 @@
                            <children>
                               <Label text="From" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                               <Label text="To" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
-                              <TextField GridPane.columnIndex="1" />
-                              <TextField GridPane.columnIndex="4" />
-                              <Button mnemonicParsing="false" text="D" GridPane.columnIndex="2" />
-                              <Button mnemonicParsing="false" text="D" GridPane.columnIndex="5" />
+                              <TextField fx:id="startDateTf" GridPane.columnIndex="1" />
+                              <TextField fx:id="endDateTf" GridPane.columnIndex="4" />
+                              <Button fx:id="startDateBtn" mnemonicParsing="false" text="D" GridPane.columnIndex="2" />
+                              <Button fx:id="endDateBtn" mnemonicParsing="false" text="D" GridPane.columnIndex="5" />
                            </children>
                         </GridPane>
                         <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -114,10 +114,10 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <TextField GridPane.columnIndex="1" />
-                              <TextField GridPane.columnIndex="3" />
-                              <TextField GridPane.columnIndex="5" />
-                              <TextField GridPane.columnIndex="7" />
+                              <TextField fx:id="startHourTf" GridPane.columnIndex="1" />
+                              <TextField fx:id="startMinuteTf" GridPane.columnIndex="3" />
+                              <TextField fx:id="endHourTf" GridPane.columnIndex="5" />
+                              <TextField fx:id="endMinuteTf" GridPane.columnIndex="7" />
                               <Label text=":" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                               <Label text=":" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                            </children>
