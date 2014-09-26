@@ -1,8 +1,6 @@
 package eagleeye.controller;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Vector;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +13,7 @@ public class MainApp extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
-    static private Vector<File> listOfFiles = new Vector<File>();
+
     
     @Override
     public void start(Stage primaryStage) {
@@ -35,17 +33,8 @@ public class MainApp extends Application {
         }
 
         showWorkBench();
-    }
-    
-    public static void listFilesForFolder (final File folder) {
-	    for (final File fileEntry : folder.listFiles()) {
-	        if (fileEntry.isDirectory()) {
-	            listFilesForFolder(fileEntry);
-	        } else {
-	            listOfFiles.add(fileEntry);
-	        }
-	    }
-	}
+    } 
+   
 
     /**
      * Returns the main stage.

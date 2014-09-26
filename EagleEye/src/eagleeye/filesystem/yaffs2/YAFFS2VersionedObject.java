@@ -3,7 +3,6 @@ package eagleeye.filesystem.yaffs2;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -41,7 +40,6 @@ public class YAFFS2VersionedObject implements MutableTreeNode
 		
 		if(latestObject != null)
 		{
-			HashMap<Integer, byte[]> data = latestObject.dataBlocks;
 			int chunkCount = object.getFileSize() / 2048;
 			
 			while(-- chunkCount >= 0)

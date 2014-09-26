@@ -44,11 +44,13 @@ public class PluginClassLoader extends ClassLoader {
    * of the superclass. Because of this second step, this method may be called to
    * load superclasses that are system classes, and it must take this into account.
    */
-  public Class loadClass (String classname, boolean resolve) throws ClassNotFoundException {
+ 
+public Class loadClass (String classname, boolean resolve) throws ClassNotFoundException {
     try {
       // Our ClassLoader superclass has a built-in cache of classes it has
       // already loaded. So, first check the cache.
-      Class c = findLoadedClass(classname);
+   
+	Class c = findLoadedClass(classname);
 
       // After this method loads a class, it will be called again to
       // load the superclasses. Since these may be system classes, we've
