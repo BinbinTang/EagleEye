@@ -6,11 +6,11 @@ import java.util.regex.Pattern;
 
 /**
  * Utility class to help parse the mtdparts section of a command line.
- * 
+ *
  * The command line format is defined as follows:
- * 
+ *
  * mtdparts=<mtd-definition>[;<mtd-definition>]
- * 
+ *
  * <mtd-definition> := <mtd-id>:<partition-definition>[,<partition-definition>]
  * <mtd-id> := Unique name used in mapping driver/device from the "cat /proc/mtd" command (mtd->name)
  * <partition-definition> := <size>[@<offset>][(<name>)]
@@ -21,7 +21,7 @@ public class MTDCommandLineParser
 	{
 		String[] commandLineParts = commandLine.split("=", 2);
 		
-		if(commandLineParts.length < 2 || !commandLineParts[0].equals("mtdparts"))
+		if (commandLineParts.length < 2 || !commandLineParts[0].equals("mtdparts"))
 		{
 			throw new Exception("Could not find mtdparts parameter in command line: " + commandLine);
 		}
@@ -30,11 +30,11 @@ public class MTDCommandLineParser
 		
 		ArrayList<MTDDefinition> mtdDefinitions = new ArrayList<MTDDefinition>();
 		
-		for(String mtdDefinitionString : mtdDefinitionStrings)
+		for (String mtdDefinitionString : mtdDefinitionStrings)
 		{
 			String[] mtdDefinitionParts = mtdDefinitionString.split(":", 2);
 			
-			if(mtdDefinitionParts.length < 2)
+			if (mtdDefinitionParts.length < 2)
 			{
 				throw new Exception("Could not find MTD ID in MTD Definition " + mtdDefinitionString);
 			}
@@ -44,12 +44,12 @@ public class MTDCommandLineParser
 			
 			ArrayList<MTDPartitionDefinition> partitionDefinitions = new ArrayList<MTDPartitionDefinition>();
 			
-			for(String partitionDefinitionString : partitionDefinitionStrings)
+			for (String partitionDefinitionString : partitionDefinitionStrings)
 			{
 				Pattern partitionDefinitionPattern = Pattern.compile("(?<size>\\d+)(?<sizeModifier>k|m)(@(?<offset>\\d+)(?<offsetModifier>k|m))?\\((?<name>[^)]+)\\)");
 				Matcher matcher = partitionDefinitionPattern.matcher(partitionDefinitionString);
 				
-				if(matcher.find())
+				if (matcher.find())
 				{
 					String name = matcher.group("name");
 					int size = Integer.parseInt(matcher.group("size"));
@@ -58,7 +58,7 @@ public class MTDCommandLineParser
 					
 					int offsetInBytes = 0;
 					
-					if(matcher.group("offset") != null)
+					if (matcher.group("offset") != null)
 					{
 						int offset = Integer.parseInt(matcher.group("offset"));
 						char offsetModifier = matcher.group("offsetModifier").charAt(0);
@@ -85,7 +85,7 @@ public class MTDCommandLineParser
 		units.add('g');
 		units.add('t');
 		
-		if(!units.contains(modifier))
+		if (!units.contains(modifier))
 		{
 			throw new Exception("Invalid size modifier " + modifier);
 		}
