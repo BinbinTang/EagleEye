@@ -9,6 +9,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import eagleeye.filesystem.format.FormatDescription;
@@ -34,7 +38,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	
 	public YAFFS2ImageUnpacker()
 	{
-		this.setChunkSize(2048);
+		this.setChunkSize(2048); // Assume chunk size of 2048 for now
 	}
 	
 	public void setChunkSize(int chunkSize)
@@ -60,8 +64,6 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		System.out.printf("- Data carving started for %s...%n", file.getName());
 		
 		int totalChunkSize = this.chunkSize + this.oobSize;
-
-		TreeMap<Integer, ArrayList<byte[]>> chunksInBlock = new TreeMap<Integer, ArrayList<byte[]>>();
 		
 		ArrayList<byte[]> chunks = new ArrayList<>();
 		
@@ -81,8 +83,12 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			totalBytesRead += this.chunkSize + this.oobSize;
 		}
 		
-		// Scan chunks for block sequence
-
+		// Read from bottom up
+		Collections.reverse(chunks);
+		
+		// Scan chunks for block sequence and object id
+		TreeMap<Integer, TreeMap<Integer, ArrayList<byte[]>>> objects = new TreeMap<>();
+		
 		int chunkCount = -1;
 		
 		for (byte[] chunk : chunks)
@@ -92,7 +98,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			this.byteBuffer = ByteBuffer.wrap(chunk);
 			this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
-			System.out.printf("-- Scanning chunk %s%n", chunkCount);
+			System.out.printf("-- Scanning chunk %s. ", chunkCount);
 
 			this.byteBuffer.position(this.chunkSize); 
 
@@ -105,288 +111,202 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				continue;
 			}
 			
-			if(!chunksInBlock.containsKey(blockSequence))
+			if(blockSequence == 0xFFFFFFFF)
 			{
-				chunksInBlock.put(blockSequence, new ArrayList<>());
-			}
-			
-			chunksInBlock.get(blockSequence).add(chunk);
-		}
-		
-		ArrayList<YAFFS2Object> objects = new ArrayList<YAFFS2Object>();
-		YAFFS2ObjectHeader header = null;
-
-		YAFFS2Object object = null;
-
-		boolean hasDeletedHeader = false;
-		boolean hasUnlinkedHeader = false;
-
-		boolean isDeletedHeader = false;
-		boolean isUnlinkedHeader = false;
-		
-		for (ArrayList<byte[]> block : chunksInBlock.values())
-		{
-			for (byte[] chunk : block)
-			{
-				this.byteBuffer = ByteBuffer.wrap(chunk);
-				this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-					
-				// DEBUGGING: For OOB
-				/*
-				this.byteBuffer.position(this.chunkSize); 
-				byte[] oob = new byte[64];
-				this.byteBuffer.get(oob); 
-				String hex = DatatypeConverter.printHexBinary(oob); 
-				StringBuilder stringBuilder = new StringBuilder(hex); 
-				for(int i = hex.length() / 2; i > 0; i--)
-				{
-					stringBuilder.insert(i * 2, " ");
-				}
-				System.out.println(stringBuilder.toString());
-				*/
-				
-				System.out.printf("-- Carving chunk :");
-	
-				this.byteBuffer.position(this.chunkSize); 
-	
-				short validMarker = this.byteBuffer.getShort();
-				int blockSequence = this.byteBuffer.getInt();
-				
-				this.inputBytes = new byte[3];
-				this.byteBuffer.get(this.inputBytes);
-				
-			    int objectId = (this.inputBytes[2] & 0xFF) << 8 | (this.inputBytes[1] & 0xFF) << 8 | (this.inputBytes[0] & 0xFF);
-			    
-			    byte objectType = this.byteBuffer.get();
-	
-				this.inputBytes = new byte[3];
-				this.byteBuffer.get(this.inputBytes);
-				
-				int parentOrChunkId = 0;
-	
-				parentOrChunkId |= this.inputBytes[2] & 0xFF;
-				parentOrChunkId <<= 8;
-				parentOrChunkId |= this.inputBytes[1] & 0xFF;
-				parentOrChunkId <<= 8;
-				parentOrChunkId |= this.inputBytes[0] & 0xFF;
-			    
-				byte status = this.byteBuffer.get();
-				int nBytes = this.byteBuffer.getInt();
-				
-				System.out.printf("Block Sequence: %s Parent or Chunk ID: %s NBytes: %s ObjectID %s ", blockSequence, parentOrChunkId, nBytes, objectId);
-				
-				this.byteBuffer.position(0);
-				
-				// Try to read chunk as object header first...
-				header = this.tryReadObjectHeader(chunk);
-	
-				if (header != null) // Chunk is an object header
-				{
-					if(object == null)
-					{
-						object = new YAFFS2Object();
-						object.setHeader(header);
-					}
-					
-					String name = header.getName();
-					String specialHeader = "";
-					isDeletedHeader = header.getIsShrink() > 0 && name.equals("deleted");
-					isUnlinkedHeader = name.equals("unlinked");
-					
-					if(isDeletedHeader)
-					{
-						hasDeletedHeader = true;
-						specialHeader += "deleted ";
-					}
-					else if (isUnlinkedHeader)
-					{
-						hasUnlinkedHeader = true;
-						specialHeader += "unlinked ";
-					}
-					
-					if(!isDeletedHeader && !isUnlinkedHeader)
-					{
-						// An actual object header
-						object = new YAFFS2Object();
-						object.setDeleted(hasUnlinkedHeader && hasDeletedHeader);
-						object.setUnlinked(hasUnlinkedHeader);
-						object.setHeader(header);
-						object.setId(objectId);
-						
-						if(object.getParentObjectId() == objectId)
-						{
-							object.setParentObjectId(-1);
-						}
-						
-						objects.add(object);
-						
-						hasUnlinkedHeader = false;
-						hasDeletedHeader = false;
-					}
-					
-					System.out.printf
-					(
-						"Found %sobject (%s) header of type %s named \"%s\" with the size of (%s bytes) and parent object id of %s (IsShrink %s)%n",
-						specialHeader,
-						objectId,
-						header.getType(),
-						header.getName(),
-						header.getFileSize(),
-						header.getParentObjectId(),
-						header.getIsShrink()
-					);
-					continue;
-				}
-	
-				// Block is data
-				System.out.println("Found data chunk.");
-				
-				/*
-				YAFFS2Object parentObject = null;
-				for(YAFFS2VersionedObject currentObject : objects)
-				{
-					if(currentObject.getFirstVersion().getId() == objectId)
-					{
-						parentObject = currentObject.getFirstVersion();
-						break;
-					}
-				}
-				
-				if(parentObject == null) // No object to assign to
-				{
-					System.out.println("Cannot determine which object this data chunk belongs to. Skipping data chunk.");
-					continue;
-				}
-			
-				//Assign data to current object
-				System.out.println("Assigning data chunk to " + parentObject.getName());
-				
-				// Trim chunk to size
-				object.addDataChunk(parentOrChunkId - 1, Arrays.copyOf(chunk, nBytes));
-				*/
-				if(nBytes <= 0)
-				{
-					continue;
-				}
-				
-				if(!this.dataChunks.containsKey(objectId))
-				{
-					this.dataChunks.put(objectId, new TreeMap<Integer, byte[]>());
-				}
-				
-				this.dataChunks.get(objectId).put(parentOrChunkId, Arrays.copyOf(chunk, nBytes));
-				/*
-				YAFFS2Object parentObject = null;
-				for(YAFFS2Object currentObject : objects)
-				{
-					if(currentObject.getId() == objectId)
-					{
-						parentObject = currentObject;
-						break;
-					}
-				}
-				
-				if(parentObject == null) // No object to assign to
-				{
-					System.out.println("Cannot determine which object this data chunk belongs to. Skipping data chunk.");
-					continue;
-				}
-	
-				// Assign data to current object
-				System.out.println("Assigning data chunk to " + parentObject.getName());
-				
-				parentObject.addDataChunk(parentOrChunkId, Arrays.copyOf(chunk, nBytes));
-				*/
-			}
-		}
-		
-		System.out.println("- Data carving complete.");
-		
-		// Map object to data
-		
-		for(YAFFS2Object currentObject : objects)
-		{
-			if(!this.dataChunks.containsKey(currentObject.getId()))
-			{
+				System.out.println("Empty chunk.");
 				continue;
 			}
+
+			System.out.printf("Block Sequence: %s ", blockSequence);
+
+			this.inputBytes = new byte[3];
+			this.byteBuffer.get(this.inputBytes);
 			
-			currentObject.addDataChunks(this.dataChunks.get(currentObject.getId()));			
+		    int objectId = (this.inputBytes[2] & 0xFF) << 8 | (this.inputBytes[1] & 0xFF) << 8 | (this.inputBytes[0] & 0xFF);
+
+		    System.out.printf("Object Id: %s %n", objectId);
+		    
+		    if(!objects.containsKey(objectId))
+		    {
+		    	objects.put(objectId, new TreeMap<>());
+		    }
+		    
+		    TreeMap<Integer, ArrayList<byte[]>> currentObject = objects.get(objectId);
+		    
+		    if(!currentObject.containsKey(blockSequence))
+		    {
+		    	currentObject.put(blockSequence, new ArrayList<>());
+		    }
+		    
+		    ArrayList<byte[]> blockSequenceChunks = currentObject.get(blockSequence);
+		    
+		    blockSequenceChunks.add(chunk);
 		}
+
+		ArrayList<YAFFS2Object> yaffs2Objects = new ArrayList<YAFFS2Object>();
+		HashMap<Integer, YAFFS2ObjectHeader> yaffs2ParentObjects = new HashMap<Integer, YAFFS2ObjectHeader>();
 		
-		// Map parents
-		YAFFS2Object rootObject = null;
-		
-		for(YAFFS2Object currentObject : objects)
+		// For each object id found starting from the smallest id (naturally sorted)
+		for (Entry<Integer, TreeMap<Integer, ArrayList<byte[]>>> object : objects.entrySet())
 		{
-			if(currentObject.getId() == 1)
-			{
-				rootObject = currentObject;
-			}
+			int objectId = object.getKey();
 			
-			for(YAFFS2Object currentParentObject : objects)
+			System.out.printf("- Carving object %s%n", objectId);
+			YAFFS2Object yaffs2Object = new YAFFS2Object();
+			yaffs2Object.setId(objectId);
+			yaffs2Object.setChunkSize(chunkSize);
+			
+			TreeMap<Integer, ArrayList<byte[]>> blocks = object.getValue();
+			
+			// For each block starting with the largest sequence number (naturally sorted)
+			for(Entry<Integer, ArrayList<byte[]>> blockChunks : blocks.descendingMap().entrySet())
 			{
-				if(currentObject.equals(currentParentObject) || currentParentObject.getType() != YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
-				{
-					continue;
-				}
+				int blockSequence = blockChunks.getKey();
+
+				System.out.printf("-- Analyzing block. Block Sequence: %s%n", blockSequence);
 				
-				if(currentObject.getParentObjectId() == currentParentObject.getId())
+				for(byte[] chunk : blockChunks.getValue())
 				{
-					currentObject.setParent(currentParentObject);
+					this.byteBuffer = ByteBuffer.wrap(chunk);
+					this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+					System.out.printf("--- Carving chunk ");
+					
+					this.byteBuffer.position(this.chunkSize); 
+		
+					short validMarker = this.byteBuffer.getShort();
+
+					if (validMarker != (byte)0xFFFF)
+					{
+						System.out.println("Invalid chunk.");
+						continue;
+					}
+					
+					this.byteBuffer.getInt(); // Block Sequence
+					
+					this.inputBytes = new byte[3];
+					this.byteBuffer.get(this.inputBytes); // Object Id
+					
+				    this.byteBuffer.get(); // Object type
+				    
+					this.inputBytes = new byte[3];
+					this.byteBuffer.get(this.inputBytes);
+					
+					int parentIdOrChunkId = 0;
+		
+					parentIdOrChunkId |= this.inputBytes[2] & 0xFF;
+					parentIdOrChunkId <<= 8;
+					parentIdOrChunkId |= this.inputBytes[1] & 0xFF;
+					parentIdOrChunkId <<= 8;
+					parentIdOrChunkId |= this.inputBytes[0] & 0xFF;
+				    
+					this.byteBuffer.get(); // Status
+					int nBytes = this.byteBuffer.getInt();				
+					
+					System.out.printf("Parent Id or Chunk Id: %s, Bytes in block: %s. ", parentIdOrChunkId, nBytes);
+					
+					this.byteBuffer.position(0);
+					
+					// Try to read chunk as object header first...
+					YAFFS2ObjectHeader header = this.tryReadObjectHeader(chunk);
+					
+					if (header != null) // Chunk is an object header
+					{
+						yaffs2Object.addHeader(header);
+						
+						if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
+						{
+							yaffs2ParentObjects.put(objectId, header);
+						}
+						else if(!yaffs2Objects.contains(yaffs2Object))
+						{
+							yaffs2Objects.add(yaffs2Object);
+						}
+						
+						System.out.println("Found object header.");
+						continue;
+					}
+					
+					// Block is data
+					System.out.println("Found data chunk.");
+					yaffs2Object.addDataChunk(parentIdOrChunkId, Arrays.copyOf(chunk, nBytes));
+				}
+			}
+		}
+
+		String rootFilePath = "." + File.separator + "output" + File.separator + file.getName();
+		HashMap<Integer, String> parentPaths = new HashMap<Integer, String>();
+		
+		for (Entry<Integer, YAFFS2ObjectHeader> entry : yaffs2ParentObjects.entrySet())
+		{
+			int parentId = entry.getKey();
+			ArrayList<String> filePathPieces = new ArrayList<String>();
+			String filePath = rootFilePath;
+			
+			while(parentId != -1)
+			{
+				if(yaffs2ParentObjects.containsKey(parentId))
+				{
+					filePathPieces.add(yaffs2ParentObjects.get(parentId).getName());
+					parentId = yaffs2ParentObjects.get(parentId).getParentObjectId();
+				}
+				else
+				{
 					break;
 				}
 			}
+			
+			Collections.reverse(filePathPieces);
+			
+			for (String filePathPiece : filePathPieces)
+			{
+				filePath += File.separator + filePathPiece;
+			}
+			
+			parentPaths.put(entry.getKey(), filePath);
 		}
 		
-		// Iterate root to get data
-		
-		String filePath = "." + File.separator + "output" + File.separator + file.getName() + File.separator;
-		
-		dumpFiles(rootObject, filePath);
+		for (String path : parentPaths.values())
+		{
+			File directory = new File(path);
+			directory.mkdirs();
+		}
+				
+		for (YAFFS2Object yaffs2Object : yaffs2Objects)
+		{
+			TreeMap<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> versions = yaffs2Object.getVersions();
+
+			for (Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry : versions.entrySet())
+			{
+				int version = entry.getKey();
+				YAFFS2ObjectHeader header = entry.getValue().getKey();
+				TreeMap<Integer, byte[]> dataChunks = entry.getValue().getValue();
+				
+				int parentId = header.getParentObjectId();
+				String filePath = rootFilePath;
+				
+				if(header.getName().equals("deleted") && parentId == 4)
+				{
+					continue;
+				}
+				
+				if(header.getName().equals("unlinked") && parentId == 3)
+				{
+					continue;
+				}
+				
+				if(parentPaths.containsKey(parentId))
+				{
+					filePath = parentPaths.get(parentId);
+				}
+				
+				this.writeFile(filePath, yaffs2Object.getId() + "_" + version + "_" + header.getName(), dataChunks);
+			}
+		}
 		
 		return true;
 	}
 	
-	private void dumpFiles(YAFFS2Object object, String rootFilePath) throws IOException
-	{
-		File file = new File(rootFilePath + object.getRelativePath());
-		
-		if(object.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
-		{
-			System.out.printf("Creating directory %s%n", file.getPath());
-			
-			file.mkdirs();
-		}
-		else if(object.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_FILE)
-		{
-			File parent = new File(file.getParentFile().getPath());
-			file = new File(file.getParentFile().getPath() + File.separator + object.getName());
-
-			parent.mkdirs();
-			FileOutputStream fileStream = new FileOutputStream(file);
-			
-			System.out.printf("Writing to %s (ObjectID: %s)%n", file.getAbsolutePath(), object.getId());
-			
-			TreeMap<Integer, byte[]> dataChunks = object.getDataChunks();
-			
-			for (byte[] dataChunk : dataChunks.values())
-			{
-				if(dataChunk != null)
-				{
-					fileStream.write(dataChunk);
-				}
-			}
-			
-			fileStream.close();
-		}
-	
-		for(YAFFS2Object child : object.getChildren())
-		{
-			dumpFiles(child, rootFilePath);
-		}
-	}
-
 	private YAFFS2ObjectHeader tryReadObjectHeader(byte[] chunk)
 	{
 		if (chunk.length != this.chunkSize + this.oobSize)
@@ -513,5 +433,23 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		objectHeader.setIsShrink(isShrink);
 
 		return objectHeader;
+	}
+	
+	private void writeFile(String directoryPath, String fileName, TreeMap<Integer, byte[]> dataChunks) throws IOException
+	{
+		File file = new File(directoryPath);
+		file.mkdirs();
+		file = new File(directoryPath + File.separator + fileName);
+		
+		FileOutputStream fileStream = new FileOutputStream(file);
+		
+		System.out.printf("Writing to %s%n", file.getCanonicalPath());
+		
+		for (Entry<Integer, byte[]> entry : dataChunks.entrySet())
+		{
+			fileStream.write(entry.getValue());
+		}
+		
+		fileStream.close();
 	}
 }
