@@ -19,13 +19,15 @@ import javafx.scene.layout.BorderPane;
 public class Main extends Application
 {
 	@Override
-	public void start(Stage primaryStage) throws Exception
+    public void start(Stage primaryStage) throws Exception
 	{
 		/*
 		 * STEP 01 - FORENSIC INVESTIGATOR UPLOADS RAW DATA IMAGES BY SELECTING
 		 * A FOLDER
 		 */
-		String directoryPath = "C:\\Users\\Admin\\Downloads\\Case2";
+		
+		String directoryPath = "/Users/BinbinTang/Downloads/Case2";
+		//String directoryPath = "C:\\Users\\Admin\\Downloads\\Case2";
 
 		File directory = new File(directoryPath);
 
@@ -138,7 +140,7 @@ public class Main extends Application
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args)
 	{
 		launch(args);

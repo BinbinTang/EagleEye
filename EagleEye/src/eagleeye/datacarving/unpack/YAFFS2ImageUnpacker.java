@@ -9,18 +9,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.TreeMap;
-
-import javax.xml.bind.DatatypeConverter;
 
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.yaffs2.YAFFS2Object;
 import eagleeye.filesystem.yaffs2.YAFFS2ObjectHeader;
-import eagleeye.filesystem.yaffs2.YAFFS2VersionedObject;
-import eagleeye.filesystem.yaffs2.YAFFS2VersionedObjectCollection;
 import eagleeye.filesystem.yaffs2.YAFFSObjectType;
 
 public class YAFFS2ImageUnpacker implements IDiskImageUnpacker

@@ -10,9 +10,9 @@ public class TestDB {
 
 	public static void main(String[] args) {
 		
-		Connection myconn = DBconnection.dbConnector();
+		Connection myconn = DBConnection.dbConnector();
 		
-		String query = "SELECT TestID, TestName, TestPassword FROM TEST WHERE TestID = 1";
+		String query = "SELECT TestID, TestName, TestPassword FROM TEST WHERE TestID = 2";
 		Statement stmt = null;
 		
 		try {
