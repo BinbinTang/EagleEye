@@ -1,89 +1,120 @@
 package eagleeye.filesystem.yaffs2;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.TreeMap;
 
-public class YAFFS2Object extends YAFFS2ObjectHeader
+public class YAFFS2Object
 {
 	protected int id = -1;
-
-	protected HashMap<Integer, byte[]> dataBlocks = new HashMap<>();
+	protected int chunkSize = 2048;
 	
-	protected boolean isUnlinked = false;
-	
-	protected boolean isDeleted = false;
-	
-	public void addDataBlock(int sequenceId, byte[] dataChunk)
+	public int getChunkSize()
 	{
-		this.dataBlocks.put(sequenceId, dataChunk);
-	}
-	
-	public HashMap<Integer, byte[]> getDataChunks()
-	{
-		return this.dataBlocks;
+		return chunkSize;
 	}
 
-	public int getDataChunksByteSize()
+	public void setChunkSize(int chunkSize)
 	{
-		int size = 0;
-
-		for (byte[] bytes : this.dataBlocks.values())
-		{
-			size += bytes.length;
-		}
-
-		return size;
+		this.chunkSize = chunkSize;
 	}
 
-	public YAFFS2ObjectHeader getHeader()
-	{
-		return this;
-	}
-	
 	public int getId()
 	{
-		return this.id;
+		return id;
 	}
-	
-	public boolean isDeleted()
-	{
-		return this.isDeleted;
-	}
-		
-	public boolean isUnlinked()
-	{
-		return this.isUnlinked;
-	}
-	
-	public void setDeleted(boolean isDeleted)
-	{
-		this.isDeleted = isDeleted;
-	}
-	
-	public void setHeader(YAFFS2ObjectHeader header)
-	{
-		Field[] fields = header.getClass().getDeclaredFields();
 
-		for (Field field : fields)
-		{
-			try
-			{
-				header.getClass().getDeclaredField(field.getName()).set(this, field.get(header));
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	public void setId(int id)
 	{
 		this.id = id;
 	}
+
+	protected ArrayList<YAFFS2ObjectHeader> headers = new ArrayList<YAFFS2ObjectHeader>();
+	protected TreeMap<Integer, SimpleEntry<Integer, ArrayList<byte[]>>> dataChunks = new TreeMap<Integer, SimpleEntry<Integer, ArrayList<byte[]>>>();
 	
-	public void setUnlinked(boolean isUnlinked)
+	public void addHeader(YAFFS2ObjectHeader header)
 	{
-		this.isUnlinked = isUnlinked;
+		this.headers.add(header);
+	}
+	
+	public void addDataChunk(int chunkId, byte[] chunk)
+	{
+		if(!this.dataChunks.containsKey(chunkId))
+		{
+			this.dataChunks.put(chunkId, new SimpleEntry<Integer, ArrayList<byte[]>>(this.getVersionCount(), new ArrayList<byte[]>()));
+		}
+		
+		this.dataChunks.get(chunkId).getValue().add(chunk);
+	}
+	
+	public int getVersionCount()
+	{
+		return this.headers.size();
+	}
+	
+	public YAFFS2ObjectHeader getVersionHeader(int version)
+	{
+		if(this.getVersionCount() < version)
+		{
+			return null;
+		}
+		
+		return this.headers.get(version);
+	}
+
+	public TreeMap<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> getVersions()
+	{
+		int versionCount = this.getVersionCount();
+		
+		TreeMap<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> versions = new TreeMap<Integer, SimpleEntry<YAFFS2ObjectHeader,TreeMap<Integer,byte[]>>>();
+		while(versionCount -- > 0)
+		{
+			versions.put(versionCount, new SimpleEntry<>(this.getVersionHeader(versionCount), this.getVersionDataChunks(versionCount)));
+		}
+		
+		return versions;
+	}
+	
+	public TreeMap<Integer, byte[]> getVersionDataChunks(int version)
+	{
+		if(this.getVersionCount() < version)
+		{
+			return null;
+		}
+		
+		YAFFS2ObjectHeader header = this.headers.get(version);
+		
+		int lastDeletedHeader = version;
+		
+		while(version -- >= 0)
+		{
+			if(header.getName().equals("deleted") && header.getParentObjectId() == 4)
+			{
+				break;
+			}
+		}
+		
+		TreeMap<Integer, byte[]> versionDataChunks = new TreeMap<>();
+		
+		int numberOfChunks = (int)Math.ceil((double)header.getFileSize() / chunkSize);
+		
+		while(numberOfChunks > 0)
+		{
+			if(this.dataChunks.containsKey(numberOfChunks))
+			{
+				SimpleEntry<Integer, ArrayList<byte[]>> entry = this.dataChunks.get(numberOfChunks);
+				ArrayList<byte[]> chunkVersions = entry.getValue();
+				int versionAdded = entry.getKey();
+				
+				if(versionAdded >= lastDeletedHeader && chunkVersions.size() > 0)
+				{
+					versionDataChunks.put(numberOfChunks, chunkVersions.get(0));
+				}
+			}
+			
+			numberOfChunks --;
+		}
+		
+		return versionDataChunks;
 	}
 }

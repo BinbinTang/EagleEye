@@ -23,7 +23,6 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 		this.oobSize = blockSize / 32;
 	}
 
-	@SuppressWarnings("resource")
 	@Override
 	public FormatDescription identify(File file) throws Exception
 	{
@@ -92,7 +91,8 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 			dataInputStream.close();
 			return formatDescription;
 		}
-		
+
+		dataInputStream.close();
 		return null;
 	}
 	
