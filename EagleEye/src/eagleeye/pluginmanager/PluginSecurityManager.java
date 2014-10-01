@@ -52,13 +52,13 @@ public class PluginSecurityManager extends SecurityManager {
 	public void checkAccess (Thread g) { trusted(); }
 	public void checkAccess (ThreadGroup g) { trusted(); }
 	public void checkExit (int status) { trusted(); }
-	public void checkExec (String cmd) { trusted(); }
+	public void checkExec (String cmd) { /*trusted();*/ }
 	public void checkLink (String lib) { trusted(); }
 	public void checkRead (java.io.FileDescriptor fd) { trusted(); }
 	public void checkRead (String file) {
 //		String path = new File(file).getParentFile().getAbsolutePath();
 //		if (! path.endsWith(pluginDir))
-			trusted();
+			//trusted();
 	}
 	public void checkRead (String file, Object context) { trusted(); }
 	public void checkWrite (java.io.FileDescriptor fd) { trusted(); }
