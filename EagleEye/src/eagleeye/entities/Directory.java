@@ -1,38 +1,57 @@
 package eagleeye.entities;
 
 public class Directory {
- protected String DirectoryName;
- protected String PreviousDirectory;
- protected int DeviceID;
- protected int DirectoryID;
 
- public int getDeviceID(){
-	 return DeviceID;
- }
- 
- public int getDirectoryID(){
-	 return DirectoryID;
- }
- 
- public String getDirectoryName(){
-	 return DirectoryName;
- }
- public String getPreviousDirectory(){
-	 return PreviousDirectory;
- }
- 
- public void modifyDeviceID(int dvID){
-      DeviceID=dvID;
- }
- public void modifyDirectoryID(int dirID){
-     DirectoryID=dirID;
-}
- public void modifyDirectoryName(String dirName){
-     DirectoryName=dirName;
- }
- public void modifyPreviousDirectory(String pdirID){
-	 PreviousDirectory= pdirID;
- }
- 
+	protected String directoryName;
+	protected String previousDirectory;
+	protected int deviceID;
+	protected int directoryID;
+	
+	public Directory(String directoryName, String previousDirectory){
+		
+		this.directoryName = directoryName;
+		this.previousDirectory = previousDirectory;
+	}
+
+	public int getDeviceID(){
+
+		return deviceID;
+	}
+
+	public int getDirectoryID(){
+
+		return directoryID;
+	}
+
+	public String getDirectoryName(){
+
+		return directoryName;
+	}
+	
+	public String getPreviousDirectory(){
+		
+		return previousDirectory;
+	}
+
+	public void modifyDeviceID(int deviceID){
+		
+		this.deviceID = deviceID;
+	}
+	
+	public void modifyDirectoryID(int directoryID){
+		
+		this.directoryID = directoryID;
+	}
+	
+	public void modifyDirectoryName(String directoryName){
+		
+		this.directoryName = directoryName;
+	}
+	
+	public void modifyPreviousDirectory(String previousDirectory){
+		
+		this.previousDirectory= previousDirectory;
+	}
+
  
 }
