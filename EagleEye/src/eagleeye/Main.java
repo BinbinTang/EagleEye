@@ -104,7 +104,7 @@ public class Main extends Application
 					continue;
 				}
 				
-				if(diskImageUnpackerManager.unpack(formatDescription))
+				if(diskImageUnpackerManager.unpack(formatDescription) == null)
 				{
 					break;
 				}

@@ -51,13 +51,13 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	}
 
 	@Override
-	public boolean unpack(FormatDescription formatDescription) throws Exception
+	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatDescription) throws Exception
 	{
 		this.formatDescription = formatDescription;
 		
 		if(this.formatDescription.getBinaryImageType() != "YAFFS2")
 		{
-			return false;
+			return null;
 		}
 		
 		File file = this.formatDescription.getFile();
@@ -329,28 +329,28 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
 
 				eagleeye.entities.File genericFile = new eagleeye.entities.File();
-				genericFile.ModifyDateAccessed(dateFormat.format(new Date(header.getAccessedTime() * 1000L)));
-				genericFile.ModifyDateCreated(dateFormat.format(new Date(header.getCreatedTime() * 1000L)));
-				genericFile.ModifyDateDeleted(dateFormat.format(new Date(header.getModifiedTime() * 1000L)));
-				genericFile.ModifyDirectoryID(header.getParentObjectId());
-				genericFile.ModifyFileID(yaffs2Object.getId());
+				genericFile.modifyDateAccessed(dateFormat.format(new Date(header.getAccessedTime() * 1000L)));
+				genericFile.modifyDateCreated(dateFormat.format(new Date(header.getCreatedTime() * 1000L)));
+				genericFile.modifyDateModified(dateFormat.format(new Date(header.getModifiedTime() * 1000L)));
+				genericFile.modifyDirectoryID(header.getParentObjectId());
+				genericFile.modifyFileID(yaffs2Object.getId());
 				
 				if(header.getName().indexOf('.') > -1)
 				{
-					genericFile.ModifyFileExt(header.getName().substring(header.getName().indexOf('.')));
-					genericFile.ModifyFileName(header.getName().substring(0, header.getName().indexOf('.')));
+					genericFile.modifyFileExt(header.getName().substring(header.getName().indexOf('.')));
+					genericFile.modifyFileName(header.getName().substring(0, header.getName().indexOf('.')));
 				}
 				else
 				{
-					genericFile.ModifyFileName(header.getName());
+					genericFile.modifyFileName(header.getName());
 				}
 				
-				genericFile.ModifyFilePath(filePath);
+				genericFile.modifyFilePath(filePath);
 				files.add(genericFile);
 			}
 		}
 		
-		return true;
+		return files;
 	}
 	
 	private YAFFS2ObjectHeader tryReadObjectHeader(byte[] chunk)

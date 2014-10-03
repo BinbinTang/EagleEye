@@ -1,8 +1,11 @@
 package eagleeye.datacarving.unpack;
 
+import java.util.ArrayList;
+
+import eagleeye.entities.File;
 import eagleeye.filesystem.format.FormatDescription;
 
 public interface IDiskImageUnpacker
 {
-	public boolean unpack(FormatDescription format) throws Exception;
+	public ArrayList<File> unpack(FormatDescription format) throws Exception;
 }
