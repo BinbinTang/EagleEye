@@ -110,6 +110,8 @@ public class Main extends Application
 				}
 			}
 
+			ArrayList<eagleeye.entities.File> fileList = null;
+			
 			for (FormatDescription formatDescription : formatDescriptions)
 			{
 				if(formatDescription.getOperatingSystem() != null)
@@ -117,9 +119,17 @@ public class Main extends Application
 					continue;
 				}
 				
-				diskImageUnpackerManager.unpack(formatDescription);
+				fileList = diskImageUnpackerManager.unpack(formatDescription);
 			}
-
+			
+			if(fileList != null)
+			{
+				for(eagleeye.entities.File file : fileList)
+				{
+					// Do stuff with fileList
+				}
+			}
+			
 			System.out.println();
 		}
 
