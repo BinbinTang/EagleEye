@@ -32,6 +32,30 @@ public class YAFFS2ObjectHeader
 	
 	protected int isShrink;
 	
+	protected boolean isDeleted = false;
+	
+	public boolean isDeleted()
+	{
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted)
+	{
+		this.isDeleted = isDeleted;
+	}
+
+	public boolean isUnlinked()
+	{
+		return isUnlinked;
+	}
+
+	public void setUnlinked(boolean isUnlinked)
+	{
+		this.isUnlinked = isUnlinked;
+	}
+
+	protected boolean isUnlinked = false;
+	
 	public int getAccessedTime()
 	{
 		return this.accessedTime;
