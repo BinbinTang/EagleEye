@@ -1,66 +1,143 @@
 package eagleeye.entities;
 
 public class Video {
- protected String VideoName;
- protected String VideoPath;
- protected int DirectoryID;
- protected Boolean IsRecovered;
- protected String DateTaken;
- protected String DateDeleted;
- protected int DeviceID;
- protected int VideoID;
+	
+	protected int deviceID;
+	protected int directoryID;
+	protected int videoID;
+	protected String videoName;
+	protected String videoPath;
+	protected boolean isRecovered;
+	protected String dateDeleted;
+	protected boolean isModified;
+	protected String modifiedExt;
+	protected String dateCreated;
+	protected String dateAccessed;
+	protected String dateModified;
+	
+	public Video() {
+		
+		isRecovered = false;
+		isModified = false;
+	}
+	
+	public int getDeviceID(){
+		
+		return deviceID;
+	}
+	
+	public int getDirectoryID(){
+		
+		return directoryID;
+	}
+		
+	public int getVideoID(){
+		
+		return videoID;
+	}
 
- public int getDeviceID(){
-	 return DeviceID;
- }
- 
- public int getVideoID(){
-	 return VideoID;
- }
- public String getVideoName(){
-	 return VideoName;
- }
- public String getVideoPath(){
-	 return VideoPath;
- }
- public int getDirectoryID(){
-	 return DirectoryID;
- }
- public Boolean IsRecovered(){
-	 return IsRecovered;
- }
- public String DateTaken(){
-	 return DateTaken;
- }
- public String DateDeleted(){
-	 return VideoName;
- }
- public void modifyDeviceID(int deviceID){
-	 DeviceID=deviceID;
- }
+	public String getVideoName(){
+		
+		return videoName;
+	}
+	
+	public String getVideoPath(){
+	
+		return videoPath;
+	}
+	
+	public boolean isRecovered(){
+	
+		return isRecovered;
+	}
+	
+	public String getDateDeleted(){
+		
+		return dateDeleted;
+	}
+	
+	public boolean isModified(){
+		
+		return isModified;
+	}
+	
+	public String getModifiedExt(){
+		
+		return modifiedExt;
+	}
+	
+	public String getDateCreated(){
+		
+		return dateCreated;
+	}
+		
+	public String getDateAccessed(){
+		 
+		return dateAccessed;
+	}
+	
+	public String getDateModified(){
+		
+		return dateModified;
+	}
+		
+	public void modifyDeviceID(int deviceID){
+		
+		this.deviceID = deviceID;
+	}
+	
+	public void modifyDirectoryID(int directoryID){
+		
+		this.directoryID = directoryID;
+	}
+	
+	public void modifyVideoID(int videoID){
+		
+		this.videoID = videoID;
+	}
 
- public void modifyVideoName(String videoName){
-	VideoName=videoName;
- }
- public void modifyVideoPath(String videoPath){
-	 VideoPath=videoPath;
- }
- public void modifyDirectoryID(int dirID){
-	 DirectoryID=dirID;
- }
- public void  modifyIsRecovered(boolean isRec){
-	 IsRecovered=isRec;
- }
- public void  modifyVideoID(int videoID){
-     VideoID=videoID;
-}
- public void  modifyDateTaken(String dateTaken){
-	 DateTaken=dateTaken;
- }
- public void modifyDateDeleted(String dateDeleted){
-	 VideoName=dateDeleted;
- }
-
- 
- 
+	public void modifyVideoName(String videoName){
+		
+		this.videoName = videoName;
+	}
+	
+	public void modifyVideoPath(String videoPath){
+		
+		this.videoPath = videoPath;
+	}
+		
+	public void  modifyIsRecovered(boolean isRecovered){
+		
+		this.isRecovered = isRecovered;
+	}
+	
+	public void modifyDateDeleted(String dateDeleted){
+		
+		this.dateDeleted = dateDeleted;
+	}
+	
+	public void modifyIsModified(boolean isModified){
+		
+		this.isModified = isModified;
+	}
+	
+	public void modifyModifiedExt(String modifiedExt){
+		
+		this.modifiedExt = modifiedExt;
+	}
+	
+	public void  modifyDateCreated(String dateCreated){
+		
+		this.dateCreated = dateCreated;
+	}
+	
+	public void modifyDateAccessed(String dateAccessed){
+		 
+		this.dateAccessed = dateAccessed;
+	}
+	
+	public void modifyDateModified(String dateModified){
+		
+		this.dateModified = dateModified;		
+	}
 }
