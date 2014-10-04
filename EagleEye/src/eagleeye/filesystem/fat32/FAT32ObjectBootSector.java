@@ -19,6 +19,19 @@ public class FAT32ObjectBootSector {
 	protected byte[] BPB_TotalSector32 = new byte[4];
 	
 	// Especially for FAT32
+	protected byte[] BPB_FATSize32 = new byte[4];
+	protected byte[] BPB_ExtentFlag = new byte[2];
+	protected byte[] BPB_FSVer = new byte[2];
+	protected byte[] BPB_RootClus = new byte[4];
+	protected byte[] BPB_FSInfo = new byte[2];
+	protected byte[] BPB_BkBootSec = new byte[2];
+	protected byte[] BPB_Reserved = new byte[12];
+	protected byte[] BPB_DrvNum = new byte[1];
+	protected byte[] BS_Reserved1 = new byte[1];
+	protected byte[] BS_BootSig = new byte[1];
+	protected byte[] BS_VolID = new byte[4];
+	protected byte[] BS_VolLab = new byte[11];
+	protected byte[] BS_FileSystemType = new byte[8];
 	
 	
 	
