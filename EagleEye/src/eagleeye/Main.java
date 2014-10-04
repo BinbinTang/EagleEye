@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import eagleeye.datacarving.unpack.AndroidBootImageUnpacker;
 import eagleeye.datacarving.unpack.DiskImageUnpackerManager;
+import eagleeye.datacarving.unpack.FAT32ImageUnpacker;
 import eagleeye.datacarving.unpack.YAFFS2ImageUnpacker;
 import eagleeye.filesystem.format.AndroidBootFormatIdentifier;
 import eagleeye.filesystem.format.FormatDescription;
@@ -87,6 +88,7 @@ public class Main extends Application
 		// Simulate plug ins
 		diskImageUnpackerManager.load(new AndroidBootImageUnpacker());
 		diskImageUnpackerManager.load(new YAFFS2ImageUnpacker());
+		diskImageUnpackerManager.load(new FAT32ImageUnpacker());
 		
 		if (formatDescriptions.size() > 0)
 		{
