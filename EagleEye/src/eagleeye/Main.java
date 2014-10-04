@@ -9,6 +9,7 @@ import eagleeye.datacarving.unpack.DiskImageUnpackerManager;
 import eagleeye.datacarving.unpack.FAT32ImageUnpacker;
 import eagleeye.datacarving.unpack.YAFFS2ImageUnpacker;
 import eagleeye.filesystem.format.AndroidBootFormatIdentifier;
+import eagleeye.filesystem.format.FAT32FormatIdentifier;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.format.FormatIdentifierManager;
 import eagleeye.filesystem.format.YAFFS2FormatIdentifier;
@@ -49,6 +50,7 @@ public class Main extends Application
 		// Simulate plug ins
 		formatIdentifierManager.load(new AndroidBootFormatIdentifier());
 		formatIdentifierManager.load(new YAFFS2FormatIdentifier());
+		formatIdentifierManager.load(new FAT32FormatIdentifier());
 		
 		ArrayList<FormatDescription> formatDescriptions = new ArrayList<FormatDescription>();
 
