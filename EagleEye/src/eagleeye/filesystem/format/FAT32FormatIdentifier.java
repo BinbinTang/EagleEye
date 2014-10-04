@@ -49,7 +49,20 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 			totalBytesRead += this.pageSize;
 		}
 		
-		
+		for (byte[] block : blocks)
+		{
+			byteBuffer = ByteBuffer.wrap(block);
+			byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+			
+			// check the bootsector
+			
+			FormatDescription formatDescription = new FormatDescription();
+			formatDescription.setFile(file);
+			formatDescription.setBinaryImageType("FAT32");
+			
+			dataInputStream.close();
+			return formatDescription;
+		}
 		return null;
 	}
 
