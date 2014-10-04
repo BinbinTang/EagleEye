@@ -2,6 +2,7 @@ package eagleeye.datacarving.unpack;
 
 import java.util.ArrayList;
 
+import eagleeye.entities.File;
 import eagleeye.filesystem.format.FormatDescription;
 
 public class DiskImageUnpackerManager
@@ -18,20 +19,20 @@ public class DiskImageUnpackerManager
 		diskImageUnpackers.remove(diskImageUnpacker);
 	}
 	
-	public boolean unpack(FormatDescription formatDescription) throws Exception
+	public ArrayList<File> unpack(FormatDescription formatDescription) throws Exception
 	{
-		boolean unpackedFile = false;
+		ArrayList<File> unpackedFiles = null;
 		
 		for (IDiskImageUnpacker unpacker : diskImageUnpackers)
 		{
-			unpackedFile = unpacker.unpack(formatDescription);
+			unpackedFiles = unpacker.unpack(formatDescription);
 			
-			if(unpackedFile != false)
+			if(unpackedFiles != null)
 			{
 				break;
 			}
 		}
 		
-		return unpackedFile;
+		return unpackedFiles;
 	}
 }

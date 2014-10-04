@@ -25,11 +25,11 @@ public class AndroidBootImageUnpacker implements IDiskImageUnpacker
 	protected ByteBuffer byteBuffer;
 	
 	@Override
-	public boolean unpack(FormatDescription formatDescription) throws Exception
+	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatDescription) throws Exception
 	{
 		if(formatDescription.getBinaryImageType() != "AndroidBoot")
 		{
-			return false;
+			return null;
 		}
 		
 		this.formatDescription = formatDescription;
@@ -44,7 +44,7 @@ public class AndroidBootImageUnpacker implements IDiskImageUnpacker
 
 		if (!magicSignature.equals("ANDROID!"))
 		{
-			return false;
+			return null;
 		}
 		
 		System.out.printf("Unpacking Android Boot Image %s...%n", file.getName());
@@ -193,7 +193,7 @@ public class AndroidBootImageUnpacker implements IDiskImageUnpacker
 		{
 			System.out.println("Cannot find MTD info!");
 			this.inputStream.close();
-			return false;
+			return null;
 		}
 		
 		ArrayList<MTDDefinition> mtdDefinitions = MTDCommandLineParser.parse(mtdDefinitionString);
@@ -207,6 +207,6 @@ public class AndroidBootImageUnpacker implements IDiskImageUnpacker
 		
 		this.inputStream.close();
 		
-		return true;
+		return null;
 	}
 }

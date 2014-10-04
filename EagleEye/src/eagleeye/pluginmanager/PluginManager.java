@@ -53,6 +53,7 @@ public class PluginManager {
 	}
 
 	protected void runPlugins() {
+		System.out.println("==============================");
 		System.out.println("running plugin....");
 		int count = 1;
 		Iterator iter = plugins.iterator();
@@ -60,8 +61,8 @@ public class PluginManager {
 			Plugin pf = (Plugin) iter.next();
 			try {
 				pf.passParam(count);
-				System.out.print(pf.pluginName());
-				System.out.print(" ( "+count+" ) = ");
+				System.out.println(pf.pluginName());
+				//System.out.print(" ( "+count+" ) = ");
 				if (pf.hasError()) {
 					System.out.println("there was an error during plugin initialization");
 					continue;
@@ -76,5 +77,7 @@ public class PluginManager {
 				System.err.println("plugin '"+pf.getClass().getName()+"' tried to do something illegal");
 			}
 		}
+		System.out.println("finished");
+		System.out.println("==============================");
 	}
 }

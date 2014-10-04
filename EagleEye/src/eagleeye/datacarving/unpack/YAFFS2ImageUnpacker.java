@@ -7,9 +7,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
@@ -48,13 +51,13 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	}
 
 	@Override
-	public boolean unpack(FormatDescription formatDescription) throws Exception
+	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatDescription) throws Exception
 	{
 		this.formatDescription = formatDescription;
 		
 		if(this.formatDescription.getBinaryImageType() != "YAFFS2")
 		{
-			return false;
+			return null;
 		}
 		
 		File file = this.formatDescription.getFile();
@@ -165,6 +168,9 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 
 				System.out.printf("-- Analyzing block. Block Sequence: %s%n", blockSequence);
 				
+				boolean isDeleted = false;
+				boolean isUnlinked = false;
+				
 				for(byte[] chunk : blockChunks.getValue())
 				{
 					this.byteBuffer = ByteBuffer.wrap(chunk);
@@ -212,6 +218,23 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					
 					if (header != null) // Chunk is an object header
 					{
+						if(header.getName().equals("deleted") && header.getParentObjectId() == 4)
+						{
+							isDeleted = true;
+							System.out.println("Found delete header.");
+							continue;
+						}
+						
+						if(header.getName().equals("unlinked") && header.getParentObjectId() == 3)
+						{
+							isUnlinked = true;
+							System.out.println("Found unlink header.");
+							continue;
+						}
+						
+						header.setDeleted(isDeleted);
+						header.setUnlinked(isUnlinked);
+						
 						yaffs2Object.addHeader(header);
 						
 						if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
@@ -271,7 +294,9 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			File directory = new File(path);
 			directory.mkdirs();
 		}
-				
+
+		ArrayList<eagleeye.entities.File> files = new ArrayList<eagleeye.entities.File>();
+		
 		for (YAFFS2Object yaffs2Object : yaffs2Objects)
 		{
 			TreeMap<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> versions = yaffs2Object.getVersions();
@@ -300,11 +325,32 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					filePath = parentPaths.get(parentId);
 				}
 				
-				this.writeFile(filePath, yaffs2Object.getId() + "_" + version + "_" + header.getName(), dataChunks);
+				//this.writeFile(filePath, yaffs2Object.getId() + "_" + version + "_" + header.getName(), dataChunks);
+				DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+
+				eagleeye.entities.File genericFile = new eagleeye.entities.File();
+				genericFile.modifyDateAccessed(dateFormat.format(new Date(header.getAccessedTime() * 1000L)));
+				genericFile.modifyDateCreated(dateFormat.format(new Date(header.getCreatedTime() * 1000L)));
+				genericFile.modifyDateModified(dateFormat.format(new Date(header.getModifiedTime() * 1000L)));
+				genericFile.modifyDirectoryID(header.getParentObjectId());
+				genericFile.modifyFileID(yaffs2Object.getId());
+				
+				if(header.getName().indexOf('.') > -1)
+				{
+					genericFile.modifyFileExt(header.getName().substring(header.getName().indexOf('.')));
+					genericFile.modifyFileName(header.getName().substring(0, header.getName().indexOf('.')));
+				}
+				else
+				{
+					genericFile.modifyFileName(header.getName());
+				}
+				
+				genericFile.modifyFilePath(filePath);
+				files.add(genericFile);
 			}
 		}
 		
-		return true;
+		return files;
 	}
 	
 	private YAFFS2ObjectHeader tryReadObjectHeader(byte[] chunk)
