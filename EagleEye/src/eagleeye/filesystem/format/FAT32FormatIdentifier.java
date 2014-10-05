@@ -56,6 +56,7 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 			
 			// check the bootsector
 			
+			
 			FormatDescription formatDescription = new FormatDescription();
 			formatDescription.setFile(file);
 			formatDescription.setBinaryImageType("FAT32");
@@ -63,6 +64,7 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 			dataInputStream.close();
 			return formatDescription;
 		}
+		dataInputStream.close();
 		return null;
 	}
 

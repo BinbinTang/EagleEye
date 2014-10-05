@@ -7,20 +7,19 @@ import eagleeye.filesystem.format.FormatDescription;
 
 public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	
-	protected int chunkSize;
+	protected int pageSize;
 	protected int bootSectorSize;
 	
 
 	public FAT32ImageUnpacker(){
-		this.setChunkSize(512);
+		this.setPageSize(512);
 	}
 	
-	public void setChunkSize(int chunkSize){
-		this.chunkSize = chunkSize;
+	public void setPageSize(int pageSize){
+		this.pageSize = pageSize;
 	}
 	@Override
 	public ArrayList<File> unpack(FormatDescription format) throws Exception {
-		// TODO Auto-generated method stub
 		
 		return null;
 	}
