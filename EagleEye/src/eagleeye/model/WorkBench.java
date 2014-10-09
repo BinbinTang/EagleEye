@@ -1,10 +1,20 @@
 package eagleeye.model;
 
 import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import javafx.scene.control.DatePicker;
+import javafx.util.StringConverter;
 
 public class WorkBench {
 	
-	private Calendar startDate, endDate;
+	final DatePicker startDatePicker = new DatePicker(LocalDate.parse("1992-05-08"));	
+	final DatePicker endDatePicker = new DatePicker(LocalDate.now());
+	
+	private Calendar startDateC, endDateC;	
+	private LocalDate startDate, endDate;
+	
 	
 	/**
 	 * default constructor
@@ -19,7 +29,6 @@ public class WorkBench {
 	 */
 	
 	//Date picker methods
-	
 	public String pickStartDate(){
 		String resultDate = "";
 		
@@ -30,8 +39,9 @@ public class WorkBench {
 		String resultDate = "";
 		
 		return resultDate;
-		
 	}
+	
+
 	
 	/**
 	 * UI binding functions
@@ -41,5 +51,5 @@ public class WorkBench {
 	/**
 	 * Data Retrieving functions 
 	 */
-	
+		
 }

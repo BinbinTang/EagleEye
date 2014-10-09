@@ -8,13 +8,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eagleeye.view.WorkBenchController">
    <children>
       <SplitPane dividerPositions="0.1722" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane maxHeight="100.0" minHeight="100.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="798.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane id="topGridPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="798.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="204.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="385.0" />
@@ -51,7 +51,7 @@
                         </MenuBar>
                         <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0);" GridPane.rowIndex="1">
                           <items>
-                            <Button mnemonicParsing="false" text="Contact History" />
+                            <Button id="contactHistoryBtn" mnemonicParsing="false" text="Contact History" />
                               <Button mnemonicParsing="false" text="Wifi History" />
                           </items>
                            <padding>
@@ -67,25 +67,21 @@
                               <Insets bottom="3.0" left="5.0" right="30.0" top="3.0" />
                            </padding>
                         </ToolBar>
-                        <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="280.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="66.0" minWidth="10.0" prefWidth="30.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" prefWidth="30.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="105.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="30.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="105.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <Label text="Date:" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                              <Label text="~" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                              <TextField fx:id="startDateTf" GridPane.columnIndex="1" />
-                              <TextField fx:id="endDateTf" GridPane.columnIndex="4" />
-                              <Button fx:id="startDateBtn" mnemonicParsing="false" text="D" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-                              <Button fx:id="endDateBtn" mnemonicParsing="false" text="D" GridPane.columnIndex="5" GridPane.halignment="CENTER" />
+                              <Label text="~" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                              <DatePicker id="startDatePicker" GridPane.columnIndex="1" />
+                              <DatePicker id="endDatePicker" GridPane.columnIndex="3" />
                            </children>
                         </GridPane>
                         <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="235.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -114,7 +110,7 @@
                               <Label text="Time:" />
                            </children>
                         </GridPane>
-                        <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="290.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="318.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <columnConstraints>
                               <ColumnConstraints maxWidth="83.0" minWidth="42.0" prefWidth="57.0" />
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="212.0" minWidth="10.0" prefWidth="196.0" />
@@ -124,7 +120,7 @@
                               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="25.0" text="S" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+                              <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="25.0" text="S" GridPane.columnIndex="2" GridPane.halignment="LEFT" />
                               <TextField prefHeight="24.0" prefWidth="196.0" GridPane.columnIndex="1" />
                               <Label text="Keywords:" />
                            </children>
