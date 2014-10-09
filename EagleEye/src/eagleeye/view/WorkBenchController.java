@@ -62,6 +62,7 @@ public class WorkBenchController {
     	    {
     	        if(localDate==null)
     	            return "";
+    	        startDate = localDate;
     	        return dateTimeFormatter.format(localDate);
     	    }
 
@@ -72,12 +73,13 @@ public class WorkBenchController {
     	        {
     	            return null;
     	        }
+    	        startDate = LocalDate.parse(dateString,dateTimeFormatter);
     	        return LocalDate.parse(dateString,dateTimeFormatter);
     	    }
     	});
     	
     	endDatePicker.setOnAction(event -> {
-    		endDate = startDatePicker.getValue();
+    		endDate = endDatePicker.getValue();
             System.out.println("Selected date: " + endDate);
         });
     	
@@ -90,6 +92,7 @@ public class WorkBenchController {
     	    {
     	        if(localDate==null)
     	            return "";
+    	        endDate = localDate;
     	        return dateTimeFormatter.format(localDate);
     	    }
 
@@ -100,6 +103,7 @@ public class WorkBenchController {
     	        {
     	            return null;
     	        }
+    	        endDate = LocalDate.parse(dateString,dateTimeFormatter);
     	        return LocalDate.parse(dateString,dateTimeFormatter);
     	    }
     	});
