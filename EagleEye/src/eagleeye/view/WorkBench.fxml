@@ -38,7 +38,13 @@
                             </Menu>
                               <Menu mnemonicParsing="false" text="Analysis">
                                 <items>
-                                  <MenuItem mnemonicParsing="false" text="Function 1" />
+                                  <MenuItem mnemonicParsing="false" text="Contact History" />
+                                </items>
+                                <items>
+                                  <MenuItem mnemonicParsing="false" text="Wifi History" />
+                                </items>
+                                <items>
+                                  <MenuItem mnemonicParsing="false" text="Timeline" />
                                 </items>
                               </Menu>
                             <Menu mnemonicParsing="false" text="Help">
@@ -78,7 +84,11 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Date:" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                              <Label text="Date:" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                  <tooltip>
+        							<Tooltip text="Choose the start date and end date."/>
+   								 </tooltip>
+                              </Label>
                               <Label text="~" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                               <DatePicker id="startDatePicker" fx:id="startDatePicker" GridPane.columnIndex="1" />
                               <DatePicker id="endDatePicker" fx:id="endDatePicker" GridPane.columnIndex="3" />
@@ -107,7 +117,11 @@
                               <Label text=":" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                               <Label text=":" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                               <Label text="~" GridPane.columnIndex="4" GridPane.halignment="CENTER" />
-                              <Label text="Time:" />
+                              <Label text="Time:">
+                                  <tooltip>
+        							<Tooltip text="Specify the time range to be included of everyday."/>
+   								 </tooltip>
+                              </Label>
                            </children>
                         </GridPane>
                         <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="318.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -122,7 +136,11 @@
                            <children>
                               <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="25.0" text="S" GridPane.columnIndex="2" GridPane.halignment="LEFT" />
                               <TextField prefHeight="24.0" prefWidth="196.0" GridPane.columnIndex="1" />
-                              <Label text="Keywords:" />
+                              <Label text="Keywords:">
+                                  <tooltip>
+        							<Tooltip text="Use spacebar to seperate keywords."/>
+   								 </tooltip>
+                              </Label>
                            </children>
                         </GridPane>
                      </children>
@@ -183,17 +201,26 @@
                                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <CheckBox mnemonicParsing="false" text="Original Data" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+                                                <CheckBox mnemonicParsing="false" text="Original Data" GridPane.halignment="LEFT" GridPane.valignment="CENTER" selected="true">
+                                                   <tooltip>
+        												<Tooltip text="Include unchanged original deleted files."/>
+   								 					</tooltip>
                                                    <GridPane.margin>
                                                       <Insets left="10.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox layoutX="8.0" layoutY="34.0" mnemonicParsing="false" text="Deleted Data" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                                <CheckBox layoutX="8.0" layoutY="34.0" mnemonicParsing="false" text="Deleted Data" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER" selected="true">
+                                                	<tooltip>
+        												<Tooltip text="Include recovered deleted files."/>
+   								 					</tooltip>
                                                    <GridPane.margin>
                                                       <Insets left="10.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox layoutX="8.0" layoutY="64.0" mnemonicParsing="false" text="Modified Data Type" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                                <CheckBox layoutX="8.0" layoutY="64.0" mnemonicParsing="false" text="Modified Data Type" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" selected="true">
+                                                   <tooltip>
+        												<Tooltip text="Include recognized type modified files."/>
+   								 					</tooltip>
                                                    <GridPane.margin>
                                                       <Insets left="10.0" />
                                                    </GridPane.margin>
