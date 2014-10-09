@@ -51,7 +51,7 @@
                         </MenuBar>
                         <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0);" GridPane.rowIndex="1">
                           <items>
-                            <Button id="contactHistoryBtn" mnemonicParsing="false" text="Contact History" />
+                            <Button id="contactHistoryBtn" fx:id="contactHistoryBtn" mnemonicParsing="false" text="Contact History" />
                               <Button mnemonicParsing="false" text="Wifi History" />
                           </items>
                            <padding>
@@ -80,8 +80,8 @@
                            <children>
                               <Label text="Date:" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                               <Label text="~" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                              <DatePicker id="startDatePicker" GridPane.columnIndex="1" />
-                              <DatePicker id="endDatePicker" GridPane.columnIndex="3" />
+                              <DatePicker id="startDatePicker" fx:id="startDatePicker" GridPane.columnIndex="1" />
+                              <DatePicker id="endDatePicker" fx:id="endDatePicker" GridPane.columnIndex="3" />
                            </children>
                         </GridPane>
                         <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="235.0" GridPane.columnIndex="2" GridPane.rowIndex="1">

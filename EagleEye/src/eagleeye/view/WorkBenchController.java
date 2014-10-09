@@ -13,17 +13,16 @@ import eagleeye.model.WorkBench;
 
 public class WorkBenchController {
 	// Path to identify current case
+    private String casePath;
 	@FXML 
 	private GridPane topGridPane;
-	@FXML
-    private String casePath;
 	// DatePicker
+	private LocalDate startDate = LocalDate.parse("1992-05-08");
+	private LocalDate endDate = LocalDate.now();
 	@FXML
-	private LocalDate startDate, endDate;
+	private DatePicker startDatePicker;		
 	@FXML
-	private DatePicker startDatePicker = new DatePicker(LocalDate.parse("1992-05-08"));		
-	@FXML
-	private DatePicker endDatePicker = new DatePicker(LocalDate.now());
+	private DatePicker endDatePicker;
 	
 	// Functions
 	@FXML
@@ -46,6 +45,8 @@ public class WorkBenchController {
     private void initialize() {
 		
 		// Initialize for DatePicker
+		startDatePicker.setValue(startDate);
+		endDatePicker.setValue(endDate);
 		
 		startDatePicker.setOnAction(event -> {
     		startDate = startDatePicker.getValue();
