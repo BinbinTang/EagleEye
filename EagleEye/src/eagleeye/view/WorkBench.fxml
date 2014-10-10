@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.*?>
 <?import javafx.geometry.*?>
@@ -110,10 +111,22 @@
 										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 									</rowConstraints>
 									<children>
-										<TextField fx:id="startHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="00" GridPane.columnIndex="1" />
-										<TextField fx:id="startMinuteTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="00" GridPane.columnIndex="3" />
-										<TextField fx:id="endHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="23" GridPane.columnIndex="5" />
-										<TextField fx:id="endMinuteTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="59" GridPane.columnIndex="7" />
+										<TextField fx:id="startHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="00" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></TextField>
+										<TextField fx:id="startMinuteTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="00" GridPane.columnIndex="3">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></TextField>
+										<TextField fx:id="endHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="23" GridPane.columnIndex="5">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></TextField>
+										<TextField fx:id="endMinuteTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="59" GridPane.columnIndex="7">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></TextField>
 										<Label text=":" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
 										<Label text=":" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
 										<Label text="~" GridPane.columnIndex="4" GridPane.halignment="CENTER" />
@@ -126,7 +139,7 @@
 								</GridPane>
 								<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="318.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
 									<columnConstraints>
-										<ColumnConstraints maxWidth="83.0" minWidth="42.0" prefWidth="57.0" />
+										<ColumnConstraints maxWidth="83.0" minWidth="-Infinity" prefWidth="100.0" />
 										<ColumnConstraints hgrow="SOMETIMES" maxWidth="212.0" minWidth="10.0" prefWidth="196.0" />
 										<ColumnConstraints hgrow="SOMETIMES" maxWidth="71.0" minWidth="10.0" prefWidth="37.0" />
 									</columnConstraints>
@@ -136,7 +149,7 @@
 									<children>
 										<Button minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="25.0" text="S" GridPane.columnIndex="2" GridPane.halignment="LEFT" />
 										<TextField minWidth="-Infinity" prefHeight="24.0" prefWidth="196.0" GridPane.columnIndex="1" />
-										<Label minWidth="-Infinity" text="Keywords:">
+										<Label minWidth="-Infinity" prefWidth="110.0" text="Keywords:">
 											<tooltip>
 												<Tooltip text="Use spacebar to seperate keywords." />
 											</tooltip>
