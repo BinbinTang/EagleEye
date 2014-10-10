@@ -17,7 +17,7 @@
 						<GridPane id="topGridPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="798.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<columnConstraints>
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="204.0" />
-								<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="385.0" />
+								<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="330.0" />
 								<ColumnConstraints hgrow="SOMETIMES" maxWidth="274.0" minWidth="-Infinity" prefWidth="209.0" />
 							</columnConstraints>
 							<rowConstraints>
@@ -73,12 +73,12 @@
 										<Insets bottom="3.0" left="5.0" right="30.0" top="3.0" />
 									</padding>
 								</ToolBar>
-								<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="280.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<GridPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="280.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
 									<columnConstraints>
-										<ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
-										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="105.0" />
-										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="30.0" />
-										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="105.0" />
+										<ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="30.0" />
+										<ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="105.0" />
+										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+										<ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="105.0" />
 									</columnConstraints>
 									<rowConstraints>
 										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -89,9 +89,9 @@
 												<Tooltip text="Choose the start date and end date." />
 											</tooltip>
 										</Label>
-										<Label text="~" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-										<DatePicker id="startDatePicker" fx:id="startDatePicker" minWidth="110" prefWidth="105" GridPane.columnIndex="1" />
-										<DatePicker id="endDatePicker" fx:id="endDatePicker" minWidth="110" prefWidth="105" GridPane.columnIndex="3" />
+										<Label prefHeight="27.0" prefWidth="11.0" text="~" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+										<DatePicker id="startDatePicker" fx:id="startDatePicker" minWidth="-Infinity" prefWidth="130.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+										<DatePicker id="endDatePicker" fx:id="endDatePicker" minWidth="-Infinity" prefWidth="130.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
 									</children>
 								</GridPane>
 								<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="235.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -110,10 +110,10 @@
 										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 									</rowConstraints>
 									<children>
-										<TextField fx:id="startHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="30.0" prefHeight="20.0" prefWidth="30.0" text="00" GridPane.columnIndex="1" />
-										<TextField fx:id="startMinuteTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="30.0" prefHeight="20.0" prefWidth="30.0" text="00" GridPane.columnIndex="3" />
-										<TextField fx:id="endHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="30.0" prefHeight="20.0" prefWidth="30.0" text="23" GridPane.columnIndex="5" />
-										<TextField fx:id="endMinuteTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="30.0" prefHeight="20.0" prefWidth="30.0" text="59" GridPane.columnIndex="7" />
+										<TextField fx:id="startHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="00" GridPane.columnIndex="1" />
+										<TextField fx:id="startMinuteTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="00" GridPane.columnIndex="3" />
+										<TextField fx:id="endHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="23" GridPane.columnIndex="5" />
+										<TextField fx:id="endMinuteTf" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="30.0" text="59" GridPane.columnIndex="7" />
 										<Label text=":" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
 										<Label text=":" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
 										<Label text="~" GridPane.columnIndex="4" GridPane.halignment="CENTER" />

@@ -34,9 +34,7 @@ public class MainApp extends Application {
             rootLayout = (BorderPane) loader.load();
             Scene scene = new Scene(rootLayout);
 
-            Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-            primaryStage.setWidth(primaryScreenBounds.getWidth());
-            primaryStage.setHeight(primaryScreenBounds.getHeight());
+
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
