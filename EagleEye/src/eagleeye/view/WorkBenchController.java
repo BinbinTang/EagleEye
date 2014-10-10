@@ -37,7 +37,7 @@ public class WorkBenchController {
 	// File chooser
 	private File file;
 	private Label labelFilePath = new Label();
-	private Directory directory;
+	private File directory;
 	private Label labelDirPath = new Label();
 
 	// Path to identify current case
@@ -247,9 +247,9 @@ public class WorkBenchController {
 				DirectoryChooser dirChooser = new DirectoryChooser();
 
 				// Show open file dialog
-				file = dirChooser.showDialog(null);
+				directory = dirChooser.showDialog(null);
 
-				labelDirPath.setText(file.getPath());
+				labelDirPath.setText(directory.getPath());
 				System.out.println(labelDirPath);
 			}
 		});
