@@ -28,8 +28,8 @@ public class Main extends Application
 		 * A FOLDER
 		 */
 		
-		//String directoryPath = "/Users/BinbinTang/Downloads/Case2";
-		String directoryPath = "C:\\Users\\Admin\\Downloads\\Case2";
+		String directoryPath = "/Users/BinbinTang/Downloads/Case2";
+		//String directoryPath = "C:\\Users\\Admin\\Downloads\\Case2";
 
 		File directory = new File(directoryPath);
 
@@ -73,7 +73,6 @@ public class Main extends Application
 					formatDescriptions.add(formatDescription);
 					binaryImageType = formatDescription.getBinaryImageType();
 				}
-				
 				System.out.printf("%-25s\t%-20s\t%12s KB%n", file.getName(), binaryImageType, file.length());
 			}			
 		}
@@ -84,7 +83,7 @@ public class Main extends Application
 		 * STEP 03 - DATA CARVING BASED ON DATA FROM FILE SYSTEM LAYER, CARVE
 		 * OUT DATA FROM FILE
 		 */
-
+        /*
 		DiskImageUnpackerManager diskImageUnpackerManager = new DiskImageUnpackerManager();
 		
 		// Simulate plug ins
@@ -136,11 +135,12 @@ public class Main extends Application
 			
 			System.out.println();
 		}
+		*/
 
 		/*
 		 * User Interface
 		 */
-		try
+		/*try
 		{
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root, 400, 400);
@@ -152,7 +152,7 @@ public class Main extends Application
 		catch (Exception e)
 		{
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	public static void main(String[] args)

@@ -12,7 +12,7 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 	protected int pageSize;
 	
 	public FAT32FormatIdentifier(){
-		this.setPageSize(2048);
+		this.setPageSize(512);
 	}
 	
 	public void setPageSize(int pageSize){
@@ -33,10 +33,9 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 
 		
 		// Split up the data into blocks
-		int totalFileBytes = (int) file.length();
-		int totalBytesRead = 0;
+		long totalFileBytes = (long) file.length();
+		long totalBytesRead = 0;
 
-		
 		while (totalFileBytes > totalBytesRead + this.pageSize)
 		{			
 			inputBytes = new byte[this.pageSize];
@@ -44,26 +43,25 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 			byteBuffer = ByteBuffer.wrap(inputBytes);
 			byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
-			blocks.add(byteBuffer.array());
-			
 			totalBytesRead += this.pageSize;
-		}
-		
-		for (byte[] block : blocks)
-		{
-			byteBuffer = ByteBuffer.wrap(block);
-			byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 			
-			// check the bootsector
-			
+			// check the bootSector
+			if (byteBuffer.getChar()!=0xEB)
+				continue;
+			System.out.println(byteBuffer.getChar());
+			byteBuffer.position(2);
+			System.out.println(byteBuffer.getChar());
+			if (byteBuffer.getChar()!=0x90)
+				continue;
 			
 			FormatDescription formatDescription = new FormatDescription();
 			formatDescription.setFile(file);
 			formatDescription.setBinaryImageType("FAT32");
 			
-			dataInputStream.close();
+			dataInputStream.close(); 
 			return formatDescription;
 		}
+		
 		dataInputStream.close();
 		return null;
 	}
