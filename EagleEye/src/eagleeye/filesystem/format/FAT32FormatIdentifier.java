@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 
 public class FAT32FormatIdentifier implements IFormatIdentifier {
 
@@ -19,13 +18,12 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 		this.pageSize = pageSize;
 	}
 	
+	
 	@Override
 	public FormatDescription identify(File file) throws Exception {
 		
 		FileInputStream fileInputStream = new FileInputStream(file);
 		DataInputStream dataInputStream = new DataInputStream(fileInputStream);
-		
-		ArrayList<byte[]> blocks = new ArrayList<>();
 		
 		byte[] inputBytes = new byte[this.pageSize];
 		
@@ -43,15 +41,27 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 			byteBuffer = ByteBuffer.wrap(inputBytes);
 			byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
+			//System.out.println (byteBuffer);
 			totalBytesRead += this.pageSize;
 			
 			// check the bootSector
-			if (byteBuffer.getChar()!=0xEB)
+			// Case 1: jmpBoot[0] = 0xE9 jmpBoot[1] = 0x?? jmpBoot[2] = 0x??;
+			if (byteBuffer.get() == (byte) 0xE9)
+			{
+				FormatDescription formatDescription = new FormatDescription();
+				formatDescription.setFile(file);
+				formatDescription.setBinaryImageType("FAT32");
+				
+				dataInputStream.close(); 
+				return formatDescription;
+			}
+			// Case 2:jmpBoot[0] = 0xEB jmpBoot[1] = 0x?? jmpBoot[2] = 0x90;
+			if (byteBuffer.get()!= (byte) 0xEB)
 				continue;
-			System.out.println(byteBuffer.getChar());
+			
 			byteBuffer.position(2);
-			System.out.println(byteBuffer.getChar());
-			if (byteBuffer.getChar()!=0x90)
+		
+			if (byteBuffer.get()!= (byte) 0x90)
 				continue;
 			
 			FormatDescription formatDescription = new FormatDescription();
