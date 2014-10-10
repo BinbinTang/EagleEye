@@ -8,7 +8,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
+
 import java.util.logging.Logger;
+
+
+
 
 
 
@@ -255,6 +259,7 @@ public class WorkBenchController {
 				
 			}
 		});
+
 
 		// directory chooser
 		openClick.setOnAction(this::handleOpenDirectory);
