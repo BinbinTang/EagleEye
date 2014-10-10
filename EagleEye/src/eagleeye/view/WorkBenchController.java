@@ -5,11 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
-
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -29,7 +28,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import eagleeye.controller.MainApp;
+import eagleeye.datacarving.unpack.AndroidBootImageUnpacker;
+import eagleeye.datacarving.unpack.DiskImageUnpackerManager;
+import eagleeye.datacarving.unpack.FAT32ImageUnpacker;
+import eagleeye.datacarving.unpack.YAFFS2ImageUnpacker;
 import eagleeye.entities.Directory;
+import eagleeye.filesystem.format.AndroidBootFormatIdentifier;
+import eagleeye.filesystem.format.FAT32FormatIdentifier;
+import eagleeye.filesystem.format.FormatDescription;
+import eagleeye.filesystem.format.FormatIdentifierManager;
+import eagleeye.filesystem.format.YAFFS2FormatIdentifier;
 import eagleeye.model.WorkBench;
 
 public class WorkBenchController {
@@ -234,25 +242,16 @@ public class WorkBenchController {
 
 				// Show open file dialog
 				file = fileChooser.showOpenDialog(null);
-
+				
 				labelFilePath.setText(file.getPath());
 				System.out.println(labelFilePath);
+				
 			}
 		});
 
 		// directory chooser
-		openClick.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				DirectoryChooser dirChooser = new DirectoryChooser();
 
-				// Show open file dialog
-				directory = dirChooser.showDialog(null);
-
-				labelDirPath.setText(directory.getPath());
-				System.out.println(labelDirPath);
-			}
-		});
+		openClick.setOnAction(this::handleOpenDirectory);
 
 		// save
 		saveClick.setOnAction(new EventHandler<ActionEvent>() {
@@ -282,5 +281,132 @@ public class WorkBenchController {
 
 		// obtain current case path
 		casePath = (mainApp.getCasePath());
+	}
+	
+	private void handleOpenDirectory(ActionEvent event)
+	{
+		DirectoryChooser dirChooser = new DirectoryChooser();
+
+		// Show open file dialog
+		file = dirChooser.showDialog(null);
+
+		labelDirPath.setText(file.getPath());
+		System.out.println(labelDirPath);
+		
+		try
+		{
+			loadDirectory(file);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void loadDirectory(File directory) throws Exception
+	{
+		if (!directory.isDirectory())
+		{
+			throw new Exception("The provided path is not a directory.");
+		}
+
+		// Assuming files are all in main directory
+		File[] files = directory.listFiles();
+
+		/*
+		 * STEP 02 - FILE SYSTEM LAYER FILES ARE TAGGED TO CERTAIN TYPES TO
+		 * PREPARE FOR DATA CARVING
+		 */
+		FormatIdentifierManager formatIdentifierManager = new FormatIdentifierManager();
+		
+		// Simulate plug ins
+		formatIdentifierManager.load(new AndroidBootFormatIdentifier());
+		formatIdentifierManager.load(new YAFFS2FormatIdentifier());
+		formatIdentifierManager.load(new FAT32FormatIdentifier());
+		
+		ArrayList<FormatDescription> formatDescriptions = new ArrayList<FormatDescription>();
+
+		Arrays.sort(files);
+
+		if (files.length > 0)
+		{
+			System.out.println("-----------------");
+			System.out.println("File System Layer");
+			System.out.println("-----------------");
+			System.out.printf("%-25s\t%-20s\t%15s%n", "Name", "Binary Image Type", "Size");
+			
+			for (File file : files)
+			{
+				FormatDescription formatDescription = formatIdentifierManager.identify(file);
+				String binaryImageType = "-";
+				
+				if(formatDescription != null)
+				{
+					formatDescriptions.add(formatDescription);
+					binaryImageType = formatDescription.getBinaryImageType();
+				}
+				
+				System.out.printf("%-25s\t%-20s\t%12s KB%n", file.getName(), binaryImageType, file.length());
+			}			
+		}
+
+		System.out.println();
+
+		/*
+		 * STEP 03 - DATA CARVING BASED ON DATA FROM FILE SYSTEM LAYER, CARVE
+		 * OUT DATA FROM FILE
+		 */
+
+		DiskImageUnpackerManager diskImageUnpackerManager = new DiskImageUnpackerManager();
+		
+		// Simulate plug ins
+		diskImageUnpackerManager.load(new AndroidBootImageUnpacker());
+		diskImageUnpackerManager.load(new YAFFS2ImageUnpacker());
+		diskImageUnpackerManager.load(new FAT32ImageUnpacker());
+		
+		if (formatDescriptions.size() > 0)
+		{
+			System.out.println("------------------");
+			System.out.println("Data Carving Layer");
+			System.out.println("------------------");
+			System.out.println();
+			
+			// Always unpack OS images first
+
+			for (FormatDescription formatDescription : formatDescriptions)
+			{
+				if(formatDescription.getOperatingSystem() == null)
+				{
+					continue;
+				}
+				
+				if(diskImageUnpackerManager.unpack(formatDescription) == null)
+				{
+					break;
+				}
+			}
+
+			ArrayList<eagleeye.entities.File> fileList = null;
+			
+			for (FormatDescription formatDescription : formatDescriptions)
+			{
+				if(formatDescription.getOperatingSystem() != null)
+				{
+					continue;
+				}
+				
+				fileList = diskImageUnpackerManager.unpack(formatDescription);
+			}
+			
+			if(fileList != null)
+			{
+				for(eagleeye.entities.File file : fileList)
+				{
+					// Do stuff with fileList
+				}
+			}
+			
+			System.out.println();
+		}
 	}
 }
