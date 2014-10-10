@@ -5,8 +5,9 @@ import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import eagleeye.entities.File;
 import eagleeye.filesystem.format.FormatDescription;
+import eagleeye.filesystem.yaffs2.YAFFS2ObjectHeader;
+import eagleeye.filesystem.fat32.FAT32ObjectBootSector;
 
 public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	
@@ -18,17 +19,23 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	protected byte[] inputBytes;
 
 	protected ByteBuffer byteBuffer;
-	protected int pageSize;
+	
+	protected int chunkSize; // temporary page size used to find boot sector
 	protected int bootSectorSize;
 	
-
-	public FAT32ImageUnpacker(){
-		this.setPageSize(512);
-	}
+	protected int pageSize;
 	
 	public void setPageSize(int pageSize){
 		this.pageSize = pageSize;
 	}
+	
+	private FAT32ObjectBootSector readObjectBootSector(byte[] chunk)
+	{
+		FAT32ObjectBootSector bootSector = new FAT32ObjectBootSector();
+		//bootSector.setBPB_BytsPerSector();
+		return bootSector;
+	}
+	
 	@Override
 	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatDescription) throws Exception {
 		this.formatDescription = formatDescription;
@@ -37,6 +44,10 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		{
 			return null;
 		}
+		
+		java.io.File file = this.formatDescription.getFile();
+		this.fileInputStream = new FileInputStream(file);
+		this.inputStream = new DataInputStream(this.fileInputStream);
 		
 		return null;
 	}

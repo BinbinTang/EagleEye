@@ -60,7 +60,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			return null;
 		}
 		
-		File file = this.formatDescription.getFile();
+		java.io.File file = this.formatDescription.getFile();
 		this.fileInputStream = new FileInputStream(file);
 		this.inputStream = new DataInputStream(this.fileInputStream);
 		
