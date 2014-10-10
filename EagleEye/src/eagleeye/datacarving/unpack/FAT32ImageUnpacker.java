@@ -19,7 +19,7 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		this.pageSize = pageSize;
 	}
 	@Override
-	public ArrayList<File> unpack(FormatDescription format) throws Exception {
+	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatdescription) throws Exception {
 		
 		return null;
 	}

@@ -83,7 +83,7 @@ public class Main extends Application
 		 * STEP 03 - DATA CARVING BASED ON DATA FROM FILE SYSTEM LAYER, CARVE
 		 * OUT DATA FROM FILE
 		 */
-        /*
+        
 		DiskImageUnpackerManager diskImageUnpackerManager = new DiskImageUnpackerManager();
 		
 		// Simulate plug ins
@@ -135,12 +135,12 @@ public class Main extends Application
 			
 			System.out.println();
 		}
-		*/
+		
 
 		/*
 		 * User Interface
 		 */
-		/*try
+		try
 		{
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root, 400, 400);
@@ -152,7 +152,7 @@ public class Main extends Application
 		catch (Exception e)
 		{
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	public static void main(String[] args)
