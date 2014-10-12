@@ -1,6 +1,9 @@
 package eagleeye.view;
 
 import java.awt.Desktop;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -8,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
-
 import java.util.logging.Logger;
 
 
@@ -36,19 +38,41 @@ import java.util.logging.Logger;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+import javax.swing.ImageIcon;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -75,7 +99,14 @@ public class WorkBenchController {
 	private Label labelDirPath = new Label();
 
 	// Path to identify current case
-	private String casePath;
+	private String casePath;;
+	
+	// TreeView
+	private final Node rootIcon = new ImageView(new Image(getClass().getResourceAsStream("treeViewRootFolderIcon.png")));		
+	private int numTreeViewRootFolder = 0;
+	
+	@FXML
+	private StackPane treeViewPane;
 
 	// UI elements
 	@FXML
@@ -293,11 +324,26 @@ public class WorkBenchController {
 				Platform.exit();
 			}
 		});
+		
+		// TreeView
+		TreeItem<String> rootItem = new TreeItem<String> ("Inbox", rootIcon);
+		rootItem.setExpanded(true);
+		numTreeViewRootFolder = 6;
+		for (int i = 1; i < numTreeViewRootFolder; i++) {
+            TreeItem<String> item = new TreeItem<String> ("Message" + i);            
+            rootItem.getChildren().add(item);
+        }		
+		TreeView<String> tree = new TreeView<String> (rootItem);
+        treeViewPane.getChildren().add(tree);
+        tree.setMaxWidth(Double.MAX_VALUE);
+        tree.setMaxHeight(Double.MAX_VALUE);
 	}
 
 	/*
 	 * Methods of workbench
 	 */
+	
+
 
 	// private void handleStartDateClick
 

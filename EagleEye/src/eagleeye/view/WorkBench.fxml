@@ -31,9 +31,9 @@
 									<menus>
 										<Menu mnemonicParsing="false" text="File">
 											<items>
-												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New" />
+												<MenuItem fx:id="newClick" disable="true" mnemonicParsing="false" text="New" visible="false" />
 												<MenuItem fx:id="openClick" mnemonicParsing="false" text="Open" />
-												<MenuItem fx:id="saveClick" mnemonicParsing="false" text="Save" />
+												<MenuItem fx:id="saveClick" disable="true" mnemonicParsing="false" text="Save" visible="false" />
 												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Exit" />
 											</items>
 										</Menu>
@@ -167,23 +167,22 @@
 					<children>
 						<SplitPane dividerPositions="0.25" minHeight="300.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<items>
-								<AnchorPane minHeight="300.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="200.0">
+								<AnchorPane maxWidth="-Infinity" minHeight="250.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="200.0">
 									<children>
-										<SplitPane dividerPositions="0.8" layoutX="19.0" layoutY="139.0" orientation="VERTICAL" prefHeight="478.0" prefWidth="197.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+										<SplitPane dividerPositions="0.8" layoutX="19.0" layoutY="139.0" orientation="VERTICAL" prefHeight="498.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 											<items>
 												<AnchorPane minHeight="-Infinity" minWidth="-Infinity">
 													<children>
-														<TabPane layoutX="-3.0" layoutY="24.0" minWidth="-Infinity" prefHeight="390.0" prefWidth="194.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+														<TabPane layoutX="-3.0" layoutY="24.0" minWidth="-Infinity" prefHeight="390.0" prefWidth="198.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 															<tabs>
 																<Tab text="Tree View">
 																	<content>
 																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 																			<children>
-																				<ScrollPane layoutY="33.0" prefHeight="361.0" prefWidth="194.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-																					<content>
-																						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-																					</content>
-																				</ScrollPane>
+																				<ScrollPane layoutY="33.0" prefHeight="361.0" prefWidth="198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <content>
+                                                                  <StackPane fx:id="treeViewPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                                               </content></ScrollPane>
 																			</children>
 																		</AnchorPane>
 																	</content>
