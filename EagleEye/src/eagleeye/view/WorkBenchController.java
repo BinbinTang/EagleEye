@@ -75,14 +75,14 @@ public class WorkBenchController {
 			"Icons/fileIcon.jpg"));
 	List<MyFile> myFiles = Arrays
 			.<MyFile> asList(new MyFile("200482583232.6910771", ".jpg", false,
-					false, "/UI Test"), new MyFile("CS3283 meeting notes",
-					".txt", false, false, "/UI Test"), new MyFile(
-					"fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false, false,
-					"/UI Test"), new MyFile(
-					"Game Design Strategies for Collectivist Persuasion", ".pdf", false,
-					false, "/UI Test"), new MyFile("When you are gone", ".flv",
-					false, false, "/UI Test"), new MyFile("Ó£»¨2", ".jpg", false,
-					false, "/UI Test"));
+					false, "/UI Test"), 
+					new MyFile("CS3283 meeting notes",".txt", false, false, "/UI Test"),
+					new MyFile(
+					"fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false, false,"/UI Test"),
+					new MyFile(
+					"Game Design Strategies for Collectivist Persuasion", ".pdf", false,false, "/UI Test"), 
+					//new MyFile("When you are gone", ".flv",false, false, "/UI Test"), 
+					new MyFile("Ó£»¨2", ".jpg", false,false, "/UI Test"));
 	TreeItem<String> rootNode = new TreeItem<String>("MyFiles", rootIcon);
 
 	@FXML
