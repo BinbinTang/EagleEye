@@ -76,6 +76,7 @@ public class WorkBenchController {
 			.getResourceAsStream("Icons/treeViewRootFolderIcon.png")));
 	private final Image fileIcon = new Image(getClass().getResourceAsStream(
 			"Icons/fileIcon.jpg"));
+	// Not applicable for exact tree view. For old testing only
 	List<MyFile> myFiles = Arrays
 			.<MyFile> asList(new MyFile("200482583232.6910771", ".jpg", false,
 					false, "/UI Test"), 
@@ -97,6 +98,7 @@ public class WorkBenchController {
 	// DatePicker
 	private LocalDate startDate = LocalDate.parse("1992-05-08");
 	private LocalDate endDate = LocalDate.now();
+	private final Image calendarIcon = new Image(getClass().getResourceAsStream("Icons/fileIcon.jpg"));
 	@FXML
 	private DatePicker startDatePicker;
 	@FXML
