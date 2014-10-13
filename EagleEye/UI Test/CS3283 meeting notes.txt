@@ -1,0 +1,17 @@
+26/9/2014 :	1. What to include in each menubar item.
+		2. The GUI theme of program (color, texture, style)
+		3. 
+
+Device: new, open, save, properties, exit
+
+Edit: (delete)
+
+Analysis: 
+
+About: (delete)
+
+Help: About
+
+Design: layout (ok) color (ok) 
+
+Functions: 1) Timeline

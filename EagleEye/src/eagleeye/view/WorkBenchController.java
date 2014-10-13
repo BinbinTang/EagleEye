@@ -6,49 +6,15 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import javax.swing.ImageIcon;
 
@@ -70,6 +36,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -100,11 +67,24 @@ public class WorkBenchController {
 
 	// Path to identify current case
 	private String casePath;;
-	
+
 	// TreeView
-	private final Node rootIcon = new ImageView(new Image(getClass().getResourceAsStream("treeViewRootFolderIcon.png")));		
-	private int numTreeViewRootFolder = 0;
-	
+	private final Node rootIcon = new ImageView(new Image(getClass()
+			.getResourceAsStream("Icons/treeViewRootFolderIcon.png")));
+	private final Image fileIcon = new Image(getClass().getResourceAsStream(
+			"Icons/fileIcon.jpg"));
+	List<MyFile> myFiles = Arrays
+			.<MyFile> asList(new MyFile("200482583232.6910771", ".jpg", false,
+					false, "/UI Test"), new MyFile("CS3283 meeting notes",
+					".txt", false, false, "/UI Test"), new MyFile(
+					"fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false, false,
+					"/UI Test"), new MyFile(
+					"Game Design Strategies for Collectivist Persuasion", ".pdf", false,
+					false, "/UI Test"), new MyFile("When you are gone", ".flv",
+					false, false, "/UI Test"), new MyFile("Ó£»¨2", ".jpg", false,
+					false, "/UI Test"));
+	TreeItem<String> rootNode = new TreeItem<String>("MyFiles", rootIcon);
+
 	@FXML
 	private StackPane treeViewPane;
 
@@ -221,69 +201,59 @@ public class WorkBenchController {
 		});
 
 		// Time
-		startHourTf.focusedProperty().addListener(new ChangeListener<Boolean>()
-				{
-				    @Override
-				    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-				    {
-				        if (newPropertyValue)
-				        {
-				            System.out.println("Textfield on focus");
-				        }
-				        else
-				        {
-				        	startHour = startHourTf.getText();
-				        	System.out.println("startHour is " + startHour);
-				        }
-				    }
+		startHourTf.focusedProperty().addListener(
+				new ChangeListener<Boolean>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Boolean> arg0,
+							Boolean oldPropertyValue, Boolean newPropertyValue) {
+						if (newPropertyValue) {
+							System.out.println("Textfield on focus");
+						} else {
+							startHour = startHourTf.getText();
+							System.out.println("startHour is " + startHour);
+						}
+					}
 				});
-		startMinuteTf.focusedProperty().addListener(new ChangeListener<Boolean>()
-				{
-				    @Override
-				    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-				    {
-				        if (newPropertyValue)
-				        {
-				            System.out.println("Textfield on focus");
-				        }
-				        else
-				        {
-				        	startMinute = startMinuteTf.getText();
-				        	System.out.println("startMinute is " + startMinute);
-				        }
-				    }
+		startMinuteTf.focusedProperty().addListener(
+				new ChangeListener<Boolean>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Boolean> arg0,
+							Boolean oldPropertyValue, Boolean newPropertyValue) {
+						if (newPropertyValue) {
+							System.out.println("Textfield on focus");
+						} else {
+							startMinute = startMinuteTf.getText();
+							System.out.println("startMinute is " + startMinute);
+						}
+					}
 				});
-		endHourTf.focusedProperty().addListener(new ChangeListener<Boolean>()
-				{
-				    @Override
-				    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-				    {
-				        if (newPropertyValue)
-				        {
-				            System.out.println("Textfield on focus");
-				        }
-				        else
-				        {
-				        	endHour = endHourTf.getText();
-				        	System.out.println("endHour is " + endHour);
-				        }
-				    }
-				});
-		endMinuteTf.focusedProperty().addListener(new ChangeListener<Boolean>()
-				{
-				    @Override
-				    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-				    {
-				        if (newPropertyValue)
-				        {
-				            System.out.println("Textfield on focus");
-				        }
-				        else
-				        {
-				        	endMinute = endMinuteTf.getText();
-				        	System.out.println("endMinute " + endMinute);
-				        }
-				    }
+		endHourTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean oldPropertyValue, Boolean newPropertyValue) {
+				if (newPropertyValue) {
+					System.out.println("Textfield on focus");
+				} else {
+					endHour = endHourTf.getText();
+					System.out.println("endHour is " + endHour);
+				}
+			}
+		});
+		endMinuteTf.focusedProperty().addListener(
+				new ChangeListener<Boolean>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Boolean> arg0,
+							Boolean oldPropertyValue, Boolean newPropertyValue) {
+						if (newPropertyValue) {
+							System.out.println("Textfield on focus");
+						} else {
+							endMinute = endMinuteTf.getText();
+							System.out.println("endMinute " + endMinute);
+						}
+					}
 				});
 
 		// file chooser
@@ -299,10 +269,10 @@ public class WorkBenchController {
 
 				// Show open file dialog
 				file = fileChooser.showOpenDialog(null);
-				
+
 				labelFilePath.setText(file.getPath());
 				System.out.println(labelFilePath);
-				
+
 			}
 		});
 
@@ -324,26 +294,91 @@ public class WorkBenchController {
 				Platform.exit();
 			}
 		});
-		
+
 		// TreeView
-		TreeItem<String> rootItem = new TreeItem<String> ("Inbox", rootIcon);
-		rootItem.setExpanded(true);
-		numTreeViewRootFolder = 6;
-		for (int i = 1; i < numTreeViewRootFolder; i++) {
-            TreeItem<String> item = new TreeItem<String> ("Message" + i);            
-            rootItem.getChildren().add(item);
-        }		
-		TreeView<String> tree = new TreeView<String> (rootItem);
-        treeViewPane.getChildren().add(tree);
-        tree.setMaxWidth(Double.MAX_VALUE);
-        tree.setMaxHeight(Double.MAX_VALUE);
+		rootNode.setExpanded(true);
+
+		for (MyFile file : myFiles) {
+			TreeItem<String> empLeaf = new TreeItem<String>(file.getName(),new ImageView(fileIcon));
+			boolean foundPath = false;
+			boolean foundDep = false;
+			for (TreeItem<String> pathNode : rootNode.getChildren()) {
+				for (TreeItem<String> depNode : pathNode.getChildren()) {
+					// Check if path match
+					if (pathNode.getValue().contentEquals(file.getPath())) {
+						// Check if format match
+						if (depNode.getValue().contentEquals(file.getFormat())) {
+							depNode.getChildren().add(empLeaf);
+							foundDep = true;
+							break;
+						}
+						if (!foundDep) {
+							TreeItem<String> newDepNode = new TreeItem<String>(
+									file.getFormat());
+							pathNode.getChildren().add(newDepNode);
+							newDepNode.getChildren().add(empLeaf);
+						}
+						foundPath = true;
+						break;
+					}
+					if (!foundPath) {
+						TreeItem<String> newPathNode = new TreeItem<String>(
+								file.getPath());
+						TreeItem<String> newDepNode = new TreeItem<String>(
+								file.getFormat());
+						rootNode.getChildren().add(newPathNode);
+						newPathNode.setExpanded(true);
+						newPathNode.getChildren().add(newDepNode);
+						newDepNode.getChildren().add(empLeaf);
+					}
+				}
+			}
+			if (!foundPath && !foundDep){
+				System.out.println("first time");
+				TreeItem<String> newPathNode = new TreeItem<String>(
+						file.getPath());
+				TreeItem<String> newDepNode = new TreeItem<String>(
+						file.getFormat());
+				rootNode.getChildren().add(newPathNode);
+				newPathNode.setExpanded(true);
+				newPathNode.getChildren().add(newDepNode);
+				newDepNode.getChildren().add(empLeaf);
+			}
+		}
+
+		TreeView<String> tree = new TreeView<String>(rootNode);
+
+		tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 2) {
+					TreeItem<String> item = tree.getSelectionModel()
+							.getSelectedItem();
+					System.out.println("Selected Text : " + item.getValue());
+
+					// Check if it is a file, and open
+					if (item.isLeaf()) {
+						String filePath = item.getParent().getParent().getValue() +"/" + item.getValue()
+								+ item.getParent().getValue();
+						System.out.println("Selected File : " + filePath);
+						String location = Paths.get(".").toAbsolutePath().normalize().toString();
+						File currentFile = new File(location + filePath);
+						try {
+							Desktop.getDesktop().open(currentFile);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+		treeViewPane.getChildren().add(tree);
 	}
 
 	/*
 	 * Methods of workbench
 	 */
-	
-
 
 	// private void handleStartDateClick
 
@@ -353,9 +388,8 @@ public class WorkBenchController {
 		// obtain current case path
 		casePath = (mainApp.getCasePath());
 	}
-	
-	private void handleOpenDirectory(ActionEvent event)
-	{
+
+	private void handleOpenDirectory(ActionEvent event) {
 		DirectoryChooser dirChooser = new DirectoryChooser();
 
 		// Show open file dialog
@@ -363,21 +397,16 @@ public class WorkBenchController {
 
 		labelDirPath.setText(file.getPath());
 		System.out.println(labelDirPath);
-		
-		try
-		{
+
+		try {
 			loadDirectory(file);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private void loadDirectory(File directory) throws Exception
-	{
-		if (!directory.isDirectory())
-		{
+
+	private void loadDirectory(File directory) throws Exception {
+		if (!directory.isDirectory()) {
 			throw new Exception("The provided path is not a directory.");
 		}
 
@@ -389,36 +418,36 @@ public class WorkBenchController {
 		 * PREPARE FOR DATA CARVING
 		 */
 		FormatIdentifierManager formatIdentifierManager = new FormatIdentifierManager();
-		
+
 		// Simulate plug ins
 		formatIdentifierManager.load(new AndroidBootFormatIdentifier());
 		formatIdentifierManager.load(new YAFFS2FormatIdentifier());
 		formatIdentifierManager.load(new FAT32FormatIdentifier());
-		
+
 		ArrayList<FormatDescription> formatDescriptions = new ArrayList<FormatDescription>();
 
 		Arrays.sort(files);
 
-		if (files.length > 0)
-		{
+		if (files.length > 0) {
 			System.out.println("-----------------");
 			System.out.println("File System Layer");
 			System.out.println("-----------------");
-			System.out.printf("%-25s\t%-20s\t%15s%n", "Name", "Binary Image Type", "Size");
-			
-			for (File file : files)
-			{
-				FormatDescription formatDescription = formatIdentifierManager.identify(file);
+			System.out.printf("%-25s\t%-20s\t%15s%n", "Name",
+					"Binary Image Type", "Size");
+
+			for (File file : files) {
+				FormatDescription formatDescription = formatIdentifierManager
+						.identify(file);
 				String binaryImageType = "-";
-				
-				if(formatDescription != null)
-				{
+
+				if (formatDescription != null) {
 					formatDescriptions.add(formatDescription);
 					binaryImageType = formatDescription.getBinaryImageType();
 				}
-				
-				System.out.printf("%-25s\t%-20s\t%12s KB%n", file.getName(), binaryImageType, file.length());
-			}			
+
+				System.out.printf("%-25s\t%-20s\t%12s KB%n", file.getName(),
+						binaryImageType, file.length());
+			}
 		}
 
 		System.out.println();
@@ -429,55 +458,108 @@ public class WorkBenchController {
 		 */
 
 		DiskImageUnpackerManager diskImageUnpackerManager = new DiskImageUnpackerManager();
-		
+
 		// Simulate plug ins
 		diskImageUnpackerManager.load(new AndroidBootImageUnpacker());
 		diskImageUnpackerManager.load(new YAFFS2ImageUnpacker());
 		diskImageUnpackerManager.load(new FAT32ImageUnpacker());
-		
-		if (formatDescriptions.size() > 0)
-		{
+
+		if (formatDescriptions.size() > 0) {
 			System.out.println("------------------");
 			System.out.println("Data Carving Layer");
 			System.out.println("------------------");
 			System.out.println();
-			
+
 			// Always unpack OS images first
 
-			for (FormatDescription formatDescription : formatDescriptions)
-			{
-				if(formatDescription.getOperatingSystem() == null)
-				{
+			for (FormatDescription formatDescription : formatDescriptions) {
+				if (formatDescription.getOperatingSystem() == null) {
 					continue;
 				}
-				
-				if(diskImageUnpackerManager.unpack(formatDescription) == null)
-				{
+
+				if (diskImageUnpackerManager.unpack(formatDescription) == null) {
 					break;
 				}
 			}
 
 			ArrayList<eagleeye.entities.File> fileList = null;
-			
-			for (FormatDescription formatDescription : formatDescriptions)
-			{
-				if(formatDescription.getOperatingSystem() != null)
-				{
+
+			for (FormatDescription formatDescription : formatDescriptions) {
+				if (formatDescription.getOperatingSystem() != null) {
 					continue;
 				}
-				
+
 				fileList = diskImageUnpackerManager.unpack(formatDescription);
 			}
-			
-			if(fileList != null)
-			{
-				for(eagleeye.entities.File file : fileList)
-				{
+
+			if (fileList != null) {
+				for (eagleeye.entities.File file : fileList) {
 					// Do stuff with fileList
 				}
 			}
-			
+
 			System.out.println();
 		}
 	}
+
+	// Classes
+	// TreeView File
+	public static class MyFile {
+
+		private String name;
+		private String format;
+		private boolean isDeleted;
+		private boolean isModified;
+		private String path;
+
+		private MyFile(String name, String format, boolean isDeleted,
+				boolean isModified, String path) {
+			this.name = name;
+			this.format = format;
+			this.isDeleted = isDeleted;
+			this.isModified = isModified;
+			this.path = path;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String fName) {
+			name = fName;
+		}
+
+		public String getFormat() {
+			return format;
+		}
+
+		public void setFormat(String fName) {
+			format = fName;
+		}
+
+		public boolean getIsDeleted() {
+			return isDeleted;
+		}
+
+		public void setIsDeleted(boolean tf) {
+			isDeleted = tf;
+		}
+
+		public boolean getIsModified() {
+			return isModified;
+		}
+
+		public void setIsModified(boolean tf) {
+			isModified = tf;
+		}
+
+		public String getPath() {
+			return path;
+		}
+
+		public void setPath(String fName) {
+			path = fName;
+		}
+	}
+
 }
