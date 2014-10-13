@@ -50,6 +50,8 @@ import eagleeye.datacarving.unpack.AndroidBootImageUnpacker;
 import eagleeye.datacarving.unpack.DiskImageUnpackerManager;
 import eagleeye.datacarving.unpack.FAT32ImageUnpacker;
 import eagleeye.datacarving.unpack.YAFFS2ImageUnpacker;
+import eagleeye.dbcontroller.DBInsertTransaction;
+import eagleeye.entities.Device;
 import eagleeye.entities.Directory;
 import eagleeye.filesystem.format.AndroidBootFormatIdentifier;
 import eagleeye.filesystem.format.FAT32FormatIdentifier;
@@ -492,14 +494,9 @@ public class WorkBenchController {
 
 				fileList = diskImageUnpackerManager.unpack(formatDescription);
 			}
-
-			if (fileList != null) {
-				for (eagleeye.entities.File file : fileList) {
-					// Do stuff with fileList
-				}
-			}
-
-			System.out.println();
+			
+			DBInsertTransaction transaction = new DBInsertTransaction();
+			transaction.insertNewDeviceData(new Device("Test Device", "100GB", "Dennis"), fileList);
 		}
 	}
 
