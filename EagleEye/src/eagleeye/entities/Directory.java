@@ -2,10 +2,14 @@ package eagleeye.entities;
 
 public class Directory {
 
-	protected String directoryName;
-	protected String previousDirectory;
-	protected int deviceID;
-	protected int directoryID;
+	protected String directoryName;		//Name of the directory
+	protected String previousDirectory; //parent Object Name (Use for Easy UI display)
+	protected int deviceID;			
+	protected int directoryID; 			//database assign ID (when query)
+	protected int originDirectory; 		//ObjectID (whenInput)
+	protected String dateCreated;
+	protected String dateAccessed;
+	protected String dateModified;
 	
 	public Directory(String directoryName, String previousDirectory){
 		
@@ -22,6 +26,11 @@ public class Directory {
 
 		return directoryID;
 	}
+	
+	public int originDirectory(){
+		
+		return originDirectory;
+	}
 
 	public String getDirectoryName(){
 
@@ -31,6 +40,21 @@ public class Directory {
 	public String getPreviousDirectory(){
 		
 		return previousDirectory;
+	}
+	
+	public String getDateCreated(){
+		 
+		return dateCreated;
+	}
+	
+	public String getDateAccessed(){
+	 
+		return dateAccessed;
+	}
+	
+	public String getDateModified(){
+		
+		return dateModified;
 	}
 
 	public void modifyDeviceID(int deviceID){
@@ -43,6 +67,11 @@ public class Directory {
 		this.directoryID = directoryID;
 	}
 	
+	public void modifyOriginDirectory(int originDirectory){
+		
+		this.originDirectory = originDirectory;
+	}
+	
 	public void modifyDirectoryName(String directoryName){
 		
 		this.directoryName = directoryName;
@@ -51,6 +80,21 @@ public class Directory {
 	public void modifyPreviousDirectory(String previousDirectory){
 		
 		this.previousDirectory= previousDirectory;
+	}
+	
+	public void modifyDateCreated(String dateCreated){
+		 
+		this.dateCreated = dateCreated;
+	}
+	
+	public void modifyDateAccessed(String dateAccessed){
+	 
+		this.dateAccessed = dateAccessed;
+	}
+	
+	public void modifyDateModified(String dateModified){
+		
+		this.dateModified = dateModified;		
 	}
 
  

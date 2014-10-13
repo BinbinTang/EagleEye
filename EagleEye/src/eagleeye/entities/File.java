@@ -1,13 +1,14 @@
 package eagleeye.entities;
 
-public class File {
+public class File implements Comparable<File> {
 	
 	protected int deviceID;
-	protected int directoryID;
+	protected int directoryID; //original parentID (when inserting)
 	protected int fileID;
+	protected boolean isDirectory;
 	protected String fileName;
 	protected String filePath;
-	protected String fileExt;
+	protected String fileExt; // example gif, jpg without the .
 	protected boolean isRecovered; 
 	protected String dateDeleted;
 	protected boolean isModified;
@@ -16,10 +17,20 @@ public class File {
 	protected String dateAccessed;
 	protected String dateModified;
 	
+	
 	public File() {
 		
 		isRecovered = false;
 		isModified = false;
+		isDirectory = false;
+		fileName = "";
+		filePath = "";
+		fileExt = "";
+		modifiedExt = "";
+		dateDeleted = "";
+		dateCreated = "";
+		dateAccessed = "";
+		dateModified = "";
 	}
 	 
 	public int getDeviceID(){
@@ -35,6 +46,11 @@ public class File {
 	public int getFileID(){
 	 
 		return fileID;
+	}
+		
+	public boolean getIsDirectory(){
+		
+		return isDirectory;
 	}
 	
 	public String getFileName(){
@@ -52,7 +68,7 @@ public class File {
 		return fileExt;
 	}
 		
-	public boolean isRecovered(){
+	public boolean getIsRecovered(){
 	 
 		return isRecovered;
 	}
@@ -62,7 +78,7 @@ public class File {
 		return dateDeleted;
 	}
 		
-	public boolean isModified(){
+	public boolean getIsModified(){
 	 
 		return isModified;
 	}
@@ -100,6 +116,11 @@ public class File {
 	public void modifyFileID(int fileID){
 		  
 		this.fileID = fileID;
+	}
+	
+	public void modifyIsDirectory(boolean isDirectory){
+		
+		this.isDirectory = isDirectory;
 	}
  
 	public void modifyFileName(String fileName){
@@ -151,5 +172,15 @@ public class File {
 		
 		this.dateModified = dateModified;		
 	}
+
+	@Override
+	public int compareTo(File anotherFile) {
+		
+		int anotherFileDirectory = anotherFile.getDirectoryID();
+		return this.getDirectoryID() - anotherFileDirectory;
+	}
+
+
+
  
 }
