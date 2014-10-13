@@ -335,6 +335,11 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				genericFile.modifyDirectoryID(header.getParentObjectId());
 				genericFile.modifyFileID(yaffs2Object.getId());
 				
+				if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
+				{
+					genericFile.modifyIsDirectory(true);
+				}
+				
 				if(header.getName().indexOf('.') > -1)
 				{
 					genericFile.modifyFileExt(header.getName().substring(header.getName().indexOf('.')));
