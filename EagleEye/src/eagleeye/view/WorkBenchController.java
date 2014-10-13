@@ -40,6 +40,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -347,7 +348,6 @@ public class WorkBenchController {
 		}
 
 		TreeView<String> tree = new TreeView<String>(rootNode);
-
 		tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {
@@ -374,6 +374,7 @@ public class WorkBenchController {
 			}
 		});
 		treeViewPane.getChildren().add(tree);
+		tree.setPrefWidth(400);
 	}
 
 	/*

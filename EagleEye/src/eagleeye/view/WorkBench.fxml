@@ -181,7 +181,7 @@
 																			<children>
 																				<ScrollPane layoutY="33.0" prefHeight="361.0" prefWidth="198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <content>
-                                                                  <StackPane fx:id="treeViewPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                                                  <StackPane fx:id="treeViewPane" />
                                                                </content></ScrollPane>
 																			</children>
 																		</AnchorPane>
