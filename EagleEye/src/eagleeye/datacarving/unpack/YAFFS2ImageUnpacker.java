@@ -241,7 +241,8 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 						{
 							yaffs2ParentObjects.put(objectId, header);
 						}
-						else if(!yaffs2Objects.contains(yaffs2Object))
+						
+						if(!yaffs2Objects.contains(yaffs2Object))
 						{
 							yaffs2Objects.add(yaffs2Object);
 						}
@@ -257,6 +258,8 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			}
 		}
 
+		ArrayList<eagleeye.entities.File> files = new ArrayList<eagleeye.entities.File>();
+		
 		String rootFilePath = "." + File.separator + "output" + File.separator + file.getName();
 		HashMap<Integer, String> parentPaths = new HashMap<Integer, String>();
 		
@@ -287,6 +290,9 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			}
 			
 			parentPaths.put(entry.getKey(), filePath);
+			
+			YAFFS2Object yaffs2Object = new YAFFS2Object();
+			yaffs2Object.addHeader(entry.getValue());
 		}
 		
 		for (String path : parentPaths.values())
@@ -294,16 +300,16 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			File directory = new File(path);
 			directory.mkdirs();
 		}
-
-		ArrayList<eagleeye.entities.File> files = new ArrayList<eagleeye.entities.File>();
+		
 		
 		for (YAFFS2Object yaffs2Object : yaffs2Objects)
 		{
 			TreeMap<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> versions = yaffs2Object.getVersions();
 
-			for (Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry : versions.entrySet())
-			{
-				int version = entry.getKey();
+			//for (Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry : versions.entrySet())
+			//{
+				//int version = entry.getKey();
+				Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry = yaffs2Object.getVersions().lastEntry();
 				YAFFS2ObjectHeader header = entry.getValue().getKey();
 				TreeMap<Integer, byte[]> dataChunks = entry.getValue().getValue();
 				
@@ -325,8 +331,12 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					filePath = parentPaths.get(parentId);
 				}
 				
-				//this.writeFile(filePath, yaffs2Object.getId() + "_" + version + "_" + header.getName(), dataChunks);
-				DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+				if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_FILE)
+				{
+					this.writeFile(filePath, header.getName(), dataChunks);
+				}
+				
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 
 				eagleeye.entities.File genericFile = new eagleeye.entities.File();
 				genericFile.modifyDateAccessed(dateFormat.format(new Date(header.getAccessedTime() * 1000L)));
@@ -335,15 +345,10 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				genericFile.modifyDirectoryID(header.getParentObjectId());
 				genericFile.modifyFileID(yaffs2Object.getId());
 				
-				if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
-				{
-					genericFile.modifyIsDirectory(true);
-				}
-				
 				if(header.getName().indexOf('.') > -1)
 				{
-					genericFile.modifyFileExt(header.getName().substring(header.getName().indexOf('.')));
-					genericFile.modifyFileName(header.getName().substring(0, header.getName().indexOf('.')));
+					genericFile.modifyFileExt(header.getName().substring(header.getName().lastIndexOf('.')));
+					genericFile.modifyFileName(header.getName().substring(0, header.getName().lastIndexOf('.')));
 				}
 				else
 				{
@@ -351,8 +356,14 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				}
 				
 				genericFile.modifyFilePath(filePath);
+				
+				if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
+				{
+					genericFile.modifyIsDirectory(true);
+				}
+		
 				files.add(genericFile);
-			}
+			//}
 		}
 		
 		return files;
@@ -490,8 +501,9 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	{
 		File file = new File(directoryPath);
 		file.mkdirs();
-		file = new File(directoryPath + File.separator + fileName);
 		
+		file = new File(directoryPath + File.separator + fileName);
+
 		FileOutputStream fileStream = new FileOutputStream(file);
 		
 		System.out.printf("Writing to %s%n", file.getCanonicalPath());
