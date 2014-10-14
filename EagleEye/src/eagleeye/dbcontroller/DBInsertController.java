@@ -1,6 +1,7 @@
 package eagleeye.dbcontroller;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import eagleeye.entities.Device;
 import eagleeye.entities.File;
@@ -39,69 +40,59 @@ public class DBInsertController {
 		stmt.execute(query);
 	}
 	
-	public void insertNewDirectory(File newDirectory, Statement stmt) throws Exception{
-		
-		String query = queryMaker.insertNewDirectory(newDirectory, this.deviceID);
-		stmt.execute(query);
-		
-	}
-	
-	public void insertNewFile(File newFile, int directoryID, int fileExtID, Statement stmt) throws Exception {
-		
-		String query = queryMaker.insertNewFile(newFile, deviceID, fileExtID, directoryID);
-		stmt.execute(query);
-		
-	}
-	
-	public int insertNewFileExt(String fileExtName, int extTypeID, Statement stmt) throws Exception {
-		
-		int fileExtID = -1;
-		String query = queryMaker.insertNewExt(fileExtName, extTypeID);
-		String getKey = queryMaker.getKey();
-		stmt.execute(query);
-		
-		ResultSet resultKey = stmt.executeQuery(getKey);
-		while(resultKey.next()){
-				
-			fileExtID = resultKey.getInt(1);					
-		}
-		
-		return fileExtID;
-		
-	}
-	
-	public int getFileExtID(String fileExt, Statement stmt) throws Exception {
-		
-		String query = queryMaker.getFileExtID(fileExt);
-		ResultSet resultKey = stmt.executeQuery(query);
-		int fileExtID = -1;
-		
-		if(resultKey == null) {
+	public void insertNewDirectory(ArrayList<File> listOfDirectory, Statement stmt) throws Exception{
 			
-			return NO_SUCH_EXT_FOUND;
-			
-		} else {
-			
-			while(resultKey.next()){
-				
-				fileExtID = resultKey.getInt(1);
-			}
+		for(File newDirectory : listOfDirectory){
+			stmt.addBatch(queryMaker.insertNewDirectory(newDirectory, deviceID));
 		}		
-		return fileExtID;
+		stmt.executeBatch();
+		stmt.clearBatch();
 	}
 	
-	public int getDirectoryID(int fileParentID, Statement stmt) throws Exception {
+	public void insertNewFile(ArrayList<File> listOfFiles, Statement stmt) throws Exception {
 		
-		String query = queryMaker.getDirectoryID(fileParentID, deviceID);
-		ResultSet resultKey = stmt.executeQuery(query);
-		int directoryID = -1;
+		for(File newFile : listOfFiles) {
+			stmt.addBatch(queryMaker.insertNewFile(newFile, deviceID));
+		}
+		stmt.executeBatch();
+		stmt.clearBatch();
+	}
+	
+	public void insertNewFileExt(ArrayList<File> listOfFiles, Statement stmt) throws Exception {
 		
-		while(resultKey.next()){
+		ArrayList<String> extList = getAllFileExt(listOfFiles);
+				
+		for(String ext: extList){
+			stmt.addBatch(queryMaker.insertNewExt(ext, 6));
+		}
+		stmt.executeBatch();
+		stmt.clearBatch();
+	}
+	
+	public ArrayList<String> getAllFileExt(ArrayList<File> listOfFiles) {
+		
+		ArrayList<String> extList = new ArrayList<String> ();
+		boolean isExtAdded = false;
+		
+		for(File newFile : listOfFiles){
 			
-			directoryID = resultKey.getInt(1);					
+			isExtAdded = false;
+			String fileExt = newFile.getFileExt();
+			
+			for(String ext : extList){
+				if(ext.equals(fileExt)){
+					isExtAdded = true;
+					break;
+				}
+			}
+			
+			if(!isExtAdded)
+				extList.add(fileExt);
 		}
 		
-		return directoryID;
+		return extList;
 	}
+	
+
 	
 }
