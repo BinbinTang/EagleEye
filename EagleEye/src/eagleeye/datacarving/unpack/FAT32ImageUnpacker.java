@@ -25,6 +25,7 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 
 	protected int pageSize;
 	
+
 	protected boolean cancel = false;
 	
 	public FAT32ImageUnpacker(){
