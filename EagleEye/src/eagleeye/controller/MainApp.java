@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -21,7 +22,6 @@ public class MainApp extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
-
     
     @Override
     public void start(Stage primaryStage) {
@@ -32,9 +32,12 @@ public class MainApp extends Application {
             // Load the root layout from the fxml file
             FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("../view/WorkBenchRootLayout.fxml"));
             rootLayout = (BorderPane) loader.load();
-            Scene scene = new Scene(rootLayout);
+            final double rem = Math.rint(new Text("").getLayoutBounds().getHeight());
+            Scene scene = new Scene(rootLayout, 50 * rem, 40 * rem);
+            //Scene scene = new Scene(rootLayout);
 
-
+            primaryStage.setMinHeight(600);
+            primaryStage.setMinWidth(800);
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {

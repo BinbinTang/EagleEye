@@ -35,4 +35,12 @@ public class DiskImageUnpackerManager
 		
 		return unpackedFiles;
 	}
+	
+	public void cancelAll()
+	{
+		for (IDiskImageUnpacker unpacker : diskImageUnpackers)
+		{
+			unpacker.cancel();
+		}
+	}
 }

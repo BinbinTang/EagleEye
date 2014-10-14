@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import eagleeye.filesystem.format.FormatDescription;
-import eagleeye.filesystem.yaffs2.YAFFS2ObjectHeader;
 import eagleeye.filesystem.fat32.FAT32ObjectBootSector;
 
 public class FAT32ImageUnpacker implements IDiskImageUnpacker{
@@ -23,7 +22,14 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	protected int chunkSize; // temporary page size used to find boot sector
 	protected int bootSectorSize;
 	
+
 	protected int pageSize;
+	
+	protected boolean cancel = false;
+	
+	public FAT32ImageUnpacker(){
+		this.setPageSize(512);
+	}
 	
 	public void setPageSize(int pageSize){
 		this.pageSize = pageSize;
@@ -66,11 +72,22 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		bootSector.setBPB_TotalSector16(BPB_TotalSector16);
 		
 		BPB_Media[0] = chunk[1];
+		bootSector.setBPB_Media(BPB_Media);
+		
 		BPB_FATSize16[0] = chunk[2];
+		bootSector.setBPB_FATSize16(BPB_FATSize16);
+		
 		BPB_SectorPerTrack[0] = chunk[2];
+		bootSector.setBPB_SectorPerTrack(BPB_SectorPerTrack);
+		
 		BPB_NumHeads[0] = chunk[2];
+		bootSector.setBPB_NumHeads(BPB_NumHeads);
+		
 		BPB_HiddenSector[0] = chunk[4];
+		bootSector.setBPB_HiddenSector(BPB_HiddenSector);
+		
 		BPB_TotalSector32[0] = chunk[4];
+		bootSector.setBPB_TotalSector32(BPB_TotalSector32);
 		
 		return bootSector;
 	}
@@ -92,6 +109,12 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		
 		
 		return null;
+	}
+
+	@Override
+	public void cancel()
+	{
+		this.cancel = true;
 	}
 
 }
