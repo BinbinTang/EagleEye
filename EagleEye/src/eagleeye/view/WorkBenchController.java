@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
@@ -80,6 +81,12 @@ public class WorkBenchController {
 	// UI elements
 	@FXML
 	private GridPane topGridPane;
+	
+	//SearchButton
+	private final Image searchIcon = new Image(getClass().getResourceAsStream("Icons/seach button small.png"),16,16,false,false);
+	@FXML
+	private Button searchButton;
+	
 	// DatePicker
 	private LocalDate startDate = LocalDate.parse("1992-05-08");
 	private LocalDate endDate = LocalDate.now();
@@ -88,6 +95,7 @@ public class WorkBenchController {
 	private DatePicker startDatePicker;
 	@FXML
 	private DatePicker endDatePicker;
+	
 	// Time
 	private String startHour = "00";
 	private String startMinute = "00";
@@ -284,6 +292,9 @@ public class WorkBenchController {
 				Platform.exit();
 			}
 		});
+		
+		// Search 
+		searchButton.setGraphic(new ImageView(searchIcon));
 
 		RequestHandler rh= new UIRequestHandler();
 		

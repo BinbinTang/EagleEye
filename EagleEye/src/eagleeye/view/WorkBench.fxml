@@ -150,7 +150,7 @@
 										<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
 									</rowConstraints>
 									<children>
-										<Button minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="25.0" text="S" GridPane.columnIndex="2" GridPane.halignment="LEFT" />
+										<Button fx:id="searchButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" GridPane.columnIndex="2" GridPane.halignment="LEFT" />
 										<TextField minWidth="-Infinity" prefHeight="24.0" prefWidth="196.0" GridPane.columnIndex="1" />
 										<Label maxWidth="-Infinity" minWidth="-Infinity" prefWidth="70.0" text="Keywords:" GridPane.halignment="RIGHT">
 											<tooltip>
