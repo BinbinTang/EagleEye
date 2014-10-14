@@ -17,6 +17,7 @@ public class File implements Comparable<File> {
 	protected String dateCreated;
 	protected String dateAccessed;
 	protected String dateModified;
+	protected String category;
 	
 	
 	public File() {
@@ -32,6 +33,7 @@ public class File implements Comparable<File> {
 		dateCreated = "";
 		dateAccessed = "";
 		dateModified = "";
+		category = "";
 	}
 	/*new*/
 	public File(int _deviceID,
@@ -47,7 +49,8 @@ public class File implements Comparable<File> {
 				String _dateDeleted,
 				String _dateCreated,
 				String _dateAccessed,
-				String _dateModified) {
+				String _dateModified,
+				String _category) {
 		
 		modifyDeviceID(_deviceID);
 		modifyDirectoryID(_directoryID);
@@ -63,6 +66,7 @@ public class File implements Comparable<File> {
 		modifyDateCreated (_dateCreated);
 		modifyDateAccessed (_dateAccessed);
 		modifyDateModified (_dateModified);
+		modifyCategory(_category);
 	}
 	 
 	public int getDeviceID(){
@@ -139,6 +143,10 @@ public class File implements Comparable<File> {
 		
 		return dateModified;
 	}
+	
+	public String getCategory(){
+		 return category;
+	}
  
 	public void modifyDeviceID(int deviceID){
 	  
@@ -213,6 +221,11 @@ public class File implements Comparable<File> {
 	public void modifyDateModified(String dateModified){
 		
 		this.dateModified = dateModified;		
+	}
+	
+	public void modifyCategory(String category){
+		
+		this.category = category;
 	}
 
 	@Override
