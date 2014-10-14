@@ -191,10 +191,10 @@
 																	<content>
 																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 																			<children>
-																				<ScrollPane layoutX="-3.0" layoutY="-39.0" prefHeight="361.0" prefWidth="194.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-																					<content>
-																						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-																					</content>
+																				<ScrollPane fitToHeight="true" fitToWidth="true" layoutX="-3.0" layoutY="-39.0" prefHeight="361.0" prefWidth="194.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <content>
+                                                                  <StackPane fx:id="categoryViewPane" />
+                                                               </content>
 																				</ScrollPane>
 																			</children>
 																		</AnchorPane>

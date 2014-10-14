@@ -384,6 +384,10 @@ public class WorkBenchController {
 		});
 		treeViewPane.getChildren().add(tree);
 		tree.setPrefWidth(400);
+		
+		// Category View
+		
+		
 	}
 
 	/*
@@ -483,6 +487,7 @@ public class WorkBenchController {
 		private boolean isDeleted;
 		private boolean isModified;
 		private String path;
+		private String category;
 
 		private MyFile(String name, String format, boolean isDeleted,
 				boolean isModified, String path) {
@@ -531,6 +536,11 @@ public class WorkBenchController {
 
 		public void setPath(String fName) {
 			path = fName;
+		}
+		
+		public String getCategory() {
+			String result = "";
+			return result;
 		}
 	}
 
