@@ -167,7 +167,7 @@
 					<children>
 						<SplitPane dividerPositions="0.25" minHeight="300.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<items>
-								<AnchorPane maxWidth="-Infinity" minHeight="250.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="200.0">
+								<AnchorPane minHeight="250.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="200.0">
 									<children>
 										<SplitPane dividerPositions="0.8" layoutX="19.0" layoutY="139.0" orientation="VERTICAL" prefHeight="498.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 											<items>
@@ -179,7 +179,7 @@
 																	<content>
 																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 																			<children>
-																				<ScrollPane layoutY="33.0" prefHeight="361.0" prefWidth="198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+																				<ScrollPane fitToHeight="true" fitToWidth="true" layoutY="33.0" prefHeight="361.0" prefWidth="198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <content>
                                                                   <StackPane fx:id="treeViewPane" />
                                                                </content></ScrollPane>
@@ -248,7 +248,7 @@
 										</SplitPane>
 									</children>
 								</AnchorPane>
-								<AnchorPane minHeight="300.0" minWidth="200.0" prefHeight="500.0" prefWidth="600.0">
+								<AnchorPane minHeight="300.0" minWidth="100.0" prefHeight="500.0" prefWidth="600.0">
 									<children>
 										<ScrollPane layoutX="120.0" layoutY="57.0" prefHeight="493.0" prefWidth="594.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 											<content>
