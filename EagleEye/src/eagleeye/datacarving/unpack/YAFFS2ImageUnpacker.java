@@ -37,6 +37,8 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	protected int chunkSize;
 	protected int oobSize;
 	
+	protected boolean cancel = false;
+	
 	protected TreeMap<Integer, TreeMap<Integer, byte[]>> dataChunks = new TreeMap<>();
 	
 	public YAFFS2ImageUnpacker()
@@ -75,7 +77,12 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		int totalBytesRead = 0;
 		
 		while (totalFileBytes > totalBytesRead + totalChunkSize)
-		{			
+		{
+			if(cancel)
+			{
+				cancel = false;
+				return null;
+			}
 			this.inputBytes = new byte[this.chunkSize + this.oobSize];
 			this.inputStream.readFully(this.inputBytes);
 			this.byteBuffer = ByteBuffer.wrap(this.inputBytes);
@@ -96,6 +103,12 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		
 		for (byte[] chunk : chunks)
 		{
+			if(cancel)
+			{
+				cancel = false;
+				return null;
+			}
+			
 			chunkCount ++;
 			
 			this.byteBuffer = ByteBuffer.wrap(chunk);
@@ -152,6 +165,12 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		// For each object id found starting from the smallest id (naturally sorted)
 		for (Entry<Integer, TreeMap<Integer, ArrayList<byte[]>>> object : objects.entrySet())
 		{
+			if(cancel)
+			{
+				cancel = false;
+				return null;
+			}
+			
 			int objectId = object.getKey();
 			
 			System.out.printf("- Carving object %s%n", objectId);
@@ -265,6 +284,12 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		
 		for (Entry<Integer, YAFFS2ObjectHeader> entry : yaffs2ParentObjects.entrySet())
 		{
+			if(cancel)
+			{
+				cancel = false;
+				return null;
+			}
+			
 			int parentId = entry.getKey();
 			ArrayList<String> filePathPieces = new ArrayList<String>();
 			String filePath = rootFilePath;
@@ -297,6 +322,12 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		
 		for (String path : parentPaths.values())
 		{
+			if(cancel)
+			{
+				cancel = false;
+				return null;
+			}
+			
 			File directory = new File(path);
 			directory.mkdirs();
 		}
@@ -304,7 +335,13 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		
 		for (YAFFS2Object yaffs2Object : yaffs2Objects)
 		{
-			TreeMap<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> versions = yaffs2Object.getVersions();
+			if(cancel)
+			{
+				cancel = false;
+				return null;
+			}
+			
+			//TreeMap<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> versions = yaffs2Object.getVersions();
 
 			//for (Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry : versions.entrySet())
 			//{
@@ -514,5 +551,11 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 		}
 		
 		fileStream.close();
+	}
+
+	@Override
+	public void cancel()
+	{
+		this.cancel = true;
 	}
 }

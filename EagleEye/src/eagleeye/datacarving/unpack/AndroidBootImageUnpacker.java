@@ -24,6 +24,8 @@ public class AndroidBootImageUnpacker implements IDiskImageUnpacker
 
 	protected ByteBuffer byteBuffer;
 	
+	protected boolean cancel = false;
+	
 	@Override
 	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatDescription) throws Exception
 	{
@@ -208,5 +210,11 @@ public class AndroidBootImageUnpacker implements IDiskImageUnpacker
 		this.inputStream.close();
 		
 		return null;
+	}
+
+	@Override
+	public void cancel()
+	{
+		this.cancel = true;
 	}
 }

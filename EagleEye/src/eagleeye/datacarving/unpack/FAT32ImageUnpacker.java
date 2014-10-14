@@ -21,7 +21,8 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	protected int pageSize;
 	protected int bootSectorSize;
 	
-
+	protected boolean cancel = false;
+	
 	public FAT32ImageUnpacker(){
 		this.setPageSize(512);
 	}
@@ -39,6 +40,12 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		}
 		
 		return null;
+	}
+
+	@Override
+	public void cancel()
+	{
+		this.cancel = true;
 	}
 
 }
