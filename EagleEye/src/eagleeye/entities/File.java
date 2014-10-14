@@ -5,13 +5,13 @@ public class File implements Comparable<File> {
 	protected int deviceID;
 	protected int directoryID; //original parentID (when inserting)
 	protected int fileID;
+	protected boolean isRecovered;
+	protected boolean isModified;
 	protected boolean isDirectory;
 	protected String fileName;
 	protected String filePath;
 	protected String fileExt; // example gif, jpg without the .
-	protected boolean isRecovered; 
 	protected String dateDeleted;
-	protected boolean isModified;
 	protected String modifiedExt;
 	protected String dateCreated;
 	protected String dateAccessed;
@@ -31,6 +31,37 @@ public class File implements Comparable<File> {
 		dateCreated = "";
 		dateAccessed = "";
 		dateModified = "";
+	}
+	/*new*/
+	public File(int _deviceID,
+	 			int _directoryID,
+	 			int _fileID,
+				boolean _isRecovered,
+				boolean _isModified,
+				boolean _isDirectory,
+				String _fileName,
+				String _filePath,
+				String _fileExt,
+				String _modifiedExt,
+				String _dateDeleted,
+				String _dateCreated,
+				String _dateAccessed,
+				String _dateModified) {
+		
+		modifyDeviceID(_deviceID);
+		modifyDirectoryID(_directoryID);
+		modifyFileID(_fileID);
+		modifyIsRecovered(_isRecovered);
+		modifyIsModified(_isModified);
+		modifyIsDirectory(_isDirectory); 
+		modifyFileName (_fileName);
+		modifyFilePath (_filePath);
+		modifyFileExt (_fileExt);
+		modifyModifiedExt (_modifiedExt);
+		modifyDateDeleted (_dateDeleted);
+		modifyDateCreated (_dateCreated);
+		modifyDateAccessed (_dateAccessed);
+		modifyDateModified (_dateModified);
 	}
 	 
 	public int getDeviceID(){
