@@ -10,8 +10,6 @@ import eagleeye.entities.*;
 
 public class DBInsertTransaction {
 
-	protected final int NO_SUCH_EXT_FOUND = -1;
-	protected final int OTHER_EXT_TYPE_ID = 6;
 	protected int deviceID;
 	protected DBInsertController controller;
 	protected ArrayList<File> listOfDirectory;
@@ -30,10 +28,15 @@ public class DBInsertTransaction {
 	
 		separateFilesAndDirectory(FilesList);
 		
+		System.out.println("FilesList size = " + FilesList.size());
+		System.out.println("DirectoryList size = "+ listOfDirectory.size());
+		System.out.println("newFileList size =" + listOfFiles.size());
+		
 		Connection conn = DBConnection.dbConnector();
 		Statement stmt = null;
-				
+						
 		try {
+			conn.setAutoCommit(false);
 			stmt = conn.createStatement();
 			deviceID = controller.insertNewDevice(newDevice, stmt);
 			System.out.println("Device insert success");
@@ -41,42 +44,36 @@ public class DBInsertTransaction {
 			controller.insertNewRootDirectory(stmt);
 			System.out.println("Root Directory insert success");
 			
-			for(File newDirectory : listOfDirectory){
-				
-				controller.insertNewDirectory(newDirectory, stmt);
-			}
+			controller.insertNewDirectory(listOfDirectory, stmt);
+			conn.commit();
 			System.out.println("All Directories insert success");
 			
-			for(File newFile : listOfFiles){
-				
-				int fileExt = controller.getFileExtID(newFile.getFileExt(), stmt);
-				int directoryID = controller.getDirectoryID(newFile.getDirectoryID(), stmt);
-				
-				if(fileExt == NO_SUCH_EXT_FOUND) {
-					//insert a new extension under others.
-					fileExt = controller.insertNewFileExt(newFile.getFileExt(), OTHER_EXT_TYPE_ID, stmt);
-					System.out.println("New ext insert success");
-				}	
-					
-				controller.insertNewFile(newFile, directoryID, fileExt, stmt);
-								
-			}
-			System.out.println("ALL files insert success");
-			
+			controller.insertNewFileExt(listOfFiles,stmt);
 			conn.commit();
+			System.out.println("All fileExt insert success");
+			
+			controller.insertNewFile(FilesList, stmt);
+			conn.commit();
+			System.out.println("All Files insert success");
+			
 			conn.close();
+			return true;
 			
 		} catch (Exception e) {
-						
+			
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			
 			try {
 				conn.rollback();
 				conn.close();
 				
 			} catch (SQLException e2) {
 				
-				System.out.println("Rollback Failed");
+				System.out.println("conn Rollback Failed");
 			}
 		}
+		
 		return false;
 	}
 	

@@ -44,15 +44,16 @@ public class DBInsertQueries {
 		
 		String script = "INSERT INTO Directory(DirectoryName, DeviceID, PreDirectory, OriginDirectory, DateCreated, DateAccessed, DateModified, IsRecovered, DateDeleted) "
 					 	+ "VALUES ('" + directoryName + "'," + deviceID + ","+ parentDirectoryID + "," + originFileID +",'" + dateCreated +"','"
-					 	+ dateAccessed + "','" + dateModified + "'," + isRecovered + ",'" + dateDeleted + "')";
+					 	+ dateAccessed + "','" + dateModified + "','" + isRecovered + "','" + dateDeleted + "')";
 		
 		return script;
 	}
 	
-	public String insertNewFile(File newFile, int deviceID, int fileExtID, int directoryID){
+	public String insertNewFile(File newFile, int deviceID){
 		
 		String filePath = newFile.getFilePath();
 		String fileName = newFile.getFileName();
+		String fileExt = newFile.getFileExt();
 		boolean isRecovered = newFile.getIsRecovered();
 		String dateDeleted = newFile.getDateDeleted();
 		boolean isModified = newFile.getIsModified();
@@ -60,11 +61,13 @@ public class DBInsertQueries {
 		String dateCreated = newFile.getDateCreated();
 		String dateAccessed = newFile.getDateAccessed();
 		String dateModified = newFile.getDateModified();
+		int directoryID = newFile.getDirectoryID();
+		
 		
 		String script = "INSERT INTO Files(FileName,FileExt,IsRecovered,DateDeleted,IsModified,ModifiedExt"
 						+",DateCreated,DateAccessed,DateModified,FilePath,DirectoryID,DeviceID) "
-						+"VALUES ('"+ fileName +"',"+ fileExtID +","+ isRecovered + ",'" + dateDeleted + "',"
-						+ isModified +",'" + modifiedExt + "','" + dateCreated + "','" + dateAccessed + "','" + dateModified 
+						+"VALUES ('"+ fileName +"','"+ fileExt +"','"+ isRecovered + "','" + dateDeleted + "','"
+						+ isModified +"','" + modifiedExt + "','" + dateCreated + "','" + dateAccessed + "','" + dateModified 
 						+ "','" + filePath + "'," + directoryID + "," + deviceID +")";
 		
 		return script;
@@ -73,26 +76,11 @@ public class DBInsertQueries {
 	
 	public String insertNewExt(String fileExtName, int extTypeID) {
 		
-		String script = "INSERT INTO Extension(ExtName,ExtTypeID) "
+		String script = "INSERT OR IGNORE INTO Extension(ExtName,ExtTypeID) "
 						+ "VALUES ('"+ fileExtName +"',"+ extTypeID + ")";
 		
 		return script;
 		
-	}
-	
-	//Helper methods
-	public String getFileExtID(String fileExt){
-		
-		String script = "SELECT ExtID FROM Extension WHERE ExtName = '" + fileExt + "'";
-		return script;
-		
-	}
-	
-	public String getDirectoryID(int fileParentID, int deviceID){
-		
-		String script = "SELECT DirectoryID FROM Directory WHERE OriginDirectory = " + fileParentID
-						+ " AND DeviceID = "+ deviceID;
-		return script;
 	}
 	
 	

@@ -58,7 +58,10 @@ import eagleeye.filesystem.format.FAT32FormatIdentifier;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.format.FormatIdentifierManager;
 import eagleeye.filesystem.format.YAFFS2FormatIdentifier;
+
 import eagleeye.model.WorkBench;
+import eagleeye.model.RequestHandler;
+import eagleeye.model.UIRequestHandler;
 
 public class WorkBenchController {
 
@@ -77,7 +80,7 @@ public class WorkBenchController {
 	private final Image fileIcon = new Image(getClass().getResourceAsStream(
 			"Icons/fileIcon.jpg"));
 	// Not applicable for exact tree view. For old testing only
-	List<MyFile> myFiles = Arrays
+	List<MyFile> myFiles= Arrays
 			.<MyFile> asList(new MyFile("200482583232.6910771", ".jpg", false,
 					false, "/UI Test"), 
 					new MyFile("CS3283 meeting notes",".txt", false, false, "/UI Test"),
@@ -88,7 +91,7 @@ public class WorkBenchController {
 					//new MyFile("When you are gone", ".flv",false, false, "/UI Test"), 
 					new MyFile("Ó£»¨2", ".jpg", false,false, "/UI Test"));
 	TreeItem<String> rootNode = new TreeItem<String>("MyFiles", rootIcon);
-
+	
 	@FXML
 	private StackPane treeViewPane;
 
@@ -300,6 +303,15 @@ public class WorkBenchController {
 			}
 		});
 
+		RequestHandler rh= new UIRequestHandler();
+		
+		ArrayList<eagleeye.entities.File> dummyList= rh.getFolderStructure();
+		myFiles = new ArrayList<MyFile>();
+		for(eagleeye.entities.File f: dummyList){
+			//"fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false, false,"/UI Test"
+			myFiles.add(new MyFile(f.getFileName(),f.getFileExt(),f.getIsDirectory(),f.getIsModified(),f.getFilePath()));
+		}
+		
 		// TreeView
 		rootNode.setExpanded(true);
 
