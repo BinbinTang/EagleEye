@@ -15,7 +15,7 @@ public class UIRequestHandler implements RequestHandler {
 		if(folderStructure==null){
 			folderStructure=new ArrayList<eagleeye.entities.File>();
 			// TODO Query database and populate folderStructure
-		
+		/*
 			// for now:
 			folderStructure.add(new File(0,-1,	0,false,false,true,"root","C:/","ext","modext","delDate","createDate","accDate","modDate"));
 			folderStructure.add(new File(0,	0,	1,false,false,true,"pic","C:/","ext","modext","delDate","createDate","accDate","modDate"));
@@ -27,6 +27,7 @@ public class UIRequestHandler implements RequestHandler {
 			folderStructure.add(new File(0,	2,	7,false,false,true,"audio2","C:/","wav","modext","delDate","createDate","accDate","modDate"));
 			folderStructure.add(new File(0,	3,	8,false,false,true,"text1","C:/","txt","modext","delDate","createDate","accDate","modDate"));
 			folderStructure.add(new File(0,	3,	9,false,false,true,"text2","C:/","txt","modext","delDate","createDate","accDate","modDate"));
+		*/
 		}
 		return folderStructure;
 	}

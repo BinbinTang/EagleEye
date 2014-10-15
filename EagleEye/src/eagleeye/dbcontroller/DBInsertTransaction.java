@@ -52,7 +52,7 @@ public class DBInsertTransaction {
 			conn.commit();
 			System.out.println("All fileExt insert success");
 			
-			controller.insertNewFile(FilesList, stmt);
+			controller.insertNewFile(listOfFiles, stmt);
 			conn.commit();
 			System.out.println("All Files insert success");
 			
