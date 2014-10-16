@@ -321,128 +321,141 @@ public class WorkBenchController {
 		 * folderStructure = test.getFolderStructure();
 		 */
 		DBQueryController dbController = new DBQueryController(1);
-		ArrayList<Directory> TreeStructure = dbController.getAllDirectoriesAndFiles();
-		System.out.println(TreeStructure.get(0).getDirectoryID());
+		ArrayList<Directory> TreeStructure = dbController
+				.getAllDirectoriesAndFiles();
+		// System.out.println(TreeStructure.get(0).getDirectoryID());
 
 		// System.out.println("The number of Directories: " +
 		// TreeStructure.size());
 
-		// TreeView
-		rootNode = new TreeItem<String>(
-				TreeStructure.get(0).getDirectoryName(), rootIcon);
-		ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
-				TreeStructure);
-		TreeView<String> tree = new TreeView<String>(rootNode);
 
-		// Force root node ID to be 0
-		TreeStructure.get(0).modifyDirectoryID(0);
-		
-		// Whenever a directory found its parent, we remove it from copied list
-		while (CopyTreeStructure.size() > 1) {
-			int startSize = CopyTreeStructure.size();
-			for (Directory dir : CopyTreeStructure) {
-				TreeItem<String> targetParent = null;
-				System.out.println("Current remaining Size: " +CopyTreeStructure.size());
-				//check if it is root
-				if(dir.getDirectoryID() == 0){
-					this.addFiles(dir, rootNode);
-					CopyTreeStructure.remove(dir);
-					//System.out.println("root met, removed");
-					break;
-				}
+		// Check if DB empty
+		if (TreeStructure.size() != 0) {
+			// TreeView
+			rootNode = new TreeItem<String>(TreeStructure.get(0)
+					.getDirectoryName(), rootIcon);
+			ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
+					TreeStructure);
+			TreeView<String> tree = new TreeView<String>(rootNode);
 
-				TreeItem<String> newItem = new TreeItem<String>(dir.getDirectoryName());
+			// Force root node ID to be 0
+			TreeStructure.get(0).modifyDirectoryID(0);
 
-				Directory parent = findDir(TreeStructure, dir.getParentDirectory());
+			// Whenever a directory found its parent, we remove it from copied list
+			while (CopyTreeStructure.size() > 1) {
+				int startSize = CopyTreeStructure.size();
+				for (Directory dir : CopyTreeStructure) {
+					TreeItem<String> targetParent = null;
+					System.out.println("Current remaining Size: "
+							+ CopyTreeStructure.size());
+					// check if it is root
+					if (dir.getDirectoryID() == 0) {
+						this.addFiles(dir, rootNode);
+						CopyTreeStructure.remove(dir);
+						// System.out.println("root met, removed");
+						break;
+					}
 
-				if (parent != null) {
-					targetParent = findItem(rootNode, parent.getDirectoryName());
-				} else {
-					System.out.println("Cannot find parent" + dir.getParentDirectory());
-				}
+					TreeItem<String> newItem = new TreeItem<String>(
+							dir.getDirectoryName());
 
-				if (targetParent != null) {
-					//System.out.println("parent found");
-					targetParent.getChildren().add(newItem);
-					this.addFiles(dir, newItem);
-					CopyTreeStructure.remove(dir);
-					break;
-				} else {
-					 System.out.println("cannot find parent");
-				}
-			}
-			int endSize = CopyTreeStructure.size();
-			// check if no change in size, then we print out remaining list and exit
-			if (startSize == endSize){
-				System.out.println("Remaining Directories:");
-				for (Directory dir : CopyTreeStructure){
-					System.out.println(dir.getDirectoryName() + " needed parent not found: " + 
+					Directory parent = findDir(TreeStructure,
 							dir.getParentDirectory());
+
+					if (parent != null) {
+						targetParent = findItem(rootNode,
+								parent.getDirectoryName());
+					} else {
+						System.out.println("Cannot find parent"
+								+ dir.getParentDirectory());
+					}
+
+					if (targetParent != null) {
+						// System.out.println("parent found");
+						targetParent.getChildren().add(newItem);
+						this.addFiles(dir, newItem);
+						CopyTreeStructure.remove(dir);
+						break;
+					} else {
+						System.out.println("cannot find parent");
+					}
 				}
-				break;
+				int endSize = CopyTreeStructure.size();
+				// check if no change in size, then we print out remaining list
+				// and exit
+				if (startSize == endSize) {
+					System.out.println("Remaining Directories:");
+					for (Directory dir : CopyTreeStructure) {
+						System.out.println(dir.getDirectoryName()
+								+ " needed parent not found: "
+								+ dir.getParentDirectory());
+					}
+					break;
+				}
 			}
-		}
 
-		/*
-		 * for (MyFile file : myFiles) { TreeItem<String> empLeaf = new
-		 * TreeItem<String>(file.getName(),new ImageView(fileIcon)); boolean
-		 * foundPath = false; boolean foundDep = false; for (TreeItem<String>
-		 * pathNode : rootNode.getChildren()) { for (TreeItem<String> depNode :
-		 * pathNode.getChildren()) { // Check if path match if
-		 * (pathNode.getValue().contentEquals(file.getPath())) { // Check if
-		 * format match if (depNode.getValue().contentEquals(file.getFormat()))
-		 * { depNode.getChildren().add(empLeaf); foundDep = true; break; } if
-		 * (!foundDep) { TreeItem<String> newDepNode = new TreeItem<String>(
-		 * file.getFormat()); pathNode.getChildren().add(newDepNode);
-		 * newDepNode.getChildren().add(empLeaf); } foundPath = true; break; }
-		 * if (!foundPath) { TreeItem<String> newPathNode = new
-		 * TreeItem<String>( file.getPath()); TreeItem<String> newDepNode = new
-		 * TreeItem<String>( file.getFormat());
-		 * rootNode.getChildren().add(newPathNode);
-		 * newPathNode.setExpanded(true);
-		 * newPathNode.getChildren().add(newDepNode);
-		 * newDepNode.getChildren().add(empLeaf); } } } if (!foundPath &&
-		 * !foundDep){ System.out.println("first time"); TreeItem<String>
-		 * newPathNode = new TreeItem<String>( file.getPath()); TreeItem<String>
-		 * newDepNode = new TreeItem<String>( file.getFormat());
-		 * rootNode.getChildren().add(newPathNode);
-		 * newPathNode.setExpanded(true);
-		 * newPathNode.getChildren().add(newDepNode);
-		 * newDepNode.getChildren().add(empLeaf); } }
-		 */
-		tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				if (mouseEvent.getClickCount() == 2) {
-					TreeItem<String> item = tree.getSelectionModel()
-							.getSelectedItem();
-					System.out.println("Selected Text : " + item.getValue());
+			/*
+			 * for (MyFile file : myFiles) { TreeItem<String> empLeaf = new
+			 * TreeItem<String>(file.getName(),new ImageView(fileIcon)); boolean
+			 * foundPath = false; boolean foundDep = false; for
+			 * (TreeItem<String> pathNode : rootNode.getChildren()) { for
+			 * (TreeItem<String> depNode : pathNode.getChildren()) { // Check if
+			 * path match if (pathNode.getValue().contentEquals(file.getPath()))
+			 * { // Check if format match if
+			 * (depNode.getValue().contentEquals(file.getFormat())) {
+			 * depNode.getChildren().add(empLeaf); foundDep = true; break; } if
+			 * (!foundDep) { TreeItem<String> newDepNode = new TreeItem<String>(
+			 * file.getFormat()); pathNode.getChildren().add(newDepNode);
+			 * newDepNode.getChildren().add(empLeaf); } foundPath = true; break;
+			 * } if (!foundPath) { TreeItem<String> newPathNode = new
+			 * TreeItem<String>( file.getPath()); TreeItem<String> newDepNode =
+			 * new TreeItem<String>( file.getFormat());
+			 * rootNode.getChildren().add(newPathNode);
+			 * newPathNode.setExpanded(true);
+			 * newPathNode.getChildren().add(newDepNode);
+			 * newDepNode.getChildren().add(empLeaf); } } } if (!foundPath &&
+			 * !foundDep){ System.out.println("first time"); TreeItem<String>
+			 * newPathNode = new TreeItem<String>( file.getPath());
+			 * TreeItem<String> newDepNode = new TreeItem<String>(
+			 * file.getFormat()); rootNode.getChildren().add(newPathNode);
+			 * newPathNode.setExpanded(true);
+			 * newPathNode.getChildren().add(newDepNode);
+			 * newDepNode.getChildren().add(empLeaf); } }
+			 */
+			tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					if (mouseEvent.getClickCount() == 2) {
+						TreeItem<String> item = tree.getSelectionModel()
+								.getSelectedItem();
+						System.out.println("Selected Text : " + item.getValue());
 
-					// Check if it is a file, and open
-					if (item.isLeaf()) {
-						String filePath = item.getParent().getParent()
-								.getValue()
-								+ "/"
-								+ item.getValue()
-								+ item.getParent().getValue();
-						System.out.println("Selected File : " + filePath);
-						String location = Paths.get(".").toAbsolutePath()
-								.normalize().toString();
-						File currentFile = new File(location + filePath);
-						try {
-							Desktop.getDesktop().open(currentFile);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						// Check if it is a file, and open
+						if (item.isLeaf()) {
+							String filePath = item.getParent().getParent()
+									.getValue()
+									+ "/"
+									+ item.getValue()
+									+ item.getParent().getValue();
+							System.out.println("Selected File : " + filePath);
+							String location = Paths.get(".").toAbsolutePath()
+									.normalize().toString();
+							File currentFile = new File(location + filePath);
+							try {
+								Desktop.getDesktop().open(currentFile);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				}
-			}
-		});
-		treeViewPane.getChildren().add(tree);
+			});
+			treeViewPane.getChildren().add(tree);
 
-		// Category View
+			// Category View
 
+		}
 	}
 
 	/*
@@ -451,11 +464,13 @@ public class WorkBenchController {
 
 	// Find whether a target is inside the tree of root, by recursion
 	public TreeItem<String> findItem(TreeItem<String> root, String target) {
-		//System.out.println("I want: " + target + " current: " +root.getValue());
+		// System.out.println("I want: " + target + " current: "
+		// +root.getValue());
 		TreeItem<String> result = null;
 
 		if (root.getValue() == target) {
-			//System.out.println("found: " + target + " current: "+ root.getValue());
+			// System.out.println("found: " + target + " current: "+
+			// root.getValue());
 			return root;
 		} else if (root.getChildren().size() != 0) {
 			for (TreeItem<String> sub : root.getChildren()) {
@@ -465,14 +480,15 @@ public class WorkBenchController {
 				}
 			}
 		} else {
-			//System.out.println("cannot find: " + target + " current: "+root.getValue());
+			// System.out.println("cannot find: " + target +
+			// " current: "+root.getValue());
 		}
 
 		return result;
 	}
-	
+
 	// Find Directory according to ID
-	public Directory findDir(ArrayList<Directory> db, int ID){
+	public Directory findDir(ArrayList<Directory> db, int ID) {
 		for (Directory checkParent : db) {
 			if (checkParent.getDirectoryID() == ID) {
 				return checkParent;
@@ -480,14 +496,15 @@ public class WorkBenchController {
 		}
 		return null;
 	}
-	
+
 	// Add files into directory
-	public void addFiles(Directory dir, TreeItem<String> node){
-		for (eagleeye.entities.File file : dir.getFiles()){
-			TreeItem<String> newItem = new TreeItem<String>(file.getFileName(), new ImageView(fileIcon));
+	public void addFiles(Directory dir, TreeItem<String> node) {
+		for (eagleeye.entities.File file : dir.getFiles()) {
+			TreeItem<String> newItem = new TreeItem<String>(file.getFileName(),
+					new ImageView(fileIcon));
 			node.getChildren().add(newItem);
 		}
-		
+
 	}
 
 	// private void handleStartDateClick
