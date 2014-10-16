@@ -43,6 +43,8 @@ import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import eagleeye.controller.MainApp;
 import eagleeye.datacarving.unpack.service.UnpackDirectoryService;
+import eagleeye.dbcontroller.DBQueryController;
+import eagleeye.entities.Directory;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
 
@@ -55,7 +57,9 @@ public class WorkBenchController {
 	private Label labelDirPath = new Label();
 
 	// Path to identify current case
-	private String casePath = "D:\\Picture\\头像";;
+	private String casePath = "D:\\Picture\\头像";
+	ArrayList<eagleeye.entities.File> folderStructure;
+	ArrayList<Directory> TreeStructure;
 
 	// TreeView
 	private final Node rootIcon = new ImageView(new Image(getClass()
@@ -63,40 +67,42 @@ public class WorkBenchController {
 	private final Image fileIcon = new Image(getClass().getResourceAsStream(
 			"Icons/fileIcon.jpg"));
 	// Not applicable for exact tree view. For old testing only
-	/*List<MyFile> myFiles= Arrays
-			.<MyFile> asList(new MyFile("200482583232.6910771", ".jpg", false,
-					false, "/UI Test"), 
-					new MyFile("CS3283 meeting notes",".txt", false, false, "/UI Test"),
-					new MyFile(
-					"fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false, false,"/UI Test"),
-					new MyFile(
-					"Game Design Strategies for Collectivist Persuasion", ".pdf", false,false, "/UI Test"), 
-					//new MyFile("When you are gone", ".flv",false, false, "/UI Test"), 
-					new MyFile("樱花2", ".jpg", false,false, "/UI Test")); */
+	/*
+	 * List<MyFile> myFiles= Arrays .<MyFile> asList(new
+	 * MyFile("200482583232.6910771", ".jpg", false, false, "/UI Test"), new
+	 * MyFile("CS3283 meeting notes",".txt", false, false, "/UI Test"), new
+	 * MyFile( "fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false,
+	 * false,"/UI Test"), new MyFile(
+	 * "Game Design Strategies for Collectivist Persuasion", ".pdf",
+	 * false,false, "/UI Test"), //new MyFile("When you are gone", ".flv",false,
+	 * false, "/UI Test"), new MyFile("樱花2", ".jpg", false,false, "/UI Test"));
+	 */
 	List<MyFile> myFiles;
-	TreeItem<String> rootNode = new TreeItem<String>("MyFiles", rootIcon);
-	
+	TreeItem<String> rootNode;
+
 	@FXML
 	private StackPane treeViewPane;
 
 	// UI elements
 	@FXML
 	private GridPane topGridPane;
-	
-	//SearchButton
-	private final Image searchIcon = new Image(getClass().getResourceAsStream("Icons/seach button small.png"),16,16,false,false);
+
+	// SearchButton
+	private final Image searchIcon = new Image(getClass().getResourceAsStream(
+			"Icons/seach button small.png"), 16, 16, false, false);
 	@FXML
 	private Button searchButton;
-	
+
 	// DatePicker
 	private LocalDate startDate = LocalDate.parse("1992-05-08");
 	private LocalDate endDate = LocalDate.now();
-	private final Image calendarIcon = new Image(getClass().getResourceAsStream("Icons/fileIcon.jpg"));
+	private final Image calendarIcon = new Image(getClass()
+			.getResourceAsStream("Icons/fileIcon.jpg"));
 	@FXML
 	private DatePicker startDatePicker;
 	@FXML
 	private DatePicker endDatePicker;
-	
+
 	// Time
 	private String startHour = "00";
 	private String startMinute = "00";
@@ -293,71 +299,117 @@ public class WorkBenchController {
 				Platform.exit();
 			}
 		});
-		
-		// Search 
+
+		// Search
 		searchButton.setGraphic(new ImageView(searchIcon));
 
-		RequestHandler rh= new UIRequestHandler();
-		
-		ArrayList<eagleeye.entities.File> dummyList= rh.getFolderStructure();
-		myFiles = new ArrayList<MyFile>();
-		for(eagleeye.entities.File f: dummyList){
-			//"fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false, false,"/UI Test"
-			myFiles.add(new MyFile(f.getFileName(),f.getFileExt(),f.getIsDirectory(),f.getIsModified(),f.getFilePath(),f.getCategory()));
-		}
-		
-		// TreeView
-		rootNode.setExpanded(true);
+		// Connect to DB
+		/*
+		 * RequestHandler rh= new UIRequestHandler();
+		 * 
+		 * ArrayList<eagleeye.entities.File> dummyList= rh.getFolderStructure();
+		 * myFiles = new ArrayList<MyFile>(); for(eagleeye.entities.File f:
+		 * dummyList){ //"fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false,
+		 * false,"/UI Test" myFiles.add(new
+		 * MyFile(f.getFileName(),f.getFileExt()
+		 * ,f.getIsDirectory(),f.getIsModified
+		 * (),f.getFilePath(),f.getCategory())); }
+		 */
+		/*
+		 * UIRequestHandler test = new UIRequestHandler();
+		 * 
+		 * folderStructure = test.getFolderStructure();
+		 */
+		DBQueryController dbController = new DBQueryController(1);
+		TreeStructure = dbController.getAllDirectoriesAndFiles();
+		System.out.println(TreeStructure.get(0).getDirectoryID());
 
-		for (MyFile file : myFiles) {
-			TreeItem<String> empLeaf = new TreeItem<String>(file.getName(),new ImageView(fileIcon));
-			boolean foundPath = false;
-			boolean foundDep = false;
-			for (TreeItem<String> pathNode : rootNode.getChildren()) {
-				for (TreeItem<String> depNode : pathNode.getChildren()) {
-					// Check if path match
-					if (pathNode.getValue().contentEquals(file.getPath())) {
-						// Check if format match
-						if (depNode.getValue().contentEquals(file.getFormat())) {
-							depNode.getChildren().add(empLeaf);
-							foundDep = true;
-							break;
-						}
-						if (!foundDep) {
-							TreeItem<String> newDepNode = new TreeItem<String>(
-									file.getFormat());
-							pathNode.getChildren().add(newDepNode);
-							newDepNode.getChildren().add(empLeaf);
-						}
-						foundPath = true;
-						break;
-					}
-					if (!foundPath) {
-						TreeItem<String> newPathNode = new TreeItem<String>(
-								file.getPath());
-						TreeItem<String> newDepNode = new TreeItem<String>(
-								file.getFormat());
-						rootNode.getChildren().add(newPathNode);
-						newPathNode.setExpanded(true);
-						newPathNode.getChildren().add(newDepNode);
-						newDepNode.getChildren().add(empLeaf);
-					}
+		// System.out.println("The number of Directories: " +
+		// TreeStructure.size());
+
+		// TreeView
+		rootNode = new TreeItem<String>(
+				TreeStructure.get(0).getDirectoryName(), rootIcon);
+		ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
+				TreeStructure);
+		TreeView<String> tree = new TreeView<String>(rootNode);
+
+		// Force root node ID to be 0
+		TreeStructure.get(0).modifyDirectoryID(0);
+		
+		// Whenever a directory found its parent, we remove it from copied list
+		while (CopyTreeStructure.size() > 1) {
+			int startSize = CopyTreeStructure.size();
+			for (Directory dir : CopyTreeStructure) {
+				TreeItem<String> targetParent = null;
+				System.out.println("Current remaining Size: " +CopyTreeStructure.size());
+				//check if it is root
+				if(dir.getDirectoryID() == 0){
+					this.addFiles(dir, rootNode);
+					CopyTreeStructure.remove(dir);
+					//System.out.println("root met, removed");
+					break;
+				}
+
+				TreeItem<String> newItem = new TreeItem<String>(dir.getDirectoryName());
+
+				Directory parent = findDir(TreeStructure, dir.getParentDirectory());
+
+				if (parent != null) {
+					targetParent = findItem(rootNode, parent.getDirectoryName());
+				} else {
+					System.out.println("Cannot find parent" + dir.getParentDirectory());
+				}
+
+				if (targetParent != null) {
+					//System.out.println("parent found");
+					targetParent.getChildren().add(newItem);
+					this.addFiles(dir, newItem);
+					CopyTreeStructure.remove(dir);
+					break;
+				} else {
+					 System.out.println("cannot find parent");
 				}
 			}
-			if (!foundPath && !foundDep){
-				System.out.println("first time");
-				TreeItem<String> newPathNode = new TreeItem<String>(
-						file.getPath());
-				TreeItem<String> newDepNode = new TreeItem<String>(
-						file.getFormat());
-				rootNode.getChildren().add(newPathNode);
-				newPathNode.setExpanded(true);
-				newPathNode.getChildren().add(newDepNode);
-				newDepNode.getChildren().add(empLeaf);
+			int endSize = CopyTreeStructure.size();
+			// check if no change in size, then we print out remaining list and exit
+			if (startSize == endSize){
+				System.out.println("Remaining Directories:");
+				for (Directory dir : CopyTreeStructure){
+					System.out.println(dir.getDirectoryName() + " needed parent not found: " + 
+							dir.getParentDirectory());
+				}
+				break;
 			}
 		}
 
-		TreeView<String> tree = new TreeView<String>(rootNode);
+		/*
+		 * for (MyFile file : myFiles) { TreeItem<String> empLeaf = new
+		 * TreeItem<String>(file.getName(),new ImageView(fileIcon)); boolean
+		 * foundPath = false; boolean foundDep = false; for (TreeItem<String>
+		 * pathNode : rootNode.getChildren()) { for (TreeItem<String> depNode :
+		 * pathNode.getChildren()) { // Check if path match if
+		 * (pathNode.getValue().contentEquals(file.getPath())) { // Check if
+		 * format match if (depNode.getValue().contentEquals(file.getFormat()))
+		 * { depNode.getChildren().add(empLeaf); foundDep = true; break; } if
+		 * (!foundDep) { TreeItem<String> newDepNode = new TreeItem<String>(
+		 * file.getFormat()); pathNode.getChildren().add(newDepNode);
+		 * newDepNode.getChildren().add(empLeaf); } foundPath = true; break; }
+		 * if (!foundPath) { TreeItem<String> newPathNode = new
+		 * TreeItem<String>( file.getPath()); TreeItem<String> newDepNode = new
+		 * TreeItem<String>( file.getFormat());
+		 * rootNode.getChildren().add(newPathNode);
+		 * newPathNode.setExpanded(true);
+		 * newPathNode.getChildren().add(newDepNode);
+		 * newDepNode.getChildren().add(empLeaf); } } } if (!foundPath &&
+		 * !foundDep){ System.out.println("first time"); TreeItem<String>
+		 * newPathNode = new TreeItem<String>( file.getPath()); TreeItem<String>
+		 * newDepNode = new TreeItem<String>( file.getFormat());
+		 * rootNode.getChildren().add(newPathNode);
+		 * newPathNode.setExpanded(true);
+		 * newPathNode.getChildren().add(newDepNode);
+		 * newDepNode.getChildren().add(empLeaf); } }
+		 */
 		tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {
@@ -368,10 +420,14 @@ public class WorkBenchController {
 
 					// Check if it is a file, and open
 					if (item.isLeaf()) {
-						String filePath = item.getParent().getParent().getValue() +"/" + item.getValue()
+						String filePath = item.getParent().getParent()
+								.getValue()
+								+ "/"
+								+ item.getValue()
 								+ item.getParent().getValue();
 						System.out.println("Selected File : " + filePath);
-						String location = Paths.get(".").toAbsolutePath().normalize().toString();
+						String location = Paths.get(".").toAbsolutePath()
+								.normalize().toString();
 						File currentFile = new File(location + filePath);
 						try {
 							Desktop.getDesktop().open(currentFile);
@@ -384,16 +440,55 @@ public class WorkBenchController {
 			}
 		});
 		treeViewPane.getChildren().add(tree);
-		tree.setPrefWidth(400);
-		
+
 		// Category View
-		
-		
+
 	}
 
 	/*
 	 * Methods of workbench
 	 */
+
+	// Find whether a target is inside the tree of root, by recursion
+	public TreeItem<String> findItem(TreeItem<String> root, String target) {
+		//System.out.println("I want: " + target + " current: " +root.getValue());
+		TreeItem<String> result = null;
+
+		if (root.getValue() == target) {
+			//System.out.println("found: " + target + " current: "+ root.getValue());
+			return root;
+		} else if (root.getChildren().size() != 0) {
+			for (TreeItem<String> sub : root.getChildren()) {
+				TreeItem<String> subResult = findItem(sub, target);
+				if (subResult != null) {
+					return subResult;
+				}
+			}
+		} else {
+			//System.out.println("cannot find: " + target + " current: "+root.getValue());
+		}
+
+		return result;
+	}
+	
+	// Find Directory according to ID
+	public Directory findDir(ArrayList<Directory> db, int ID){
+		for (Directory checkParent : db) {
+			if (checkParent.getDirectoryID() == ID) {
+				return checkParent;
+			}
+		}
+		return null;
+	}
+	
+	// Add files into directory
+	public void addFiles(Directory dir, TreeItem<String> node){
+		for (eagleeye.entities.File file : dir.getFiles()){
+			TreeItem<String> newItem = new TreeItem<String>(file.getFileName(), new ImageView(fileIcon));
+			node.getChildren().add(newItem);
+		}
+		
+	}
 
 	// private void handleStartDateClick
 
@@ -412,18 +507,17 @@ public class WorkBenchController {
 
 		labelDirPath.setText(file.getPath());
 		System.out.println(labelDirPath);
-		
+
 		UnpackDirectoryService service = new UnpackDirectoryService();
 		service.setDirectory(file);
-		
+
 		Stage dialog = this.createProgressDialog(service);
 
 		service.start();
 		dialog.show();
 	}
-	
-	private Stage createProgressDialog(final Service<Void> service)
-	{
+
+	private Stage createProgressDialog(final Service<Void> service) {
 		Stage dialog = new Stage();
 		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.initStyle(StageStyle.UTILITY);
@@ -431,54 +525,46 @@ public class WorkBenchController {
 		dialog.setWidth(150);
 		dialog.setHeight(70);
 		dialog.setResizable(false);
-		
+
 		VBox root = new VBox();
 		root.setMaxWidth(Double.MAX_VALUE);
-		
+
 		Scene scene = new Scene(root);
 		dialog.setScene(scene);
-		
-	    final ProgressBar indicator = new ProgressBar();
-	    indicator.setMaxWidth(Double.MAX_VALUE);
-	    
-	    indicator.progressProperty().bind(service.progressProperty());
+
+		final ProgressBar indicator = new ProgressBar();
+		indicator.setMaxWidth(Double.MAX_VALUE);
+
+		indicator.progressProperty().bind(service.progressProperty());
 		indicator.setPrefHeight(35);
-	    root.getChildren().add(indicator);
-			    
-	    service.stateProperty().addListener
-	    (
-	    	new ChangeListener<State>()
-			{
-		    	@Override
-		    	public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue)
-		    	{
-				    if (newValue == State.CANCELLED || newValue == State.FAILED || newValue == State.SUCCEEDED)
-				    {
-				    	dialog.hide();
-				    }
-		    	}
+		root.getChildren().add(indicator);
+
+		service.stateProperty().addListener(new ChangeListener<State>() {
+			@Override
+			public void changed(ObservableValue<? extends State> observable,
+					State oldValue, State newValue) {
+				if (newValue == State.CANCELLED || newValue == State.FAILED
+						|| newValue == State.SUCCEEDED) {
+					dialog.hide();
+				}
 			}
-	    );
-	    
-	    Button cancel = new Button("Cancel");
-	    cancel.setPrefHeight(35);
-	    cancel.setMaxWidth(Double.MAX_VALUE);
-	    root.getChildren().add(cancel);
-	    
-	    cancel.setOnAction(
-    		new EventHandler<ActionEvent>()
-		    {
-		    	@Override
-		    	public void handle(ActionEvent event)
-		    	{
-		    		service.cancel();
-		    	}
-		    }
-	    );
-	    
-	    return dialog;
-	  }
-	    
+		});
+
+		Button cancel = new Button("Cancel");
+		cancel.setPrefHeight(35);
+		cancel.setMaxWidth(Double.MAX_VALUE);
+		root.getChildren().add(cancel);
+
+		cancel.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				service.cancel();
+			}
+		});
+
+		return dialog;
+	}
+
 	// Classes
 	// TreeView File
 	public static class MyFile {
@@ -539,11 +625,11 @@ public class WorkBenchController {
 		public void setPath(String fName) {
 			path = fName;
 		}
-		
+
 		public void setCategory(String fCat) {
 			category = fCat;
 		}
-		
+
 		public String getCategory() {
 			String result = "";
 			return result;
