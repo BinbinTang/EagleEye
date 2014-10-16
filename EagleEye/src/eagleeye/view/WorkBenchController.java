@@ -55,7 +55,7 @@ public class WorkBenchController {
 	private Label labelDirPath = new Label();
 
 	// Path to identify current case
-	private String casePath;;
+	private String casePath = "D:\\Picture\\Í·Ïñ";;
 
 	// TreeView
 	private final Node rootIcon = new ImageView(new Image(getClass()
@@ -63,7 +63,7 @@ public class WorkBenchController {
 	private final Image fileIcon = new Image(getClass().getResourceAsStream(
 			"Icons/fileIcon.jpg"));
 	// Not applicable for exact tree view. For old testing only
-	List<MyFile> myFiles= Arrays
+	/*List<MyFile> myFiles= Arrays
 			.<MyFile> asList(new MyFile("200482583232.6910771", ".jpg", false,
 					false, "/UI Test"), 
 					new MyFile("CS3283 meeting notes",".txt", false, false, "/UI Test"),
@@ -72,7 +72,8 @@ public class WorkBenchController {
 					new MyFile(
 					"Game Design Strategies for Collectivist Persuasion", ".pdf", false,false, "/UI Test"), 
 					//new MyFile("When you are gone", ".flv",false, false, "/UI Test"), 
-					new MyFile("Ó£»¨2", ".jpg", false,false, "/UI Test"));
+					new MyFile("Ó£»¨2", ".jpg", false,false, "/UI Test")); */
+	List<MyFile> myFiles;
 	TreeItem<String> rootNode = new TreeItem<String>("MyFiles", rootIcon);
 	
 	@FXML
@@ -302,7 +303,7 @@ public class WorkBenchController {
 		myFiles = new ArrayList<MyFile>();
 		for(eagleeye.entities.File f: dummyList){
 			//"fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false, false,"/UI Test"
-			myFiles.add(new MyFile(f.getFileName(),f.getFileExt(),f.getIsDirectory(),f.getIsModified(),f.getFilePath()));
+			myFiles.add(new MyFile(f.getFileName(),f.getFileExt(),f.getIsDirectory(),f.getIsModified(),f.getFilePath(),f.getCategory()));
 		}
 		
 		// TreeView
@@ -490,12 +491,13 @@ public class WorkBenchController {
 		private String category;
 
 		private MyFile(String name, String format, boolean isDeleted,
-				boolean isModified, String path) {
+				boolean isModified, String path, String category) {
 			this.name = name;
 			this.format = format;
 			this.isDeleted = isDeleted;
 			this.isModified = isModified;
 			this.path = path;
+			this.category = category;
 		}
 
 		public String getName() {
@@ -536,6 +538,10 @@ public class WorkBenchController {
 
 		public void setPath(String fName) {
 			path = fName;
+		}
+		
+		public void setCategory(String fCat) {
+			category = fCat;
 		}
 		
 		public String getCategory() {
