@@ -18,6 +18,7 @@ public class File implements Comparable<File> {
 	protected String dateAccessed;
 	protected String dateModified;
 	protected String category;
+	protected String directoryName;
 	
 	
 	public File() {
@@ -145,7 +146,13 @@ public class File implements Comparable<File> {
 	}
 	
 	public String getCategory(){
-		 return category;
+		 
+		return category;
+	}
+	
+	public String getDirectoryName(){
+		
+		return directoryName;
 	}
  
 	public void modifyDeviceID(int deviceID){
@@ -226,6 +233,11 @@ public class File implements Comparable<File> {
 	public void modifyCategory(String category){
 		
 		this.category = category;
+	}
+	
+	public void modifyDirectoryName(String directoryName) {
+		
+		this.directoryName = directoryName;
 	}
 
 	@Override

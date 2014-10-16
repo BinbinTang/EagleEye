@@ -8,9 +8,8 @@ import eagleeye.entities.File;
 
 public class DBInsertController {
 
-	protected final int NO_SUCH_EXT_FOUND = -1;
 	protected int deviceID;
-	DBInsertQueries queryMaker;
+	protected DBInsertQueries queryMaker;
 	
 	public DBInsertController(){
 		

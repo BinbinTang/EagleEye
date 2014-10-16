@@ -1,20 +1,25 @@
 package eagleeye.entities;
 
+import java.util.ArrayList;
+
+//This class is used when querying
 public class Directory {
 
 	protected String directoryName;		//Name of the directory
-	protected String previousDirectory; //parent Object Name (Use for Easy UI display)
+	protected int parentDirectory; 		//parent Object ID
 	protected int deviceID;			
-	protected int directoryID; 			//database assign ID (when query)
-	protected int originDirectory; 		//ObjectID (whenInput)
+	protected int directoryID; 			//Own Object ID
 	protected String dateCreated;
 	protected String dateAccessed;
 	protected String dateModified;
+	protected boolean isRecovered;
+	protected String dateDeleted;
+	protected ArrayList<File> fileList;
 	
-	public Directory(String directoryName, String previousDirectory){
+	public Directory(){
 		
-		this.directoryName = directoryName;
-		this.previousDirectory = previousDirectory;
+		isRecovered = false;
+		fileList = new ArrayList<File>();
 	}
 
 	public int getDeviceID(){
@@ -27,19 +32,14 @@ public class Directory {
 		return directoryID;
 	}
 	
-	public int originDirectory(){
-		
-		return originDirectory;
-	}
-
 	public String getDirectoryName(){
 
 		return directoryName;
 	}
 	
-	public String getPreviousDirectory(){
+	public int getParentDirectory(){
 		
-		return previousDirectory;
+		return parentDirectory;
 	}
 	
 	public String getDateCreated(){
@@ -56,6 +56,21 @@ public class Directory {
 		
 		return dateModified;
 	}
+	
+	public boolean getIsRecovered(){
+		
+		return isRecovered;
+	}
+	
+	public String getDateDeleted(){
+		
+		return dateDeleted;
+	}
+	
+	public ArrayList<File> getFiles(){
+		
+		return fileList;
+	}
 
 	public void modifyDeviceID(int deviceID){
 		
@@ -67,19 +82,14 @@ public class Directory {
 		this.directoryID = directoryID;
 	}
 	
-	public void modifyOriginDirectory(int originDirectory){
-		
-		this.originDirectory = originDirectory;
-	}
-	
 	public void modifyDirectoryName(String directoryName){
 		
 		this.directoryName = directoryName;
 	}
 	
-	public void modifyPreviousDirectory(String previousDirectory){
+	public void modifyParentDirectory(int parentDirectory){
 		
-		this.previousDirectory= previousDirectory;
+		this.parentDirectory= parentDirectory;
 	}
 	
 	public void modifyDateCreated(String dateCreated){
@@ -96,6 +106,20 @@ public class Directory {
 		
 		this.dateModified = dateModified;		
 	}
-
+	
+	public void modifyDateDeleted(String dateDeleted){
+		
+		this.dateDeleted = dateDeleted;
+	}
+	
+	public void modifyIsRecovered(boolean isRecovered){
+		
+		this.isRecovered = isRecovered;
+	}
+	
+	public void addNewFile(File newFile){
+		
+		this.fileList.add(newFile);
+	}
  
 }

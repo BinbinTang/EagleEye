@@ -2,6 +2,7 @@ package eagleeye.model;
 
 import java.util.ArrayList;
 
+import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.*;
 
 public class UIRequestHandler implements RequestHandler {
@@ -14,7 +15,15 @@ public class UIRequestHandler implements RequestHandler {
 	public ArrayList<eagleeye.entities.File> getFolderStructure() {
 		if(folderStructure==null){
 			folderStructure=new ArrayList<eagleeye.entities.File>();
+		
 			// TODO Query database and populate folderStructure
+			
+			//WenXia, Use the following method:
+			DBQueryController dbController = new DBQueryController(1);
+			ArrayList<Directory> TreeStructure = dbController.getAllDirectoriesAndFiles();
+			
+			System.out.println("The number of Directories: " + TreeStructure.size());
+						
 		/*
 			// for now:
 			folderStructure.add(new File(0,-1,	0,false,false,true,"root","C:/","ext","modext","delDate","createDate","accDate","modDate"));
