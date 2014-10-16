@@ -321,7 +321,7 @@ public class WorkBenchController {
 		 * folderStructure = test.getFolderStructure();
 		 */
 		DBQueryController dbController = new DBQueryController(1);
-		TreeStructure = dbController.getAllDirectoriesAndFiles();
+		ArrayList<Directory> TreeStructure = dbController.getAllDirectoriesAndFiles();
 		System.out.println(TreeStructure.get(0).getDirectoryID());
 
 		// System.out.println("The number of Directories: " +
