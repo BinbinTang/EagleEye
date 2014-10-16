@@ -1,8 +1,14 @@
 package eagleeye.datacarving.unpack.service;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -154,7 +160,7 @@ public class UnpackDirectoryService extends Service<Void>
 			}
 			
 			if(fileList != null)
-			{
+			{				
 				DBInsertTransaction transaction = new DBInsertTransaction();
 				transaction.insertNewDeviceData(new Device("Test Device", "100GB", "Dennis"), fileList);
 			}
