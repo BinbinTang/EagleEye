@@ -23,6 +23,7 @@ import eagleeye.filesystem.format.FAT32FormatIdentifier;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.format.FormatIdentifierManager;
 import eagleeye.filesystem.format.YAFFS2FormatIdentifier;
+import eagleeye.pluginmanager.PluginManager;
 
 public class UnpackDirectoryService extends Service<Void>
 {
@@ -51,6 +52,7 @@ public class UnpackDirectoryService extends Service<Void>
 				try
 				{
 					loadDirectory(directory);
+					//loadDirectoryFromPlugin(directory);
 				} catch (Exception e)
 				{
 					e.printStackTrace();
@@ -165,5 +167,24 @@ public class UnpackDirectoryService extends Service<Void>
 				transaction.insertNewDeviceData(new Device("Test Device", "100GB", "Dennis"), fileList);
 			}
 		}
+	}
+	
+	//ALTERNATIVE LOAD METHOD
+	private void loadDirectoryFromPlugin(File directory) throws Exception{
+		String diskimg = "mtd8.dd";
+		System.out.println("disk image to unpack is: "+diskimg);
+		
+		String diskimgPath = directory.getPath().replace("\\", "/");
+		diskimgPath +="/"+diskimg;
+		System.out.println("located at: "+diskimgPath);
+		
+		String outputPath=System.getProperty("user.dir").replace("\\", "/");
+		outputPath += "/Output";
+		System.out.println("will be unpacked to: "+outputPath);
+		
+		String pluginFolder="PluginBinaries";
+		PluginManager demo = new PluginManager(pluginFolder);
+		demo.getPlugins();
+		demo.extractFiles(diskimgPath,outputPath);
 	}
 }
