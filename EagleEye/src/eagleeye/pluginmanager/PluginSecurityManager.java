@@ -61,9 +61,9 @@ public class PluginSecurityManager extends SecurityManager {
 			//trusted();
 	}
 	public void checkRead (String file, Object context) { trusted(); }
-	public void checkWrite (java.io.FileDescriptor fd) { trusted(); }
-	public void checkWrite (String file) { trusted(); }
-	public void checkDelete (String file) { trusted(); }
+	public void checkWrite (java.io.FileDescriptor fd) { /*trusted();*/ }
+	public void checkWrite (String file) { /*trusted();*/ }
+	public void checkDelete (String file) { /*trusted();*/ }
 	public void checkConnect (String host, int port) { trusted(); }
 	public void checkConnect (String host,int port,Object context) {trusted();}
 	public void checkListen (int port) { trusted(); }

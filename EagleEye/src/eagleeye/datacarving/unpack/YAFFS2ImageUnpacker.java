@@ -18,6 +18,11 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
+
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.yaffs2.YAFFS2Object;
 import eagleeye.filesystem.yaffs2.YAFFS2ObjectHeader;
@@ -367,15 +372,43 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				{
 					filePath = parentPaths.get(parentId);
 				}
+
+				eagleeye.entities.File genericFile = new eagleeye.entities.File();
 				
 				if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_FILE)
 				{
 					this.writeFile(filePath, header.getName(), dataChunks);
+
+					AutoDetectParser parser = new AutoDetectParser();
+					BodyContentHandler contentHandler = new BodyContentHandler(10 * 1024 * 1024);
+					Metadata metaData = new Metadata();
+					FileInputStream stream = new FileInputStream(new File(filePath + File.separator + header.getName()));
+					
+					try
+					{
+						parser.parse(stream, contentHandler, metaData);
+					}
+					catch(TikaException e)
+					{
+						// Unable to parse
+						e.printStackTrace();
+					}
+					
+					stream.close();
+					
+					String extension = "";
+					if(header.getName().lastIndexOf('.') > -1)
+					{
+						extension = header.getName().substring(header.getName().lastIndexOf('.'));
+					}
+					
+					System.out.printf("Ext %s Type %s", extension, metaData.get(Metadata.CONTENT_TYPE));
+					System.out.println();
+					
 				}
 				
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 
-				eagleeye.entities.File genericFile = new eagleeye.entities.File();
 				genericFile.modifyDateAccessed(dateFormat.format(new Date(header.getAccessedTime() * 1000L)));
 				genericFile.modifyDateCreated(dateFormat.format(new Date(header.getCreatedTime() * 1000L)));
 				genericFile.modifyDateModified(dateFormat.format(new Date(header.getModifiedTime() * 1000L)));
