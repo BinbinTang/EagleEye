@@ -1,6 +1,5 @@
 package eagleeye.datacarving.unpack;
 
-import java.io.Console;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
