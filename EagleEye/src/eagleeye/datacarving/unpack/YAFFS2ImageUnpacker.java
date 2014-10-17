@@ -1,5 +1,6 @@
 package eagleeye.datacarving.unpack;
 
+import java.io.Console;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -304,7 +306,16 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				if(yaffs2ParentObjects.containsKey(parentId))
 				{
 					filePathPieces.add(yaffs2ParentObjects.get(parentId).getName());
-					parentId = yaffs2ParentObjects.get(parentId).getParentObjectId();
+					int newParentId = yaffs2ParentObjects.get(parentId).getParentObjectId();
+					
+					if(newParentId != parentId)
+					{
+						parentId = newParentId;
+					}
+					else
+					{
+						break;
+					}
 				}
 				else
 				{
@@ -372,8 +383,10 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				{
 					filePath = parentPaths.get(parentId);
 				}
-
+				
 				eagleeye.entities.File genericFile = new eagleeye.entities.File();
+				
+				genericFile.modifyIsRecovered(header.isDeleted());
 				
 				if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_FILE)
 				{
@@ -403,8 +416,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					}
 					
 					System.out.printf("Ext %s Type %s", extension, metaData.get(Metadata.CONTENT_TYPE));
-					System.out.println();
-					
+					System.out.println();					
 				}
 				
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");

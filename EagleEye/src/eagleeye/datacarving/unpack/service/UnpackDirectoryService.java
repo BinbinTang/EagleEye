@@ -147,7 +147,7 @@ public class UnpackDirectoryService extends Service<Void>
 				}
 			}
 			
-			ArrayList<eagleeye.entities.File> fileList = null;
+			ArrayList<eagleeye.entities.File> fileList = new ArrayList<eagleeye.entities.File>();
 			
 			for (FormatDescription formatDescription : formatDescriptions)
 			{
@@ -156,11 +156,16 @@ public class UnpackDirectoryService extends Service<Void>
 					continue;
 				}
 				
-				fileList = diskImageUnpackerManager.unpack(formatDescription);
+				ArrayList<eagleeye.entities.File> newFileList = diskImageUnpackerManager.unpack(formatDescription);
+				
+				if(newFileList != null)
+				{
+					fileList.addAll(newFileList);
+				}
 			}
 			
-			if(fileList != null)
-			{				
+			if(fileList.size() > 0)
+			{
 				DBInsertTransaction transaction = new DBInsertTransaction();
 				transaction.insertNewDeviceData(new Device("Test Device", "100GB", "Dennis"), fileList);
 			}
