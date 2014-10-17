@@ -145,7 +145,7 @@ public class UnpackDirectoryService extends Service<Void>
 				
 				if (diskImageUnpackerManager.unpack(formatDescription) == null)
 				{
-					break;
+					continue;
 				}
 			}
 			

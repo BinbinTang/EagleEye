@@ -265,7 +265,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 						{
 							yaffs2ParentObjects.put(objectId, header);
 						}
-						
+		
 						if(!yaffs2Objects.contains(yaffs2Object))
 						{
 							yaffs2Objects.add(yaffs2Object);
@@ -360,12 +360,17 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			//for (Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry : versions.entrySet())
 			//{
 				//int version = entry.getKey();
-				Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry = yaffs2Object.getVersions().lastEntry();
+				Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry = yaffs2Object.getVersions().firstEntry(); //lastEntry();
 				YAFFS2ObjectHeader header = entry.getValue().getKey();
 				TreeMap<Integer, byte[]> dataChunks = entry.getValue().getValue();
 				
 				int parentId = header.getParentObjectId();
 				String filePath = rootFilePath;
+				
+				if(yaffs2Object.getId() == 2600)
+				{
+					System.out.println("FOUND");
+				}
 				
 				if(header.getName().equals("deleted") && parentId == 4)
 				{
