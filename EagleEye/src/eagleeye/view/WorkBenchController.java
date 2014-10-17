@@ -57,7 +57,7 @@ public class WorkBenchController {
 	private Label labelDirPath = new Label();
 
 	// Path to identify current case
-	private String casePath = "D:\\Picture\\Í·Ïñ";
+	private String casePath = "";
 	ArrayList<eagleeye.entities.File> folderStructure;
 	ArrayList<Directory> TreeStructure;
 
@@ -342,7 +342,7 @@ public class WorkBenchController {
 			TreeStructure.get(0).modifyDirectoryID(0);
 
 			// Whenever a directory found its parent, we remove it from copied list
-			while (CopyTreeStructure.size() > 1) {
+			while (CopyTreeStructure.size() > 0) {
 				int startSize = CopyTreeStructure.size();
 				for (Directory dir : CopyTreeStructure) {
 					TreeItem<String> targetParent = null;
@@ -350,6 +350,7 @@ public class WorkBenchController {
 							+ CopyTreeStructure.size());
 					// check if it is root
 					if (dir.getDirectoryID() == 0) {
+						casePath = dir.getDirectoryName();
 						this.addFiles(dir, rootNode);
 						CopyTreeStructure.remove(dir);
 						// System.out.println("root met, removed");
@@ -432,11 +433,12 @@ public class WorkBenchController {
 
 						// Check if it is a file, and open
 						if (item.isLeaf()) {
-							String filePath = item.getParent().getParent()
-									.getValue()
-									+ "/"
-									+ item.getValue()
-									+ item.getParent().getValue();
+							String filePath = item.getValue();
+							item = item.getParent();
+							while(item instanceof TreeItem){
+								filePath = item.getValue() + "/" + filePath;
+								item = item.getParent();
+							}
 							System.out.println("Selected File : " + filePath);
 							String location = Paths.get(".").toAbsolutePath()
 									.normalize().toString();
@@ -500,7 +502,7 @@ public class WorkBenchController {
 	// Add files into directory
 	public void addFiles(Directory dir, TreeItem<String> node) {
 		for (eagleeye.entities.File file : dir.getFiles()) {
-			TreeItem<String> newItem = new TreeItem<String>(file.getFileName(),
+			TreeItem<String> newItem = new TreeItem<String>(file.getFileName() + "." + file.getFileExt(),
 					new ImageView(fileIcon));
 			node.getChildren().add(newItem);
 		}
