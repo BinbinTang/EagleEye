@@ -1,14 +1,18 @@
 package eagleeye.view;
 
 import java.awt.Desktop;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -205,7 +209,25 @@ public class WorkBenchController {
 			}
 		});
 
-		// Time
+		// Time, start: 00:00-23:59. end: 00:00-23:59. start <= end
+		startHourTf.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!(newValue.matches("[0-9]*"))) {
+					startHourTf.setText(newValue.substring(0,
+							newValue.length() - 1));
+					System.out.println("no match");
+				}
+				
+				if (startHourTf.getText().length() == 0) {
+					System.out.println("no input");
+					startHourTf.setText("00");
+				}
+
+			}
+		});
 		startHourTf.focusedProperty().addListener(
 				new ChangeListener<Boolean>() {
 					@Override
@@ -215,11 +237,49 @@ public class WorkBenchController {
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
+							// Check range
+							if (Integer.parseInt(startHourTf.getText()) > 23) {
+								System.out.println("too large");
+								startHourTf.setText("23");
+							}else if (Integer.parseInt(startHourTf.getText()) < 0) {
+								System.out.println("too small");
+								startHourTf.setText("0");
+							}
+							// Check length
+							if (startHourTf.getText().length() > 2) {
+								System.out.println("too long");
+								startHourTf.setText("23");
+							} else if (startHourTf.getText().length() == 1) {
+								System.out.println("1 degit");
+								startHourTf.setText("0" + startHourTf.getText());
+							} else if (startHourTf.getText().length() == 0) {
+								System.out.println("no input");
+								startHourTf.setText("00");
+							}
 							startHour = startHourTf.getText();
 							System.out.println("startHour is " + startHour);
-						}
+						}				
 					}
 				});
+
+		startMinuteTf.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!(newValue.matches("[0-9]*"))) {
+					startMinuteTf.setText(newValue.substring(0,
+							newValue.length() - 1));
+					System.out.println("no match");
+				}
+				
+				if (startMinuteTf.getText().length() == 0) {
+					System.out.println("no input");
+					startMinuteTf.setText("00");
+				}
+
+			}
+		});
 		startMinuteTf.focusedProperty().addListener(
 				new ChangeListener<Boolean>() {
 					@Override
@@ -229,21 +289,97 @@ public class WorkBenchController {
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
+							// Check range
+							if (Integer.parseInt(startMinuteTf.getText()) > 59) {
+								System.out.println("too large");
+								startMinuteTf.setText("59");
+							}else if (Integer.parseInt(startMinuteTf.getText()) < 0) {
+								System.out.println("too small");
+								startMinuteTf.setText("0");
+							}
+							// Check length
+							if (startMinuteTf.getText().length() > 2) {
+								System.out.println("too long");
+								startMinuteTf.setText("59");
+							} else if (startMinuteTf.getText().length() == 1) {
+								System.out.println("1 degit");
+								startMinuteTf.setText("0" + startMinuteTf.getText());
+							} else if (startMinuteTf.getText().length() == 0) {
+								System.out.println("no input");
+								startMinuteTf.setText("00");
+							}
 							startMinute = startMinuteTf.getText();
 							System.out.println("startMinute is " + startMinute);
-						}
+						}				
 					}
 				});
-		endHourTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
+		endHourTf.textProperty().addListener(new ChangeListener<String>() {
+
 			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0,
-					Boolean oldPropertyValue, Boolean newPropertyValue) {
-				if (newPropertyValue) {
-					System.out.println("Textfield on focus");
-				} else {
-					endHour = endHourTf.getText();
-					System.out.println("endHour is " + endHour);
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!(newValue.matches("[0-9]*"))) {
+					endHourTf.setText(newValue.substring(0,
+							newValue.length() - 1));
+					System.out.println("no match");
 				}
+				
+				if (startHourTf.getText().length() == 0) {
+					System.out.println("no input");
+					endHourTf.setText("00");
+				}
+
+			}
+		});
+		endHourTf.focusedProperty().addListener(
+				new ChangeListener<Boolean>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Boolean> arg0,
+							Boolean oldPropertyValue, Boolean newPropertyValue) {
+						if (newPropertyValue) {
+							System.out.println("Textfield on focus");
+						} else {
+							// Check range
+							if (Integer.parseInt(endHourTf.getText()) > 23) {
+								System.out.println("too large");
+								endHourTf.setText("23");
+							}else if (Integer.parseInt(endHourTf.getText()) < 0) {
+								System.out.println("too small");
+								endHourTf.setText("0");
+							}
+							// Check length
+							if (endHourTf.getText().length() > 2) {
+								System.out.println("too long");
+								endHourTf.setText("23");
+							} else if (endHourTf.getText().length() == 1) {
+								System.out.println("1 degit");
+								endHourTf.setText("0" + endHourTf.getText());
+							} else if (endHourTf.getText().length() == 0) {
+								System.out.println("no input");
+								endHourTf.setText("00");
+							}
+							endHour = endHourTf.getText();
+							System.out.println("endHour is " + endHour);
+						}				
+					}
+				});
+		endMinuteTf.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!(newValue.matches("[0-9]*"))) {
+					endMinuteTf.setText(newValue.substring(0,
+							newValue.length() - 1));
+					System.out.println("no match");
+				}
+				
+				if (endMinuteTf.getText().length() == 0) {
+					System.out.println("no input");
+					endMinuteTf.setText("00");
+				}
+
 			}
 		});
 		endMinuteTf.focusedProperty().addListener(
@@ -255,9 +391,28 @@ public class WorkBenchController {
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
+							// Check range
+							if (Integer.parseInt(endMinuteTf.getText()) > 59) {
+								System.out.println("too large");
+								endMinuteTf.setText("59");
+							}else if (Integer.parseInt(endMinuteTf.getText()) < 0) {
+								System.out.println("too small");
+								endMinuteTf.setText("0");
+							}
+							// Check length
+							if (endMinuteTf.getText().length() > 2) {
+								System.out.println("too long");
+								endMinuteTf.setText("59");
+							} else if (endMinuteTf.getText().length() == 1) {
+								System.out.println("1 degit");
+								endMinuteTf.setText("0" + endMinuteTf.getText());
+							} else if (endMinuteTf.getText().length() == 0) {
+								System.out.println("no input");
+								endMinuteTf.setText("00");
+							}
 							endMinute = endMinuteTf.getText();
-							System.out.println("endMinute " + endMinute);
-						}
+							System.out.println("endMinute is " + endMinute);
+						}				
 					}
 				});
 
@@ -328,7 +483,6 @@ public class WorkBenchController {
 		// System.out.println("The number of Directories: " +
 		// TreeStructure.size());
 
-
 		// Check if DB empty
 		if (TreeStructure.size() != 0) {
 			// TreeView
@@ -341,7 +495,8 @@ public class WorkBenchController {
 			// Force root node ID to be 0
 			TreeStructure.get(0).modifyDirectoryID(0);
 
-			// Whenever a directory found its parent, we remove it from copied list
+			// Whenever a directory found its parent, we remove it from copied
+			// list
 			while (CopyTreeStructure.size() > 0) {
 				int startSize = CopyTreeStructure.size();
 				for (Directory dir : CopyTreeStructure) {
@@ -435,7 +590,7 @@ public class WorkBenchController {
 						if (item.isLeaf()) {
 							String filePath = item.getValue();
 							item = item.getParent();
-							while(item instanceof TreeItem){
+							while (item instanceof TreeItem) {
 								filePath = item.getValue() + "/" + filePath;
 								item = item.getParent();
 							}
@@ -502,8 +657,8 @@ public class WorkBenchController {
 	// Add files into directory
 	public void addFiles(Directory dir, TreeItem<String> node) {
 		for (eagleeye.entities.File file : dir.getFiles()) {
-			TreeItem<String> newItem = new TreeItem<String>(file.getFileName() + "." + file.getFileExt(),
-					new ImageView(fileIcon));
+			TreeItem<String> newItem = new TreeItem<String>(file.getFileName()
+					+ "." + file.getFileExt(), new ImageView(fileIcon));
 			node.getChildren().add(newItem);
 		}
 
