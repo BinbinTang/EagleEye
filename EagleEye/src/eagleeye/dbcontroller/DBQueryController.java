@@ -15,6 +15,41 @@ public class DBQueryController {
 		queryMaker = new DBQueries();
 	}
 	
+	public ArrayList<Device> getAllDevices() {
+		
+		ArrayList<Device> listOfDevices = new ArrayList<Device> (); 
+		Connection conn = DBConnection.dbConnector();
+		
+		try {
+			Statement stmt = conn.createStatement();
+			String query = queryMaker.getAllDevices();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			while(rs.next()){
+				Device device = new Device();
+				device.modifyDeviceID(rs.getInt("DeviceID"));
+				device.modifyDeviceName(rs.getString("DeviceName"));
+				device.modifyDeviceOwner(rs.getString("DeviceOwner"));
+				device.modifyContentSize(rs.getString("ContentSize"));
+				device.modifyDateCreated(rs.getString("DateCreated"));
+				device.modifyLastViewedOn(rs.getString("LastViewedOn"));
+				
+				listOfDevices.add(device);
+			}
+			
+			conn.close();
+			
+		} catch (Exception e) {
+			
+			try {
+				conn.close();
+			} catch (Exception e2) {
+				
+			}
+		}
+		
+		return listOfDevices;
+	}
 	
 	
 	//use for tree-view

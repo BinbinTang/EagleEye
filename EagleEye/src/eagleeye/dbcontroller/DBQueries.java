@@ -2,14 +2,20 @@ package eagleeye.dbcontroller;
 
 public class DBQueries {
 
-	String getAllDirectories(int deviceID) {
+	public String getAllDevices() {
+		
+		String query = "SELECT * FROM Device";
+		return query;
+	}
+	
+	public String getAllDirectories(int deviceID) {
 		
 		String query = "SELECT * FROM Directory WHERE DeviceID = " + deviceID;
 		return query;
 		
 	}
 	
-	String getAllFiles(int deviceID) {
+	public String getAllFiles(int deviceID) {
 		
 		String query = "SELECT FileName, FileExt, File.IsRecovered, File.DateDeleted, File.IsModified,"
 					   + "ModifiedExt, File.DateCreated, File.DateAccessed, File.DateModified, FilePath, File.DirectoryID,"
