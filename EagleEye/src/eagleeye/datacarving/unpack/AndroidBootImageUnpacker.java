@@ -27,7 +27,7 @@ public class AndroidBootImageUnpacker implements IDiskImageUnpacker
 	protected boolean cancel = false;
 	
 	@Override
-	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatDescription) throws Exception
+	public ArrayList<eagleeye.entities.FileEntity> unpack(FormatDescription formatDescription) throws Exception
 	{
 		if(formatDescription.getBinaryImageType() != "AndroidBoot")
 		{

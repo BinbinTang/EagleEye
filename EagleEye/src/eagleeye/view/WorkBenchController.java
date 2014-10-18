@@ -62,7 +62,7 @@ public class WorkBenchController {
 
 	// Path to identify current case
 	private String casePath = "";
-	ArrayList<eagleeye.entities.File> folderStructure;
+	ArrayList<eagleeye.entities.FileEntity> folderStructure;
 	ArrayList<Directory> TreeStructure;
 
 	// TreeView
@@ -656,7 +656,7 @@ public class WorkBenchController {
 
 	// Add files into directory
 	public void addFiles(Directory dir, TreeItem<String> node) {
-		for (eagleeye.entities.File file : dir.getFiles()) {
+		for (eagleeye.entities.FileEntity file : dir.getFiles()) {
 			TreeItem<String> newItem = new TreeItem<String>(file.getFileName()
 					+ "." + file.getFileExt(), new ImageView(fileIcon));
 			node.getChildren().add(newItem);

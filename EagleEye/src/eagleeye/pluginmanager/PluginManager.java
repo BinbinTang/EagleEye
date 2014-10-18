@@ -114,9 +114,9 @@ public class PluginManager {
 					else
 						System.out.println("successfully extracted "+result.size()+"files");
 					
-					ArrayList<eagleeye.entities.File> fs = new ArrayList<eagleeye.entities.File>();
+					ArrayList<eagleeye.entities.FileEntity> fs = new ArrayList<eagleeye.entities.FileEntity>();
 					for(EagleFile f: result){
-						eagleeye.entities.File ef = new eagleeye.entities.File();
+						eagleeye.entities.FileEntity ef = new eagleeye.entities.FileEntity();
 						ef.modifyDeviceID(f.getDeviceID());
 						ef.modifyDirectoryID(f.getDirectoryID());
 						ef.modifyFileID(f.getFileID());

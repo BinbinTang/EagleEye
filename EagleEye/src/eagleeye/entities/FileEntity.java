@@ -1,6 +1,6 @@
 package eagleeye.entities;
 
-public class File implements Comparable<File> {
+public class FileEntity implements Comparable<FileEntity> {
 	
 	protected int deviceID;
 	protected int directoryID; 		//object parentID
@@ -21,7 +21,7 @@ public class File implements Comparable<File> {
 	protected String directoryName;
 	
 	
-	public File() {
+	public FileEntity() {
 		
 		isRecovered = false;
 		isModified = false;
@@ -37,7 +37,7 @@ public class File implements Comparable<File> {
 		category = "";
 	}
 	/*new*/
-	public File(int _deviceID,
+	public FileEntity(int _deviceID,
 	 			int _directoryID,
 	 			int _fileID,
 				boolean _isRecovered,
@@ -241,7 +241,7 @@ public class File implements Comparable<File> {
 	}
 
 	@Override
-	public int compareTo(File anotherFile) {
+	public int compareTo(FileEntity anotherFile) {
 		
 		int anotherFileDirectory = anotherFile.getDirectoryID();
 		return this.getDirectoryID() - anotherFileDirectory;

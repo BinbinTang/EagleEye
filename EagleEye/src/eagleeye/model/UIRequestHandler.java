@@ -6,15 +6,15 @@ import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.*;
 
 public class UIRequestHandler implements RequestHandler {
-	private ArrayList<eagleeye.entities.File> folderStructure;
+	private ArrayList<eagleeye.entities.FileEntity> folderStructure;
 	
 	@Override
 	/*
 	/*Return a list of File Object, as defined by entities package
 	*/
-	public ArrayList<eagleeye.entities.File> getFolderStructure() {
+	public ArrayList<eagleeye.entities.FileEntity> getFolderStructure() {
 		if(folderStructure==null){
-			folderStructure=new ArrayList<eagleeye.entities.File>();
+			folderStructure=new ArrayList<eagleeye.entities.FileEntity>();
 		
 			// TODO Query database and populate folderStructure
 			

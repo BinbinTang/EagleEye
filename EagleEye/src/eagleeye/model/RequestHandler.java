@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface RequestHandler {
 	
-	public ArrayList<eagleeye.entities.File> getFolderStructure();
+	public ArrayList<eagleeye.entities.FileEntity> getFolderStructure();
 	public String getFilePath(int id);
 	public String getFileSize(int id);
 	

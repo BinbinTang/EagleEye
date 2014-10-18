@@ -14,12 +14,12 @@ public class Directory {
 	protected String dateModified;
 	protected boolean isRecovered;
 	protected String dateDeleted;
-	protected ArrayList<File> fileList;
+	protected ArrayList<FileEntity> fileList;
 	
 	public Directory(){
 		
 		isRecovered = false;
-		fileList = new ArrayList<File>();
+		fileList = new ArrayList<FileEntity>();
 	}
 
 	public int getDeviceID(){
@@ -67,7 +67,7 @@ public class Directory {
 		return dateDeleted;
 	}
 	
-	public ArrayList<File> getFiles(){
+	public ArrayList<FileEntity> getFiles(){
 		
 		return fileList;
 	}
@@ -117,7 +117,7 @@ public class Directory {
 		this.isRecovered = isRecovered;
 	}
 	
-	public void addNewFile(File newFile){
+	public void addNewFile(FileEntity newFile){
 		
 		this.fileList.add(newFile);
 	}

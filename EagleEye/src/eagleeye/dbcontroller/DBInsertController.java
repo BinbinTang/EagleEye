@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import eagleeye.entities.Device;
-import eagleeye.entities.File;
+import eagleeye.entities.FileEntity;
 
 public class DBInsertController {
 
@@ -39,25 +39,25 @@ public class DBInsertController {
 		stmt.execute(query);
 	}
 	
-	public void insertNewDirectory(ArrayList<File> listOfDirectory, Statement stmt) throws Exception{
+	public void insertNewDirectory(ArrayList<FileEntity> listOfDirectory, Statement stmt) throws Exception{
 			
-		for(File newDirectory : listOfDirectory){
+		for(FileEntity newDirectory : listOfDirectory){
 			stmt.addBatch(queryMaker.insertNewDirectory(newDirectory, deviceID));
 		}		
 		stmt.executeBatch();
 		stmt.clearBatch();
 	}
 	
-	public void insertNewFile(ArrayList<File> listOfFiles, Statement stmt) throws Exception {
+	public void insertNewFile(ArrayList<FileEntity> listOfFiles, Statement stmt) throws Exception {
 		
-		for(File newFile : listOfFiles) {
+		for(FileEntity newFile : listOfFiles) {
 			stmt.addBatch(queryMaker.insertNewFile(newFile, deviceID));
 		}
 		stmt.executeBatch();
 		stmt.clearBatch();
 	}
 	
-	public void insertNewFileExt(ArrayList<File> listOfFiles, Statement stmt) throws Exception {
+	public void insertNewFileExt(ArrayList<FileEntity> listOfFiles, Statement stmt) throws Exception {
 		
 		ArrayList<String> extList = getAllFileExt(listOfFiles);
 				
@@ -68,12 +68,12 @@ public class DBInsertController {
 		stmt.clearBatch();
 	}
 	
-	public ArrayList<String> getAllFileExt(ArrayList<File> listOfFiles) {
+	public ArrayList<String> getAllFileExt(ArrayList<FileEntity> listOfFiles) {
 		
 		ArrayList<String> extList = new ArrayList<String> ();
 		boolean isExtAdded = false;
 		
-		for(File newFile : listOfFiles){
+		for(FileEntity newFile : listOfFiles){
 			
 			isExtAdded = false;
 			String fileExt = newFile.getFileExt();

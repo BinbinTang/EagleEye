@@ -22,7 +22,7 @@ public class DBQueryController {
 	public ArrayList<Directory> getAllDirectoriesAndFiles() {
 		
 		ArrayList<Directory> listOfDirectory = getAllDirectories();
-		ArrayList<File> listOfFiles = getAllFiles();
+		ArrayList<FileEntity> listOfFiles = getAllFiles();
 		
 		ArrayList<Directory> organizedDirectoryList = this.organizeFilesAndDirectory(listOfDirectory, listOfFiles);
 		
@@ -69,9 +69,9 @@ public class DBQueryController {
 		return listOfDirectory;
 	}
 	
-	public ArrayList<File> getAllFiles() {
+	public ArrayList<FileEntity> getAllFiles() {
 		
-		ArrayList<File> listOfFiles = new ArrayList<File>();
+		ArrayList<FileEntity> listOfFiles = new ArrayList<FileEntity>();
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
@@ -81,7 +81,7 @@ public class DBQueryController {
 			
 			while(rs.next()){
 				
-				File f = new File();
+				FileEntity f = new FileEntity();
 				f.modifyCategory(rs.getString("ExtTypeName"));
 				f.modifyFileName(rs.getString("FileName"));
 				f.modifyFileExt(rs.getString("FileExt"));
@@ -117,9 +117,9 @@ public class DBQueryController {
 	}
 	
 	//Helper method
-	private ArrayList<Directory> organizeFilesAndDirectory (ArrayList<Directory> listOfDirectory, ArrayList<File> listOfFiles){
+	private ArrayList<Directory> organizeFilesAndDirectory (ArrayList<Directory> listOfDirectory, ArrayList<FileEntity> listOfFiles){
 		
-		for(File f : listOfFiles) {
+		for(FileEntity f : listOfFiles) {
 			
 			int fileDirectory = f.getDirectoryID();
 			

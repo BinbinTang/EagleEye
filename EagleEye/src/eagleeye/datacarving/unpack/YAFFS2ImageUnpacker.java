@@ -58,7 +58,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	}
 
 	@Override
-	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatDescription) throws Exception
+	public ArrayList<eagleeye.entities.FileEntity> unpack(FormatDescription formatDescription) throws Exception
 	{
 		this.formatDescription = formatDescription;
 		
@@ -282,7 +282,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			}
 		}
 
-		ArrayList<eagleeye.entities.File> files = new ArrayList<eagleeye.entities.File>();
+		ArrayList<eagleeye.entities.FileEntity> files = new ArrayList<eagleeye.entities.FileEntity>();
 		
 		String rootFilePath = "." + File.separator + "output" + File.separator + file.getName();
 		HashMap<Integer, String> parentPaths = new HashMap<Integer, String>();
@@ -387,7 +387,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					filePath = parentPaths.get(parentId);
 				}
 				
-				eagleeye.entities.File genericFile = new eagleeye.entities.File();
+				eagleeye.entities.FileEntity genericFile = new eagleeye.entities.FileEntity();
 				
 				genericFile.modifyIsRecovered(header.isDeleted());
 				

@@ -149,7 +149,7 @@ public class UnpackDirectoryService extends Service<Void>
 				}
 			}
 			
-			ArrayList<eagleeye.entities.File> fileList = new ArrayList<eagleeye.entities.File>();
+			ArrayList<eagleeye.entities.FileEntity> fileList = new ArrayList<eagleeye.entities.FileEntity>();
 			
 			for (FormatDescription formatDescription : formatDescriptions)
 			{
@@ -158,7 +158,7 @@ public class UnpackDirectoryService extends Service<Void>
 					continue;
 				}
 				
-				ArrayList<eagleeye.entities.File> newFileList = diskImageUnpackerManager.unpack(formatDescription);
+				ArrayList<eagleeye.entities.FileEntity> newFileList = diskImageUnpackerManager.unpack(formatDescription);
 				
 				if(newFileList != null)
 				{
