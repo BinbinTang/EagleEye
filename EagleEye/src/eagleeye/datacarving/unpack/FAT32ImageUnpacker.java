@@ -3,6 +3,7 @@ package eagleeye.datacarving.unpack;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 import eagleeye.filesystem.format.FormatDescription;
@@ -15,7 +16,7 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	protected FileInputStream fileInputStream;
 	protected DataInputStream inputStream;
 
-	protected byte[] inputBytes;
+	protected byte[] chunk;
 
 	protected ByteBuffer byteBuffer;
 	
@@ -30,6 +31,11 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	
 	public FAT32ImageUnpacker(){
 		this.setPageSize(512);
+	}
+	
+	public FAT32ImageUnpacker(FormatDescription formatDescription)
+	{
+		this.formatDescription = formatDescription;
 	}
 	
 	public void setPageSize(int pageSize){
@@ -106,7 +112,40 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		this.fileInputStream = new FileInputStream(file);
 		this.inputStream = new DataInputStream(this.fileInputStream);
 		
+		byte[] inputBytes = new byte[this.pageSize];
 		
+		ByteBuffer byteBuffer;
+		
+		// Split up the data into blocks
+		long totalFileBytes = (long) file.length();
+		long totalBytesRead = 0;
+
+		while (totalFileBytes > totalBytesRead + this.pageSize)
+		{			
+			inputBytes = new byte[this.pageSize];
+			inputStream.readFully(inputBytes);
+			byteBuffer = ByteBuffer.wrap(inputBytes);
+			byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+			//System.out.println (byteBuffer);
+			totalBytesRead += this.pageSize;
+			
+			// check the bootSector
+			// Case 1: jmpBoot[0] = 0xE9 jmpBoot[1] = 0x?? jmpBoot[2] = 0x??;
+			if (byteBuffer.get() == (byte) 0xE9)
+			{
+				//chunk =
+				break;
+			}
+			// Case 2:jmpBoot[0] = 0xEB jmpBoot[1] = 0x?? jmpBoot[2] = 0x90;
+			else if (byteBuffer.get()== (byte) 0xEB)
+			{
+				//chunk =
+				break;
+			}
+		}
+			
+		FAT32ObjectBootSector bootSector = readObjectBootSector(chunk);
 		
 		
 		return null;
