@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import eagleeye.api.*;
+import eagleeye.api.entities.EagleFile;
+import eagleeye.dbcontroller.DBInsertTransaction;
+import eagleeye.entities.Device;
+
 public class PluginManager {
 	protected String pluginsDir;
 	protected List plugins;
@@ -13,14 +18,14 @@ public class PluginManager {
 		if (_pluginsDir!=null)
 			pluginsDir = _pluginsDir;
 		else
-			pluginsDir = "plugins";
+			pluginsDir = "PluginBinaries";
 
 		plugins = new ArrayList();
 
 		System.setSecurityManager(new PluginSecurityManager(pluginsDir));
 	}
 
-	protected void getPlugins() {
+	public void getPlugins() {
 		File dir = new File(System.getProperty("user.dir") + File.separator + pluginsDir);
 		ClassLoader cl = new PluginClassLoader(dir,Plugin.class.getPackage().getName());
 		if (dir.exists() && dir.isDirectory()) {
@@ -51,8 +56,7 @@ public class PluginManager {
 			}
 		}
 	}
-
-	protected void runPlugins() {
+	/*protected void runPlugins() {
 		System.out.println("==============================");
 		System.out.println("running plugin....");
 		int count = 1;
@@ -79,5 +83,72 @@ public class PluginManager {
 		}
 		System.out.println("finished");
 		System.out.println("==============================");
+	}*/
+	public int extractFiles(String diskimgPath, String outputPath){
+		ArrayList<EagleFile> result = new ArrayList<EagleFile>();
+		
+		System.out.println("==============================");
+		System.out.println("running dataextraction plugin....");
+		Iterator iter = plugins.iterator();
+		while (iter.hasNext()) {
+			Plugin pf = (Plugin) iter.next();
+			try {
+				
+				//only try execute image unpacker class
+				if(pf.pluginFunction()=="ImageUnpacker"){	
+					System.out.println(pf.pluginName());
+					
+					//pass parameters to plugin
+					List params = new ArrayList();
+					params.add(diskimgPath);
+					params.add(outputPath);
+					pf.passParam(params);
+					
+					if (pf.hasError()) {
+						System.out.println("there was an error during plugin initialization");
+						continue;
+					}
+					result = (ArrayList<EagleFile>) pf.getResult();
+					if (pf.hasError())
+						System.out.println("there was an error during plugin execution");
+					else
+						System.out.println("successfully extracted "+result.size()+"files");
+					
+					ArrayList<eagleeye.entities.FileEntity> fs = new ArrayList<eagleeye.entities.FileEntity>();
+					for(EagleFile f: result){
+						eagleeye.entities.FileEntity ef = new eagleeye.entities.FileEntity();
+						ef.modifyDeviceID(f.getDeviceID());
+						ef.modifyDirectoryID(f.getDirectoryID());
+						ef.modifyFileID(f.getFileID());
+						ef.modifyIsDirectory(f.getIsDirectory());
+						ef.modifyFileName(f.getFileName());
+						ef.modifyFilePath(f.getFilePath());
+						ef.modifyFileExt(f.getFileExt());
+						ef.modifyFileExtID(f.getFileExtID());
+						ef.modifyIsRecovered(f.getIsRecovered());
+						ef.modifyDateDeleted(f.getDateDeleted());
+						ef.modifyIsModified(f.getIsModified());
+						ef.modifyModifiedExt(f.getModifiedExt());
+						ef.modifyDateCreated(f.getDateCreated());
+						ef.modifyDateAccessed(f.getDateAccessed());
+						ef.modifyDateModified(f.getDateModified());
+						ef.modifyCategory(f.getCategory());
+						fs.add(ef);
+					}
+					
+					DBInsertTransaction transaction = new DBInsertTransaction();
+					transaction.insertNewDeviceData(new Device("Test Device2", "100GB", "Li"), fs);
+					
+					break;
+				}
+
+			} catch (SecurityException secEx) {
+				System.err.println("plugin '"+pf.getClass().getName()+"' tried to do something illegal");
+			}
+		}
+		System.out.println("finished");
+		System.out.println("==============================");
+		
+		return 0;
 	}
 }

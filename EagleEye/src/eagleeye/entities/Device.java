@@ -9,6 +9,11 @@ public class Device {
 	protected String dateCreated;
 	protected String deviceOwner;
 	
+	public Device() {
+		
+		
+	}
+	
 	public Device(String deviceName, String contentSize, String deviceOwner){
 		
 		this.deviceName = deviceName;
@@ -56,7 +61,7 @@ public class Device {
 		this.deviceName = deviceName;
 	}
  
-	public void modifyConentSize(String contentSize){
+	public void modifyContentSize(String contentSize){
 	 
 		this.contentSize = contentSize;
 	}

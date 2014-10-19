@@ -100,7 +100,7 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	}
 	
 	@Override
-	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatDescription) throws Exception {
+	public ArrayList<eagleeye.entities.FileEntity> unpack(FormatDescription formatDescription) throws Exception {
 		this.formatDescription = formatDescription;
 		
 		if(this.formatDescription.getBinaryImageType() != "FAT32")

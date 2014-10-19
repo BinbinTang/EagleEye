@@ -12,19 +12,19 @@ public class DBInsertTransaction {
 
 	protected int deviceID;
 	protected DBInsertController controller;
-	protected ArrayList<File> listOfDirectory;
-	protected ArrayList<File> listOfFiles;
+	protected ArrayList<FileEntity> listOfDirectory;
+	protected ArrayList<FileEntity> listOfFiles;
 	
 	public DBInsertTransaction(){
 		
-		listOfDirectory = new ArrayList<File>();
-		listOfFiles = new ArrayList<File>();
+		listOfDirectory = new ArrayList<FileEntity>();
+		listOfFiles = new ArrayList<FileEntity>();
 		deviceID = -1;
 		controller = new DBInsertController();
 		
 	}
 	
-	public boolean insertNewDeviceData(Device newDevice, ArrayList<File> FilesList) {
+	public boolean insertNewDeviceData(Device newDevice, ArrayList<FileEntity> FilesList) {
 	
 		separateFilesAndDirectory(FilesList);
 		
@@ -52,7 +52,7 @@ public class DBInsertTransaction {
 			conn.commit();
 			System.out.println("All fileExt insert success");
 			
-			controller.insertNewFile(FilesList, stmt);
+			controller.insertNewFile(listOfFiles, stmt);
 			conn.commit();
 			System.out.println("All Files insert success");
 			
@@ -78,18 +78,18 @@ public class DBInsertTransaction {
 	}
 	
 	//Helper Methods
-	public void separateFilesAndDirectory(ArrayList<File> FilesList) {
+	public void separateFilesAndDirectory(ArrayList<FileEntity> FilesList) {
 		
-		for(File file : FilesList){
+		for(FileEntity file : FilesList){
 			
 			if(file.getIsDirectory()) {
 				
-				File newDirectory = file;
+				FileEntity newDirectory = file;
 				listOfDirectory.add(newDirectory);
 				
 			} else {
 				
-				File newFile = file;
+				FileEntity newFile = file;
 				listOfFiles.add(newFile);
 				
 			}

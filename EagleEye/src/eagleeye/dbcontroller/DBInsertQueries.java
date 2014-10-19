@@ -31,7 +31,7 @@ public class DBInsertQueries {
 		return script;
 	}
 	
-	public String insertNewDirectory(File newDirectory, int deviceID){
+	public String insertNewDirectory(FileEntity newDirectory, int deviceID){
 		
 		String directoryName = newDirectory.getFileName();
 		int originFileID = newDirectory.getFileID(); 
@@ -49,7 +49,7 @@ public class DBInsertQueries {
 		return script;
 	}
 	
-	public String insertNewFile(File newFile, int deviceID){
+	public String insertNewFile(FileEntity newFile, int deviceID){
 		
 		String filePath = newFile.getFilePath();
 		String fileName = newFile.getFileName();
@@ -64,7 +64,7 @@ public class DBInsertQueries {
 		int directoryID = newFile.getDirectoryID();
 		
 		
-		String script = "INSERT INTO Files(FileName,FileExt,IsRecovered,DateDeleted,IsModified,ModifiedExt"
+		String script = "INSERT INTO File(FileName,FileExt,IsRecovered,DateDeleted,IsModified,ModifiedExt"
 						+",DateCreated,DateAccessed,DateModified,FilePath,DirectoryID,DeviceID) "
 						+"VALUES ('"+ fileName +"','"+ fileExt +"','"+ isRecovered + "','" + dateDeleted + "','"
 						+ isModified +"','" + modifiedExt + "','" + dateCreated + "','" + dateAccessed + "','" + dateModified 

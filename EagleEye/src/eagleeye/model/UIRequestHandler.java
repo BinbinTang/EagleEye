@@ -2,20 +2,29 @@ package eagleeye.model;
 
 import java.util.ArrayList;
 
+import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.*;
 
 public class UIRequestHandler implements RequestHandler {
-	private ArrayList<eagleeye.entities.File> folderStructure;
+	private ArrayList<eagleeye.entities.FileEntity> folderStructure;
 	
 	@Override
 	/*
 	/*Return a list of File Object, as defined by entities package
 	*/
-	public ArrayList<eagleeye.entities.File> getFolderStructure() {
+	public ArrayList<eagleeye.entities.FileEntity> getFolderStructure() {
 		if(folderStructure==null){
-			folderStructure=new ArrayList<eagleeye.entities.File>();
-			// TODO Query database and populate folderStructure
+			folderStructure=new ArrayList<eagleeye.entities.FileEntity>();
 		
+			// TODO Query database and populate folderStructure
+			
+			//WenXia, Use the following method:
+			DBQueryController dbController = new DBQueryController(1);
+			ArrayList<Directory> TreeStructure = dbController.getAllDirectoriesAndFiles();
+			
+			System.out.println("The number of Directories: " + TreeStructure.size());
+						
+		/*
 			// for now:
 			folderStructure.add(new File(0,-1,	0,false,false,true,"root","C:/","ext","modext","delDate","createDate","accDate","modDate"));
 			folderStructure.add(new File(0,	0,	1,false,false,true,"pic","C:/","ext","modext","delDate","createDate","accDate","modDate"));
@@ -27,6 +36,7 @@ public class UIRequestHandler implements RequestHandler {
 			folderStructure.add(new File(0,	2,	7,false,false,true,"audio2","C:/","wav","modext","delDate","createDate","accDate","modDate"));
 			folderStructure.add(new File(0,	3,	8,false,false,true,"text1","C:/","txt","modext","delDate","createDate","accDate","modDate"));
 			folderStructure.add(new File(0,	3,	9,false,false,true,"text2","C:/","txt","modext","delDate","createDate","accDate","modDate"));
+		*/
 		}
 		return folderStructure;
 	}

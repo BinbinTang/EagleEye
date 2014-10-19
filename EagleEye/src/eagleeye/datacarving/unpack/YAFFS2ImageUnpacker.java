@@ -18,6 +18,11 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
+
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.yaffs2.YAFFS2Object;
 import eagleeye.filesystem.yaffs2.YAFFS2ObjectHeader;
@@ -53,7 +58,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	}
 
 	@Override
-	public ArrayList<eagleeye.entities.File> unpack(FormatDescription formatDescription) throws Exception
+	public ArrayList<eagleeye.entities.FileEntity> unpack(FormatDescription formatDescription) throws Exception
 	{
 		this.formatDescription = formatDescription;
 		
@@ -260,7 +265,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 						{
 							yaffs2ParentObjects.put(objectId, header);
 						}
-						
+		
 						if(!yaffs2Objects.contains(yaffs2Object))
 						{
 							yaffs2Objects.add(yaffs2Object);
@@ -277,7 +282,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			}
 		}
 
-		ArrayList<eagleeye.entities.File> files = new ArrayList<eagleeye.entities.File>();
+		ArrayList<eagleeye.entities.FileEntity> files = new ArrayList<eagleeye.entities.FileEntity>();
 		
 		String rootFilePath = "." + File.separator + "output" + File.separator + file.getName();
 		HashMap<Integer, String> parentPaths = new HashMap<Integer, String>();
@@ -299,7 +304,16 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				if(yaffs2ParentObjects.containsKey(parentId))
 				{
 					filePathPieces.add(yaffs2ParentObjects.get(parentId).getName());
-					parentId = yaffs2ParentObjects.get(parentId).getParentObjectId();
+					int newParentId = yaffs2ParentObjects.get(parentId).getParentObjectId();
+					
+					if(newParentId != parentId)
+					{
+						parentId = newParentId;
+					}
+					else
+					{
+						break;
+					}
 				}
 				else
 				{
@@ -346,12 +360,17 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			//for (Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry : versions.entrySet())
 			//{
 				//int version = entry.getKey();
-				Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry = yaffs2Object.getVersions().lastEntry();
+				Entry<Integer, SimpleEntry<YAFFS2ObjectHeader, TreeMap<Integer, byte[]>>> entry = yaffs2Object.getVersions().firstEntry(); //lastEntry();
 				YAFFS2ObjectHeader header = entry.getValue().getKey();
 				TreeMap<Integer, byte[]> dataChunks = entry.getValue().getValue();
 				
 				int parentId = header.getParentObjectId();
 				String filePath = rootFilePath;
+				
+				if(yaffs2Object.getId() == 2600)
+				{
+					System.out.println("FOUND");
+				}
 				
 				if(header.getName().equals("deleted") && parentId == 4)
 				{
@@ -368,14 +387,43 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					filePath = parentPaths.get(parentId);
 				}
 				
+				eagleeye.entities.FileEntity genericFile = new eagleeye.entities.FileEntity();
+				
+				genericFile.modifyIsRecovered(header.isDeleted());
+				
 				if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_FILE)
 				{
 					this.writeFile(filePath, header.getName(), dataChunks);
+
+					AutoDetectParser parser = new AutoDetectParser();
+					BodyContentHandler contentHandler = new BodyContentHandler(10 * 1024 * 1024);
+					Metadata metaData = new Metadata();
+					FileInputStream stream = new FileInputStream(new File(filePath + File.separator + header.getName()));
+					
+					try
+					{
+						parser.parse(stream, contentHandler, metaData);
+					}
+					catch(TikaException e)
+					{
+						// Unable to parse
+						e.printStackTrace();
+					}
+					
+					stream.close();
+					
+					String extension = "";
+					if(header.getName().lastIndexOf('.') > -1)
+					{
+						extension = header.getName().substring(header.getName().lastIndexOf('.'));
+					}
+					
+					System.out.printf("Ext %s Type %s", extension, metaData.get(Metadata.CONTENT_TYPE));
+					System.out.println();					
 				}
 				
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 
-				eagleeye.entities.File genericFile = new eagleeye.entities.File();
 				genericFile.modifyDateAccessed(dateFormat.format(new Date(header.getAccessedTime() * 1000L)));
 				genericFile.modifyDateCreated(dateFormat.format(new Date(header.getCreatedTime() * 1000L)));
 				genericFile.modifyDateModified(dateFormat.format(new Date(header.getModifiedTime() * 1000L)));

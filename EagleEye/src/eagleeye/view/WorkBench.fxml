@@ -165,7 +165,7 @@
 				</AnchorPane>
 				<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0">
 					<children>
-						<SplitPane dividerPositions="0.25" minHeight="300.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+						<SplitPane dividerPositions="0.6967418546365914" minHeight="300.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<items>
 								<AnchorPane minHeight="250.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="200.0">
 									<children>
