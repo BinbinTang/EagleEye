@@ -24,13 +24,13 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	protected int bootSectorSize;
 	
 
-	protected int pageSize;
+	protected int headerSize;
 	
 
 	protected boolean cancel = false;
 	
 	public FAT32ImageUnpacker(){
-		this.setPageSize(512);
+		this.setHeaderSize(512);
 	}
 	
 	public FAT32ImageUnpacker(FormatDescription formatDescription)
@@ -38,8 +38,8 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		this.formatDescription = formatDescription;
 	}
 	
-	public void setPageSize(int pageSize){
-		this.pageSize = pageSize;
+	public void setHeaderSize(int headerSize){
+		this.headerSize = headerSize;
 	}
 	
 	private FAT32ObjectBootSector readObjectBootSector(byte[] chunk)
@@ -67,33 +67,45 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		bootSector.setBPB_SectorPerClusster(BPB_SectorPerClusster);
 		
 		BPB_ReservedSectorCount[0] = chunk[14];
+		BPB_ReservedSectorCount[1] = chunk[15];
 		bootSector.setBPB_ReservedSectorCount(BPB_ReservedSectorCount);
 		
-		BPB_NumFATs[0] = chunk[15];
+		BPB_NumFATs[0] = chunk[16];
 		bootSector.setBPB_NumFATs(BPB_NumFATs);
 		
-		BPB_RootEntryCounts[0] = chunk[2];
+		BPB_RootEntryCounts[0] = chunk[17];
+		BPB_RootEntryCounts[1] = chunk[18];
 		bootSector.setBPB_RootEntryCounts(BPB_RootEntryCounts);
 		
-		BPB_TotalSector16[0] = chunk[2];
+		BPB_TotalSector16[0] = chunk[19];
+		BPB_TotalSector16[1] = chunk[20];
 		bootSector.setBPB_TotalSector16(BPB_TotalSector16);
 		
-		BPB_Media[0] = chunk[1];
+		BPB_Media[0] = chunk[21];
 		bootSector.setBPB_Media(BPB_Media);
 		
-		BPB_FATSize16[0] = chunk[2];
+		BPB_FATSize16[0] = chunk[22];
+		BPB_FATSize16[1] = chunk[23];
 		bootSector.setBPB_FATSize16(BPB_FATSize16);
 		
-		BPB_SectorPerTrack[0] = chunk[2];
+		BPB_SectorPerTrack[0] = chunk[24];
+		BPB_SectorPerTrack[0] = chunk[25];
 		bootSector.setBPB_SectorPerTrack(BPB_SectorPerTrack);
 		
-		BPB_NumHeads[0] = chunk[2];
+		BPB_NumHeads[0] = chunk[26];
+		BPB_NumHeads[1] = chunk[27];
 		bootSector.setBPB_NumHeads(BPB_NumHeads);
 		
-		BPB_HiddenSector[0] = chunk[4];
+		BPB_HiddenSector[0] = chunk[28];
+		BPB_HiddenSector[1] = chunk[29];
+		BPB_HiddenSector[2] = chunk[30];
+		BPB_HiddenSector[3] = chunk[31];
 		bootSector.setBPB_HiddenSector(BPB_HiddenSector);
 		
-		BPB_TotalSector32[0] = chunk[4];
+		BPB_TotalSector32[0] = chunk[32];
+		BPB_TotalSector32[1] = chunk[33];
+		BPB_TotalSector32[2] = chunk[34];
+		BPB_TotalSector32[3] = chunk[35];
 		bootSector.setBPB_TotalSector32(BPB_TotalSector32);
 		
 		return bootSector;
@@ -112,35 +124,42 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		this.fileInputStream = new FileInputStream(file);
 		this.inputStream = new DataInputStream(this.fileInputStream);
 		
-		byte[] inputBytes = new byte[this.pageSize];
+		byte[] inputBytes = new byte[this.headerSize];
 		
 		ByteBuffer byteBuffer;
 		
 		// Split up the data into blocks
 		long totalFileBytes = (long) file.length();
 		long totalBytesRead = 0;
+		
+		boolean isHeaderFound = false;
 
-		while (totalFileBytes > totalBytesRead + this.pageSize)
+		while (totalFileBytes > totalBytesRead + this.headerSize)
 		{			
-			inputBytes = new byte[this.pageSize];
+			inputBytes = new byte[this.headerSize];
 			inputStream.readFully(inputBytes);
 			byteBuffer = ByteBuffer.wrap(inputBytes);
 			byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
-			//System.out.println (byteBuffer);
-			totalBytesRead += this.pageSize;
+			totalBytesRead += this.headerSize;
 			
 			// check the bootSector
 			// Case 1: jmpBoot[0] = 0xE9 jmpBoot[1] = 0x?? jmpBoot[2] = 0x??;
 			if (byteBuffer.get() == (byte) 0xE9)
 			{
-				//chunk =
-				break;
+				chunk =inputBytes;
+				isHeaderFound = true;
 			}
 			// Case 2:jmpBoot[0] = 0xEB jmpBoot[1] = 0x?? jmpBoot[2] = 0x90;
 			else if (byteBuffer.get()== (byte) 0xEB)
 			{
-				//chunk =
+				byteBuffer.position(2);
+				if (byteBuffer.get()!= (byte) 0x90){
+					chunk = inputBytes;
+					isHeaderFound = true;
+				}
+			}
+			if (isHeaderFound){
 				break;
 			}
 		}
