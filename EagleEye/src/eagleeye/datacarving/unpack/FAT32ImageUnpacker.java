@@ -59,41 +59,41 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 		
 		FAT32ObjectBootSector bootSector = new FAT32ObjectBootSector();
 		
-		BPB_BytsPerSector[0] = chunk[11];
-		BPB_BytsPerSector[1] = chunk[12];
+		BPB_BytsPerSector[0] = chunk[12];
+		BPB_BytsPerSector[1] = chunk[11];
 		bootSector.setBPB_BytsPerSector(BPB_BytsPerSector);
 		
 		BPB_SectorPerClusster[0] = chunk[13];
 		bootSector.setBPB_SectorPerClusster(BPB_SectorPerClusster);
 		
-		BPB_ReservedSectorCount[0] = chunk[14];
-		BPB_ReservedSectorCount[1] = chunk[15];
+		BPB_ReservedSectorCount[0] = chunk[15];
+		BPB_ReservedSectorCount[1] = chunk[14];
 		bootSector.setBPB_ReservedSectorCount(BPB_ReservedSectorCount);
 		
 		BPB_NumFATs[0] = chunk[16];
 		bootSector.setBPB_NumFATs(BPB_NumFATs);
 		
-		BPB_RootEntryCounts[0] = chunk[17];
-		BPB_RootEntryCounts[1] = chunk[18];
+		BPB_RootEntryCounts[0] = chunk[18];
+		BPB_RootEntryCounts[1] = chunk[17];
 		bootSector.setBPB_RootEntryCounts(BPB_RootEntryCounts);
 		
-		BPB_TotalSector16[0] = chunk[19];
-		BPB_TotalSector16[1] = chunk[20];
+		BPB_TotalSector16[0] = chunk[20];
+		BPB_TotalSector16[1] = chunk[19];
 		bootSector.setBPB_TotalSector16(BPB_TotalSector16);
 		
 		BPB_Media[0] = chunk[21];
 		bootSector.setBPB_Media(BPB_Media);
 		
-		BPB_FATSize16[0] = chunk[22];
-		BPB_FATSize16[1] = chunk[23];
+		BPB_FATSize16[0] = chunk[23];
+		BPB_FATSize16[1] = chunk[22];
 		bootSector.setBPB_FATSize16(BPB_FATSize16);
 		
-		BPB_SectorPerTrack[0] = chunk[24];
 		BPB_SectorPerTrack[0] = chunk[25];
+		BPB_SectorPerTrack[0] = chunk[24];
 		bootSector.setBPB_SectorPerTrack(BPB_SectorPerTrack);
 		
-		BPB_NumHeads[0] = chunk[26];
-		BPB_NumHeads[1] = chunk[27];
+		BPB_NumHeads[0] = chunk[27];
+		BPB_NumHeads[1] = chunk[26];
 		bootSector.setBPB_NumHeads(BPB_NumHeads);
 		
 		BPB_HiddenSector[0] = chunk[28];
