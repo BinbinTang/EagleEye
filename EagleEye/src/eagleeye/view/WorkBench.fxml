@@ -31,7 +31,7 @@
 									<menus>
 										<Menu mnemonicParsing="false" text="File">
 											<items>
-												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New" visible="false" />
+												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New" />
 												<MenuItem fx:id="openClick" mnemonicParsing="false" text="Open" />
 												<MenuItem fx:id="saveClick" disable="true" mnemonicParsing="false" text="Save" visible="false" />
 												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Exit" />
