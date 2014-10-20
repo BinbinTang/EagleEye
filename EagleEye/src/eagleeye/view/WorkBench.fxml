@@ -31,7 +31,7 @@
 									<menus>
 										<Menu mnemonicParsing="false" text="File">
 											<items>
-												<MenuItem fx:id="newClick" disable="true" mnemonicParsing="false" text="New" visible="false" />
+												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New" visible="false" />
 												<MenuItem fx:id="openClick" mnemonicParsing="false" text="Open" />
 												<MenuItem fx:id="saveClick" disable="true" mnemonicParsing="false" text="Save" visible="false" />
 												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Exit" />
@@ -39,13 +39,10 @@
 										</Menu>
 										<Menu mnemonicParsing="false" text="Analysis">
 											<items>
-												<MenuItem mnemonicParsing="false" text="Contact History" />
-											</items>
-											<items>
-												<MenuItem mnemonicParsing="false" text="Wifi History" />
-											</items>
-											<items>
-												<MenuItem mnemonicParsing="false" text="Timeline" />
+                                    <CheckMenuItem mnemonicParsing="false" selected="true" text="Contact History" />
+                                    <CheckMenuItem mnemonicParsing="false" selected="true" text="Wifi History" />
+                                    <CheckMenuItem mnemonicParsing="false" selected="true" text="TimeLine" />
+												<MenuItem mnemonicParsing="false" text="Add New Function" />
 											</items>
 										</Menu>
 										<Menu mnemonicParsing="false" text="Help">
@@ -68,7 +65,6 @@
 								<ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0);" GridPane.rowIndex="2">
 									<items>
 										<Button mnemonicParsing="false" text="Timeline " />
-										<Button mnemonicParsing="false" text="Add New Functions" />
 									</items>
 									<padding>
 										<Insets bottom="3.0" left="5.0" right="30.0" top="3.0" />
