@@ -453,6 +453,102 @@ public class WorkBenchController {
 		 */
 		
 		
+		
+			
+			/*
+			rootNodeC = new TreeItem<String>(TreeStructure.get(0)
+					.getDirectoryName(), rootIcon);
+			TreeView<String> treeC = new TreeView<String>(rootNodeC);
+			
+			for (FileEntity file : allFiles) {
+				TreeItem<String> empLeaf = new TreeItem<String>(
+						file.getFileName(), new ImageView(fileIcon));
+				boolean foundPath = false;
+				boolean foundDep = false;
+				for (TreeItem<String> pathNode : rootNodeC.getChildren()) {
+					for (TreeItem<String> depNode : pathNode.getChildren()) {
+						// Check if path match
+						if (pathNode.getValue().contentEquals(file.getCategory())) {
+							// Check if format match
+							if (depNode.getValue().contentEquals(
+									file.getFileExt())) {
+								depNode.getChildren().add(empLeaf);
+								foundDep = true;
+								break;
+							}
+							if (!foundDep) {
+								TreeItem<String> newDepNode = new TreeItem<String>(
+										file.getFileExt());
+								pathNode.getChildren().add(newDepNode);
+								newDepNode.getChildren().add(empLeaf);
+							}
+							foundPath = true;
+							break;
+						}
+						if (!foundPath) {
+							TreeItem<String> newPathNode = new TreeItem<String>(
+									file.getCategory());
+							TreeItem<String> newDepNode = new TreeItem<String>(
+									file.getFileExt());
+							rootNodeC.getChildren().add(newPathNode);
+							newPathNode.setExpanded(true);
+							newPathNode.getChildren().add(newDepNode);
+							newDepNode.getChildren().add(empLeaf);
+						}
+					}
+				}
+				if (!foundPath && !foundDep) {
+					System.out.println("first time");
+					TreeItem<String> newPathNode = new TreeItem<String>(
+							file.getCategory());
+					TreeItem<String> newDepNode = new TreeItem<String>(
+							file.getFileExt());
+					rootNodeC.getChildren().add(newPathNode);
+					newPathNode.setExpanded(true);
+					newPathNode.getChildren().add(newDepNode);
+					newDepNode.getChildren().add(empLeaf);
+				}
+				
+				tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						if (mouseEvent.getClickCount() == 2) {
+							TreeItem<String> item = tree.getSelectionModel()
+									.getSelectedItem();
+							System.out.println("Selected Text : " + item.getValue());
+
+							// Check if it is a file, and open
+							if (item.isLeaf()) {
+								String filePath = item.getValue();
+								item = item.getParent();
+								while (item instanceof TreeItem) {
+									filePath = item.getValue() + "/" + filePath;
+									item = item.getParent();
+								}
+								System.out.println("Selected File : " + filePath);
+								String location = Paths.get(".").toAbsolutePath()
+										.normalize().toString();
+								File currentFile = new File(location + filePath);
+								try {
+									Desktop.getDesktop().open(currentFile);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				});
+				categoryViewPane.getChildren().add(treeC);
+			}
+			*/
+	}
+
+	/*
+	 * Methods of workbench
+	 */
+	
+	public void refreshCase(){
 		DBQueryController dbController = new DBQueryController();
 		dbController.setDeviceID(1);
 		ArrayList<Directory> TreeStructure = dbController
@@ -567,101 +663,8 @@ public class WorkBenchController {
 				btn.setPrefWidth(130);
 				categoryViewPane.getChildren().add(btn);
 			}
-			
-			/*
-			rootNodeC = new TreeItem<String>(TreeStructure.get(0)
-					.getDirectoryName(), rootIcon);
-			TreeView<String> treeC = new TreeView<String>(rootNodeC);
-			
-			for (FileEntity file : allFiles) {
-				TreeItem<String> empLeaf = new TreeItem<String>(
-						file.getFileName(), new ImageView(fileIcon));
-				boolean foundPath = false;
-				boolean foundDep = false;
-				for (TreeItem<String> pathNode : rootNodeC.getChildren()) {
-					for (TreeItem<String> depNode : pathNode.getChildren()) {
-						// Check if path match
-						if (pathNode.getValue().contentEquals(file.getCategory())) {
-							// Check if format match
-							if (depNode.getValue().contentEquals(
-									file.getFileExt())) {
-								depNode.getChildren().add(empLeaf);
-								foundDep = true;
-								break;
-							}
-							if (!foundDep) {
-								TreeItem<String> newDepNode = new TreeItem<String>(
-										file.getFileExt());
-								pathNode.getChildren().add(newDepNode);
-								newDepNode.getChildren().add(empLeaf);
-							}
-							foundPath = true;
-							break;
-						}
-						if (!foundPath) {
-							TreeItem<String> newPathNode = new TreeItem<String>(
-									file.getCategory());
-							TreeItem<String> newDepNode = new TreeItem<String>(
-									file.getFileExt());
-							rootNodeC.getChildren().add(newPathNode);
-							newPathNode.setExpanded(true);
-							newPathNode.getChildren().add(newDepNode);
-							newDepNode.getChildren().add(empLeaf);
-						}
-					}
-				}
-				if (!foundPath && !foundDep) {
-					System.out.println("first time");
-					TreeItem<String> newPathNode = new TreeItem<String>(
-							file.getCategory());
-					TreeItem<String> newDepNode = new TreeItem<String>(
-							file.getFileExt());
-					rootNodeC.getChildren().add(newPathNode);
-					newPathNode.setExpanded(true);
-					newPathNode.getChildren().add(newDepNode);
-					newDepNode.getChildren().add(empLeaf);
-				}
-				
-				tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
-					@Override
-					public void handle(MouseEvent mouseEvent) {
-						if (mouseEvent.getClickCount() == 2) {
-							TreeItem<String> item = tree.getSelectionModel()
-									.getSelectedItem();
-							System.out.println("Selected Text : " + item.getValue());
-
-							// Check if it is a file, and open
-							if (item.isLeaf()) {
-								String filePath = item.getValue();
-								item = item.getParent();
-								while (item instanceof TreeItem) {
-									filePath = item.getValue() + "/" + filePath;
-									item = item.getParent();
-								}
-								System.out.println("Selected File : " + filePath);
-								String location = Paths.get(".").toAbsolutePath()
-										.normalize().toString();
-								File currentFile = new File(location + filePath);
-								try {
-									Desktop.getDesktop().open(currentFile);
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-						}
-					}
-				});
-				categoryViewPane.getChildren().add(treeC);
-			}
-			*/
-
 		}
 	}
-
-	/*
-	 * Methods of workbench
-	 */
 
 	// Find whether a target is inside the tree of root, by recursion
 	public TreeItem<String> findItem(TreeItem<String> root, String target) {
@@ -733,6 +736,8 @@ public class WorkBenchController {
 
 		service.start();
 		dialog.show();
+		
+		this.refreshCase();
 	}
 
 	private Stage createProgressDialog(final Service<Void> service) {
