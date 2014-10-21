@@ -470,6 +470,7 @@ public class WorkBenchController {
 		
 		
 		DBQueryController dbController = new DBQueryController();
+		
 		dbController.setDeviceID(1);
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
