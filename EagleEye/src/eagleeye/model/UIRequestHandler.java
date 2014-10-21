@@ -19,7 +19,9 @@ public class UIRequestHandler implements RequestHandler {
 			// TODO Query database and populate folderStructure
 			
 			//WenXia, Use the following method:
-			DBQueryController dbController = new DBQueryController(1);
+			DBQueryController dbController = new DBQueryController();
+			dbController.setDeviceID(1);
+			
 			ArrayList<Directory> TreeStructure = dbController.getAllDirectoriesAndFiles();
 			
 			System.out.println("The number of Directories: " + TreeStructure.size());
