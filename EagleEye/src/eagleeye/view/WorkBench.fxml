@@ -27,7 +27,7 @@
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 							</rowConstraints>
 							<children>
-								<MenuBar prefHeight="31.0" prefWidth="797.0" GridPane.columnSpan="3" GridPane.valignment="BOTTOM">
+								<MenuBar prefHeight="31.0" prefWidth="797.0" GridPane.columnSpan="3" GridPane.valignment="TOP">
 									<menus>
 										<Menu mnemonicParsing="false" text="File">
 											<items>
@@ -161,17 +161,17 @@
 				</AnchorPane>
 				<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0">
 					<children>
-						<SplitPane dividerPositions="0.6967418546365914" minHeight="300.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+						<SplitPane dividerPositions="0.19172932330827067" minHeight="300.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<items>
-								<AnchorPane minHeight="250.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="200.0">
+								<AnchorPane minHeight="250.0" minWidth="-Infinity" prefHeight="500.0" prefWidth="150.0">
 									<children>
-										<SplitPane dividerPositions="0.8" layoutX="19.0" layoutY="139.0" orientation="VERTICAL" prefHeight="498.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+										<SplitPane dividerPositions="0.8326612903225806" layoutX="19.0" layoutY="139.0" orientation="VERTICAL" prefHeight="498.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 											<items>
 												<AnchorPane minHeight="-Infinity" minWidth="-Infinity">
 													<children>
-														<TabPane layoutX="-3.0" layoutY="24.0" minWidth="-Infinity" prefHeight="390.0" prefWidth="198.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+														<TabPane layoutX="-3.0" layoutY="24.0" minWidth="-Infinity" prefHeight="390.0" prefWidth="150.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 															<tabs>
-																<Tab text="Tree View">
+																<Tab text="Tree">
 																	<content>
 																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 																			<children>
@@ -183,13 +183,13 @@
 																		</AnchorPane>
 																	</content>
 																</Tab>
-																<Tab text="Category View">
+																<Tab text="Category">
 																	<content>
-																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="150.0">
                                                          <children>
-                                                            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="361.0" prefWidth="551.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <content>
-                                                                  <StackPane fx:id="categoryViewPane" prefHeight="359.0" prefWidth="491.0" />
+                                                                  <VBox fx:id="categoryViewPane" prefHeight="200.0" prefWidth="100.0" />
                                                                </content>
                                                             </ScrollPane>
                                                          </children>
@@ -200,9 +200,9 @@
 														</TabPane>
 													</children>
 												</AnchorPane>
-												<AnchorPane maxHeight="100.0" minHeight="-Infinity" prefHeight="100.0">
+												<AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="90.0">
 													<children>
-														<GridPane layoutX="8.0" layoutY="6.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="194.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+														<GridPane layoutX="8.0" layoutY="6.0" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="90.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 															<columnConstraints>
 																<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
 															</columnConstraints>

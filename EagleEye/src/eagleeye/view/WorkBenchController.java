@@ -23,6 +23,7 @@ import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -74,11 +75,12 @@ public class WorkBenchController {
 			"Icons/fileIcon.jpg"));
 	TreeItem<String> rootNode;
 	TreeItem<String> rootNodeC;
+	ArrayList<String> categoryList = new ArrayList(Arrays.asList("Photos","Videos","Audios","Documents","Database","Others"));
 
 	@FXML
 	private StackPane treeViewPane;
 	@FXML
-	private StackPane categoryViewPane;
+	private VBox categoryViewPane;
 
 	// UI elements
 	@FXML
@@ -410,7 +412,8 @@ public class WorkBenchController {
 		});
 
 		// directory chooser
-		openClick.setOnAction(this::handleOpenDirectory);
+		newClick.setOnAction(this::handleOpenDirectory);
+		//openClick.setOnAction(this::handleOpenDirectory);
 
 		// save
 		saveClick.setOnAction(new EventHandler<ActionEvent>() {
@@ -556,6 +559,15 @@ public class WorkBenchController {
 			treeViewPane.getChildren().add(tree);
 
 			// Category View
+			categoryViewPane.setSpacing(5);
+			categoryViewPane.setPadding(new Insets(5,5,5,5));
+			for (String category : categoryList){
+				Button btn = new Button(category);
+				btn.setPrefHeight(40);
+				btn.setPrefWidth(130);
+				categoryViewPane.getChildren().add(btn);
+			}
+			
 			/*
 			rootNodeC = new TreeItem<String>(TreeStructure.get(0)
 					.getDirectoryName(), rootIcon);
