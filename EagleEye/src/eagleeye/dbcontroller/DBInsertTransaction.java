@@ -1,6 +1,7 @@
 package eagleeye.dbcontroller;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class DBInsertTransaction {
 
 	protected int deviceID;
 	protected DBInsertController controller;
+	protected DBInsertQueries queryMaker;
 	protected ArrayList<FileEntity> listOfDirectory;
 	protected ArrayList<FileEntity> listOfFiles;
 	
@@ -21,6 +23,7 @@ public class DBInsertTransaction {
 		listOfFiles = new ArrayList<FileEntity>();
 		deviceID = -1;
 		controller = new DBInsertController();
+		queryMaker = new DBInsertQueries();
 		
 	}
 	
@@ -33,25 +36,31 @@ public class DBInsertTransaction {
 		System.out.println("newFileList size =" + listOfFiles.size());
 		
 		Connection conn = DBConnection.dbConnector();
-		Statement stmt = null;
-						
+		PreparedStatement stmt = null;
+		Statement qstmt = null;
+		
 		try {
 			conn.setAutoCommit(false);
-			stmt = conn.createStatement();
-			deviceID = controller.insertNewDevice(newDevice, stmt);
+			qstmt = conn.createStatement();
+			stmt = conn.prepareStatement(queryMaker.insertNewDevice());
+			deviceID = controller.insertNewDevice(newDevice, stmt, qstmt);
 			System.out.println("Device insert success");
 			
+			stmt = conn.prepareStatement(queryMaker.insertNewRootDirectory());
 			controller.insertNewRootDirectory(stmt);
 			System.out.println("Root Directory insert success");
 			
+			stmt = conn.prepareStatement(queryMaker.insertNewDirectory());
 			controller.insertNewDirectory(listOfDirectory, stmt);
 			conn.commit();
 			System.out.println("All Directories insert success");
 			
+			stmt = conn.prepareStatement(queryMaker.insertNewExt());
 			controller.insertNewFileExt(listOfFiles,stmt);
 			conn.commit();
 			System.out.println("All fileExt insert success");
 			
+			stmt = conn.prepareStatement(queryMaker.insertNewFile());
 			controller.insertNewFile(listOfFiles, stmt);
 			conn.commit();
 			System.out.println("All Files insert success");

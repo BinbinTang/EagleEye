@@ -9,10 +9,15 @@ public class DBQueryController {
 	protected int deviceID;
 	protected DBQueries queryMaker;
 		
-	public DBQueryController(int deviceID) {
+	public DBQueryController() {
+		
+		this.deviceID = -1;
+		queryMaker = new DBQueries();
+	}
+	
+	public void setDeviceID(int deviceID){
 		
 		this.deviceID = deviceID;
-		queryMaker = new DBQueries();
 	}
 	
 	public ArrayList<Device> getAllDevices() {
@@ -21,9 +26,8 @@ public class DBQueryController {
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
-			Statement stmt = conn.createStatement();
-			String query = queryMaker.getAllDevices();
-			ResultSet rs = stmt.executeQuery(query);
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllDevices());
+			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
 				Device device = new Device();
@@ -71,9 +75,10 @@ public class DBQueryController {
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
-			Statement stmt = conn.createStatement();
-			String query = queryMaker.getAllDirectories(deviceID);
-			ResultSet rs = stmt.executeQuery(query);
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllDirectories());
+			stmt.setInt(1, deviceID);
+			
+			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
 				
@@ -110,9 +115,10 @@ public class DBQueryController {
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
-			Statement stmt = conn.createStatement();
-			String query = queryMaker.getAllFiles(deviceID);
-			ResultSet rs = stmt.executeQuery(query);
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllFiles());
+			stmt.setInt(1, deviceID);
+			
+			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
 				

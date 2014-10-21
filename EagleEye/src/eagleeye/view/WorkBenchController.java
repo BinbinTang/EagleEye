@@ -467,7 +467,10 @@ public class WorkBenchController {
 		 * 
 		 * folderStructure = test.getFolderStructure();
 		 */
-		DBQueryController dbController = new DBQueryController(1);
+		
+		
+		DBQueryController dbController = new DBQueryController();
+		dbController.setDeviceID(1);
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
 		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
@@ -572,6 +575,7 @@ public class WorkBenchController {
 			treeViewPane.getChildren().add(tree);
 
 			// Category View
+			/*
 			rootNodeC = new TreeItem<String>(TreeStructure.get(0)
 					.getDirectoryName(), rootIcon);
 			TreeView<String> treeC = new TreeView<String>(rootNodeC);
@@ -657,6 +661,7 @@ public class WorkBenchController {
 				});
 				categoryViewPane.getChildren().add(treeC);
 			}
+			*/
 
 		}
 	}
