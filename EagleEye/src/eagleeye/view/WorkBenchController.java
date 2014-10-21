@@ -30,6 +30,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -49,6 +50,7 @@ import eagleeye.controller.MainApp;
 import eagleeye.datacarving.unpack.service.UnpackDirectoryService;
 import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.Directory;
+import eagleeye.entities.FileEntity;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
 
@@ -65,27 +67,18 @@ public class WorkBenchController {
 	ArrayList<eagleeye.entities.FileEntity> folderStructure;
 	ArrayList<Directory> TreeStructure;
 
-	// TreeView
+	// TreeView & CategoryVuew
 	private final Node rootIcon = new ImageView(new Image(getClass()
 			.getResourceAsStream("Icons/treeViewRootFolderIcon.png")));
 	private final Image fileIcon = new Image(getClass().getResourceAsStream(
 			"Icons/fileIcon.jpg"));
-	// Not applicable for exact tree view. For old testing only
-	/*
-	 * List<MyFile> myFiles= Arrays .<MyFile> asList(new
-	 * MyFile("200482583232.6910771", ".jpg", false, false, "/UI Test"), new
-	 * MyFile("CS3283 meeting notes",".txt", false, false, "/UI Test"), new
-	 * MyFile( "fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false,
-	 * false,"/UI Test"), new MyFile(
-	 * "Game Design Strategies for Collectivist Persuasion", ".pdf",
-	 * false,false, "/UI Test"), //new MyFile("When you are gone", ".flv",false,
-	 * false, "/UI Test"), new MyFile("Ó£»¨2", ".jpg", false,false, "/UI Test"));
-	 */
-	List<MyFile> myFiles;
 	TreeItem<String> rootNode;
+	TreeItem<String> rootNodeC;
 
 	@FXML
 	private StackPane treeViewPane;
+	@FXML
+	private StackPane categoryViewPane;
 
 	// UI elements
 	@FXML
@@ -220,7 +213,7 @@ public class WorkBenchController {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-				
+
 				if (startHourTf.getText().length() == 0) {
 					System.out.println("no input");
 					startHourTf.setText("00");
@@ -241,7 +234,7 @@ public class WorkBenchController {
 							if (Integer.parseInt(startHourTf.getText()) > 23) {
 								System.out.println("too large");
 								startHourTf.setText("23");
-							}else if (Integer.parseInt(startHourTf.getText()) < 0) {
+							} else if (Integer.parseInt(startHourTf.getText()) < 0) {
 								System.out.println("too small");
 								startHourTf.setText("0");
 							}
@@ -258,7 +251,7 @@ public class WorkBenchController {
 							}
 							startHour = startHourTf.getText();
 							System.out.println("startHour is " + startHour);
-						}				
+						}
 					}
 				});
 
@@ -272,7 +265,7 @@ public class WorkBenchController {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-				
+
 				if (startMinuteTf.getText().length() == 0) {
 					System.out.println("no input");
 					startMinuteTf.setText("00");
@@ -293,7 +286,7 @@ public class WorkBenchController {
 							if (Integer.parseInt(startMinuteTf.getText()) > 59) {
 								System.out.println("too large");
 								startMinuteTf.setText("59");
-							}else if (Integer.parseInt(startMinuteTf.getText()) < 0) {
+							} else if (Integer.parseInt(startMinuteTf.getText()) < 0) {
 								System.out.println("too small");
 								startMinuteTf.setText("0");
 							}
@@ -303,14 +296,15 @@ public class WorkBenchController {
 								startMinuteTf.setText("59");
 							} else if (startMinuteTf.getText().length() == 1) {
 								System.out.println("1 degit");
-								startMinuteTf.setText("0" + startMinuteTf.getText());
+								startMinuteTf.setText("0"
+										+ startMinuteTf.getText());
 							} else if (startMinuteTf.getText().length() == 0) {
 								System.out.println("no input");
 								startMinuteTf.setText("00");
 							}
 							startMinute = startMinuteTf.getText();
 							System.out.println("startMinute is " + startMinute);
-						}				
+						}
 					}
 				});
 		endHourTf.textProperty().addListener(new ChangeListener<String>() {
@@ -323,7 +317,7 @@ public class WorkBenchController {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-				
+
 				if (startHourTf.getText().length() == 0) {
 					System.out.println("no input");
 					endHourTf.setText("00");
@@ -331,39 +325,37 @@ public class WorkBenchController {
 
 			}
 		});
-		endHourTf.focusedProperty().addListener(
-				new ChangeListener<Boolean>() {
-					@Override
-					public void changed(
-							ObservableValue<? extends Boolean> arg0,
-							Boolean oldPropertyValue, Boolean newPropertyValue) {
-						if (newPropertyValue) {
-							System.out.println("Textfield on focus");
-						} else {
-							// Check range
-							if (Integer.parseInt(endHourTf.getText()) > 23) {
-								System.out.println("too large");
-								endHourTf.setText("23");
-							}else if (Integer.parseInt(endHourTf.getText()) < 0) {
-								System.out.println("too small");
-								endHourTf.setText("0");
-							}
-							// Check length
-							if (endHourTf.getText().length() > 2) {
-								System.out.println("too long");
-								endHourTf.setText("23");
-							} else if (endHourTf.getText().length() == 1) {
-								System.out.println("1 degit");
-								endHourTf.setText("0" + endHourTf.getText());
-							} else if (endHourTf.getText().length() == 0) {
-								System.out.println("no input");
-								endHourTf.setText("00");
-							}
-							endHour = endHourTf.getText();
-							System.out.println("endHour is " + endHour);
-						}				
+		endHourTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean oldPropertyValue, Boolean newPropertyValue) {
+				if (newPropertyValue) {
+					System.out.println("Textfield on focus");
+				} else {
+					// Check range
+					if (Integer.parseInt(endHourTf.getText()) > 23) {
+						System.out.println("too large");
+						endHourTf.setText("23");
+					} else if (Integer.parseInt(endHourTf.getText()) < 0) {
+						System.out.println("too small");
+						endHourTf.setText("0");
 					}
-				});
+					// Check length
+					if (endHourTf.getText().length() > 2) {
+						System.out.println("too long");
+						endHourTf.setText("23");
+					} else if (endHourTf.getText().length() == 1) {
+						System.out.println("1 degit");
+						endHourTf.setText("0" + endHourTf.getText());
+					} else if (endHourTf.getText().length() == 0) {
+						System.out.println("no input");
+						endHourTf.setText("00");
+					}
+					endHour = endHourTf.getText();
+					System.out.println("endHour is " + endHour);
+				}
+			}
+		});
 		endMinuteTf.textProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -374,7 +366,7 @@ public class WorkBenchController {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-				
+
 				if (endMinuteTf.getText().length() == 0) {
 					System.out.println("no input");
 					endMinuteTf.setText("00");
@@ -395,7 +387,7 @@ public class WorkBenchController {
 							if (Integer.parseInt(endMinuteTf.getText()) > 59) {
 								System.out.println("too large");
 								endMinuteTf.setText("59");
-							}else if (Integer.parseInt(endMinuteTf.getText()) < 0) {
+							} else if (Integer.parseInt(endMinuteTf.getText()) < 0) {
 								System.out.println("too small");
 								endMinuteTf.setText("0");
 							}
@@ -412,7 +404,7 @@ public class WorkBenchController {
 							}
 							endMinute = endMinuteTf.getText();
 							System.out.println("endMinute is " + endMinute);
-						}				
+						}
 					}
 				});
 
@@ -478,10 +470,7 @@ public class WorkBenchController {
 		DBQueryController dbController = new DBQueryController(1);
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
-		// System.out.println(TreeStructure.get(0).getDirectoryID());
-
-		// System.out.println("The number of Directories: " +
-		// TreeStructure.size());
+		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
 
 		// Check if DB empty
 		if (TreeStructure.size() != 0) {
@@ -550,34 +539,6 @@ public class WorkBenchController {
 				}
 			}
 
-			/*
-			 * for (MyFile file : myFiles) { TreeItem<String> empLeaf = new
-			 * TreeItem<String>(file.getName(),new ImageView(fileIcon)); boolean
-			 * foundPath = false; boolean foundDep = false; for
-			 * (TreeItem<String> pathNode : rootNode.getChildren()) { for
-			 * (TreeItem<String> depNode : pathNode.getChildren()) { // Check if
-			 * path match if (pathNode.getValue().contentEquals(file.getPath()))
-			 * { // Check if format match if
-			 * (depNode.getValue().contentEquals(file.getFormat())) {
-			 * depNode.getChildren().add(empLeaf); foundDep = true; break; } if
-			 * (!foundDep) { TreeItem<String> newDepNode = new TreeItem<String>(
-			 * file.getFormat()); pathNode.getChildren().add(newDepNode);
-			 * newDepNode.getChildren().add(empLeaf); } foundPath = true; break;
-			 * } if (!foundPath) { TreeItem<String> newPathNode = new
-			 * TreeItem<String>( file.getPath()); TreeItem<String> newDepNode =
-			 * new TreeItem<String>( file.getFormat());
-			 * rootNode.getChildren().add(newPathNode);
-			 * newPathNode.setExpanded(true);
-			 * newPathNode.getChildren().add(newDepNode);
-			 * newDepNode.getChildren().add(empLeaf); } } } if (!foundPath &&
-			 * !foundDep){ System.out.println("first time"); TreeItem<String>
-			 * newPathNode = new TreeItem<String>( file.getPath());
-			 * TreeItem<String> newDepNode = new TreeItem<String>(
-			 * file.getFormat()); rootNode.getChildren().add(newPathNode);
-			 * newPathNode.setExpanded(true);
-			 * newPathNode.getChildren().add(newDepNode);
-			 * newDepNode.getChildren().add(empLeaf); } }
-			 */
 			tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent mouseEvent) {
@@ -611,6 +572,91 @@ public class WorkBenchController {
 			treeViewPane.getChildren().add(tree);
 
 			// Category View
+			rootNodeC = new TreeItem<String>(TreeStructure.get(0)
+					.getDirectoryName(), rootIcon);
+			TreeView<String> treeC = new TreeView<String>(rootNodeC);
+			
+			for (FileEntity file : allFiles) {
+				TreeItem<String> empLeaf = new TreeItem<String>(
+						file.getFileName(), new ImageView(fileIcon));
+				boolean foundPath = false;
+				boolean foundDep = false;
+				for (TreeItem<String> pathNode : rootNodeC.getChildren()) {
+					for (TreeItem<String> depNode : pathNode.getChildren()) {
+						// Check if path match
+						if (pathNode.getValue().contentEquals(file.getCategory())) {
+							// Check if format match
+							if (depNode.getValue().contentEquals(
+									file.getFileExt())) {
+								depNode.getChildren().add(empLeaf);
+								foundDep = true;
+								break;
+							}
+							if (!foundDep) {
+								TreeItem<String> newDepNode = new TreeItem<String>(
+										file.getFileExt());
+								pathNode.getChildren().add(newDepNode);
+								newDepNode.getChildren().add(empLeaf);
+							}
+							foundPath = true;
+							break;
+						}
+						if (!foundPath) {
+							TreeItem<String> newPathNode = new TreeItem<String>(
+									file.getCategory());
+							TreeItem<String> newDepNode = new TreeItem<String>(
+									file.getFileExt());
+							rootNodeC.getChildren().add(newPathNode);
+							newPathNode.setExpanded(true);
+							newPathNode.getChildren().add(newDepNode);
+							newDepNode.getChildren().add(empLeaf);
+						}
+					}
+				}
+				if (!foundPath && !foundDep) {
+					System.out.println("first time");
+					TreeItem<String> newPathNode = new TreeItem<String>(
+							file.getCategory());
+					TreeItem<String> newDepNode = new TreeItem<String>(
+							file.getFileExt());
+					rootNodeC.getChildren().add(newPathNode);
+					newPathNode.setExpanded(true);
+					newPathNode.getChildren().add(newDepNode);
+					newDepNode.getChildren().add(empLeaf);
+				}
+				
+				tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						if (mouseEvent.getClickCount() == 2) {
+							TreeItem<String> item = tree.getSelectionModel()
+									.getSelectedItem();
+							System.out.println("Selected Text : " + item.getValue());
+
+							// Check if it is a file, and open
+							if (item.isLeaf()) {
+								String filePath = item.getValue();
+								item = item.getParent();
+								while (item instanceof TreeItem) {
+									filePath = item.getValue() + "/" + filePath;
+									item = item.getParent();
+								}
+								System.out.println("Selected File : " + filePath);
+								String location = Paths.get(".").toAbsolutePath()
+										.normalize().toString();
+								File currentFile = new File(location + filePath);
+								try {
+									Desktop.getDesktop().open(currentFile);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				});
+				categoryViewPane.getChildren().add(treeC);
+			}
 
 		}
 	}
@@ -738,76 +784,6 @@ public class WorkBenchController {
 
 		return dialog;
 	}
-
-	// Classes
-	// TreeView File
-	public static class MyFile {
-
-		private String name;
-		private String format;
-		private boolean isDeleted;
-		private boolean isModified;
-		private String path;
-		private String category;
-
-		private MyFile(String name, String format, boolean isDeleted,
-				boolean isModified, String path, String category) {
-			this.name = name;
-			this.format = format;
-			this.isDeleted = isDeleted;
-			this.isModified = isModified;
-			this.path = path;
-			this.category = category;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String fName) {
-			name = fName;
-		}
-
-		public String getFormat() {
-			return format;
-		}
-
-		public void setFormat(String fName) {
-			format = fName;
-		}
-
-		public boolean getIsDeleted() {
-			return isDeleted;
-		}
-
-		public void setIsDeleted(boolean tf) {
-			isDeleted = tf;
-		}
-
-		public boolean getIsModified() {
-			return isModified;
-		}
-
-		public void setIsModified(boolean tf) {
-			isModified = tf;
-		}
-
-		public String getPath() {
-			return path;
-		}
-
-		public void setPath(String fName) {
-			path = fName;
-		}
-
-		public void setCategory(String fCat) {
-			category = fCat;
-		}
-
-		public String getCategory() {
-			String result = "";
-			return result;
-		}
-	}
-
 }
+
+

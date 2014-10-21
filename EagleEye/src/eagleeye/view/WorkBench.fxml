@@ -186,13 +186,13 @@
 																<Tab text="Category View">
 																	<content>
 																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-																			<children>
-																				<ScrollPane fitToHeight="true" fitToWidth="true" layoutX="-3.0" layoutY="-39.0" prefHeight="361.0" prefWidth="194.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="361.0" prefWidth="551.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <content>
-                                                                  <StackPane fx:id="categoryViewPane" />
+                                                                  <StackPane fx:id="categoryViewPane" prefHeight="359.0" prefWidth="491.0" />
                                                                </content>
-																				</ScrollPane>
-																			</children>
+                                                            </ScrollPane>
+                                                         </children>
 																		</AnchorPane>
 																	</content>
 																</Tab>
