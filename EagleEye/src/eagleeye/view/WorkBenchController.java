@@ -153,9 +153,10 @@ public class WorkBenchController {
 			System.out.println("Selected date: " + startDate);
 		});
 
+		/*
 		startDatePicker.setConverter(new StringConverter<LocalDate>() {
 			private DateTimeFormatter dateTimeFormatter = DateTimeFormatter
-					.ofPattern("dd/MM/yyyy");
+					.ofPattern("yyyy/MM/dd");
 
 			@Override
 			public String toString(LocalDate localDate) {
@@ -174,33 +175,13 @@ public class WorkBenchController {
 				return LocalDate.parse(dateString, dateTimeFormatter);
 			}
 		});
+		*/
 
 		endDatePicker.setOnAction(event -> {
 			endDate = endDatePicker.getValue();
 			System.out.println("Selected date: " + endDate);
 		});
 
-		endDatePicker.setConverter(new StringConverter<LocalDate>() {
-			private DateTimeFormatter dateTimeFormatter = DateTimeFormatter
-					.ofPattern("dd/MM/yyyy");
-
-			@Override
-			public String toString(LocalDate localDate) {
-				if (localDate == null)
-					return "";
-				endDate = localDate;
-				return dateTimeFormatter.format(localDate);
-			}
-
-			@Override
-			public LocalDate fromString(String dateString) {
-				if (dateString == null || dateString.trim().isEmpty()) {
-					return null;
-				}
-				endDate = LocalDate.parse(dateString, dateTimeFormatter);
-				return LocalDate.parse(dateString, dateTimeFormatter);
-			}
-		});
 
 		// Time, start: 00:00-23:59. end: 00:00-23:59. start <= end
 		startHourTf.textProperty().addListener(new ChangeListener<String>() {
@@ -470,7 +451,6 @@ public class WorkBenchController {
 		
 		
 		DBQueryController dbController = new DBQueryController();
-		
 		dbController.setDeviceID(1);
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
