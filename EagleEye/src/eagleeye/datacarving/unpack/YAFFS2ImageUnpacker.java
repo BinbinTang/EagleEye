@@ -263,6 +263,10 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 						
 						if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
 						{
+							if(objectId == 0)
+							{
+								header.setName(file.getName());
+							}
 							yaffs2ParentObjects.put(objectId, header);
 						}
 		
