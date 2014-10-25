@@ -8,6 +8,7 @@ import eagleeye.entities.FileEntity;
 
 public class DBInsertController {
 
+	private final int OTHER_EXT_TYPE_ID = 7;
 	protected int deviceID;
 	protected DBInsertQueries queryMaker;
 	
@@ -39,8 +40,8 @@ public class DBInsertController {
 	public void insertNewRootDirectory(PreparedStatement stmt) throws Exception {
 		
 		String rootName = "root";
-		int rootParent = -2;
-		int rootID = -1;
+		int rootParent = -1;
+		int rootID = 0;
 		
 		stmt.setString(1, rootName);
 		stmt.setInt(2, deviceID);
@@ -54,9 +55,9 @@ public class DBInsertController {
 		for(FileEntity newDirectory : listOfDirectory){
 			
 			stmt.setString(1, newDirectory.getDirectoryName());
-			stmt.setInt(2, deviceID);
+			stmt.setInt(2, newDirectory.getFileID());
 			stmt.setInt(3, newDirectory.getDirectoryID());
-			stmt.setInt(4, newDirectory.getFileID());
+			stmt.setInt(4, deviceID);
 			stmt.setString(5, newDirectory.getDateCreated());
 			stmt.setString(6, newDirectory.getDateAccessed());
 			stmt.setString(7, newDirectory.getDateModified());
@@ -69,33 +70,17 @@ public class DBInsertController {
 		stmt.clearBatch();
 	}
 	
-	public void insertNewFile(ArrayList<FileEntity> listOfFiles, PreparedStatement stmt) throws Exception {
+	public void updateDirectoryRoute(PreparedStatement stmt) throws Exception {
 		
-		for(FileEntity newFile : listOfFiles) {
-			
-			stmt.setString(1, newFile.getFileName());
-			stmt.setString(2, newFile.getFileExt());
-			stmt.setBoolean(3, newFile.getIsRecovered());
-			stmt.setString(4, newFile.getDateDeleted());
-			stmt.setBoolean(5, newFile.getIsModified());
-			stmt.setString(6, newFile.getModifiedExt());
-			stmt.setString(7, newFile.getDateCreated());
-			stmt.setString(8, newFile.getDateAccessed());
-			stmt.setString(9, newFile.getDateModified());
-			stmt.setString(10, newFile.getFilePath());
-			stmt.setInt(11, newFile.getDirectoryID());
-			stmt.setInt(12, deviceID);
-			
-			stmt.addBatch();
-		}
-		stmt.executeBatch();
-		stmt.clearBatch();
+		stmt.setInt(1, deviceID);
+		stmt.execute();
+		
 	}
 	
 	public void insertNewFileExt(ArrayList<FileEntity> listOfFiles, PreparedStatement stmt) throws Exception {
 		
 		ArrayList<String> extList = getAllFileExt(listOfFiles);
-		int newExtTypeID = 6;
+		int newExtTypeID = OTHER_EXT_TYPE_ID;
 		
 		for(String ext: extList){
 			
@@ -107,6 +92,41 @@ public class DBInsertController {
 		stmt.executeBatch();
 		stmt.clearBatch();
 	}
+	
+	public void insertNewFile(ArrayList<FileEntity> listOfFiles, PreparedStatement stmt) throws Exception {
+		
+		for(FileEntity newFile : listOfFiles) {
+			
+			stmt.setString(1, newFile.getFileName());
+			stmt.setString(2, newFile.getFileExt());
+			stmt.setString(3, newFile.getDateCreated());
+			stmt.setString(4, newFile.getDateAccessed());
+			stmt.setString(5, newFile.getDateModified());
+			stmt.setBoolean(6, newFile.getIsModified());
+			stmt.setString(7, newFile.getModifiedExt());
+			stmt.setBoolean(8, newFile.getIsRecovered());
+			stmt.setString(9, newFile.getDateDeleted());
+			stmt.setString(10, newFile.getFilePath());
+			stmt.setInt(11, newFile.getFileID());
+			stmt.setInt(12, newFile.getDirectoryID());
+			
+			stmt.addBatch();
+		}
+		stmt.executeBatch();
+		stmt.clearBatch();
+	}
+	
+	public void updateFileExtID(PreparedStatement stmt) throws Exception {
+		
+		stmt.execute();
+	}
+
+	public void updateFileDirectoryID(PreparedStatement stmt) throws Exception {
+		
+		stmt.setInt(1, deviceID);
+		stmt.execute();
+	}
+
 	
 	//Helper method
 	public ArrayList<String> getAllFileExt(ArrayList<FileEntity> listOfFiles) {

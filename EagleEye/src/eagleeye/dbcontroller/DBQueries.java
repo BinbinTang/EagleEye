@@ -17,14 +17,15 @@ public class DBQueries {
 	
 	public String getAllFiles() {
 		
-		String query = "SELECT FileName, FileExt, File.IsRecovered, File.DateDeleted, File.IsModified,"
-					   + "ModifiedExt, File.DateCreated, File.DateAccessed, File.DateModified, FilePath, File.DirectoryID,"
-					   + "File.DeviceID, ExtTypeName, DirectoryName FROM File "
-					   + "INNER JOIN Directory ON Directory.OriginDirectory = File.DirectoryID " 
-					   + "INNER JOIN ExtensionType ON Extension.ExtTypeID = ExtensionType.ExtTypeID "
-					   + "INNER JOIN Extension ON Extension.ExtName = File.FileExt "
-					   + "WHERE File.DeviceID = ? AND File.DeviceID = Directory.DeviceID";
-				
+		String query = "SELECT FileID, FileName, File.DirectoryID, DirectoryName, FileExt,"
+					   +"FileExtID,File.DateCreated,File.DateAccessed,File.DateModified,"
+					   +"File.IsModified,ModifiedExt,File.IsRecovered,File.DateDeleted,FilePath,"
+					   +"ExtTypeName FROM File "
+					   +"INNER JOIN Directory ON Directory.DirectoryID = File.DirectoryID "
+					   +"INNER JOIN ExtensionType ON Extension.ExtTypeID = ExtensionType.ExtTypeID "
+					   +"INNER JOIN Extension ON Extension.ExtID = File.FileExtID "
+					   +"Where Directory.DeviceID = ? ORDER BY File.FileID";
+		
 		return query;		
 		
 	}

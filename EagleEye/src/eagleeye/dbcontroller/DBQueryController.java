@@ -63,6 +63,9 @@ public class DBQueryController {
 		ArrayList<Directory> listOfDirectory = getAllDirectories();
 		ArrayList<FileEntity> listOfFiles = getAllFiles();
 		
+		System.out.println("CaiJun: D_List Size =" + listOfDirectory.size());
+		System.out.println("CaiJun: F_List Size =" + listOfFiles.size());
+		
 		ArrayList<Directory> organizedDirectoryList = this.organizeFilesAndDirectory(listOfDirectory, listOfFiles);
 		
 		return organizedDirectoryList;
@@ -83,14 +86,15 @@ public class DBQueryController {
 			while(rs.next()){
 				
 				Directory d = new Directory();
-				d.modifyDeviceID(deviceID);
+				d.modifyDirectoryID(rs.getInt("DirectoryID"));
 				d.modifyDirectoryName(rs.getString("DirectoryName"));
-				d.modifyDirectoryID(rs.getInt("OriginDirectory"));
-				d.modifyParentDirectory(rs.getInt("PreDirectory"));
-				d.modifyDateAccessed(rs.getString("DateAccessed"));
+				d.modifyDeviceID(rs.getInt("DeviceID"));
+				d.modifyParentDirectory(rs.getInt("ParentDirectoryID"));
 				d.modifyDateCreated(rs.getString("DateCreated"));
-				d.modifyDateDeleted(rs.getString("DateDeleted"));
+				d.modifyDateAccessed(rs.getString("DateAccessed"));
+				d.modifyDateModified(rs.getString("DateModified"));
 				d.modifyIsRecovered(rs.getBoolean("IsRecovered"));
+				d.modifyDateDeleted(rs.getString("DateDeleted"));
 				
 				listOfDirectory.add(d);
 			}
@@ -123,20 +127,23 @@ public class DBQueryController {
 			while(rs.next()){
 				
 				FileEntity f = new FileEntity();
-				f.modifyCategory(rs.getString("ExtTypeName"));
+			
 				f.modifyFileName(rs.getString("FileName"));
+				f.modifyFileID(rs.getInt("FileID"));
+				f.modifyDirectoryID(rs.getInt("DirectoryID"));
+				f.modifyDirectoryName(rs.getString("DirectoryName"));
 				f.modifyFileExt(rs.getString("FileExt"));
-				f.modifyIsRecovered(rs.getBoolean("IsRecovered"));
-				f.modifyDateDeleted(rs.getString("DateDeleted"));
-				f.modifyIsModified(rs.getBoolean("IsModified"));
-				f.modifyModifiedExt(rs.getString("ModifiedExt"));
+				f.modifyFileExtID(rs.getInt("FileExtID"));
 				f.modifyDateCreated(rs.getString("DateCreated"));
 				f.modifyDateAccessed(rs.getString("DateAccessed"));
 				f.modifyDateModified(rs.getString("DateModified"));
+				f.modifyIsModified(rs.getBoolean("IsModified"));
+				f.modifyModifiedExt(rs.getString("ModifiedExt"));
+				f.modifyIsRecovered(rs.getBoolean("IsRecovered"));
+				f.modifyDateDeleted(rs.getString("DateDeleted"));
 				f.modifyFilePath(rs.getString("FilePath"));
-				f.modifyDirectoryID(rs.getInt("DirectoryID"));
-				f.modifyDirectoryName(rs.getString("DirectoryName"));
-				
+				f.modifyCategory(rs.getString("ExtTypeName"));
+								
 				listOfFiles.add(f);
 			}
 			

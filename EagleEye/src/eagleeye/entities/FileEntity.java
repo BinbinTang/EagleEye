@@ -3,15 +3,17 @@ package eagleeye.entities;
 public class FileEntity implements Comparable<FileEntity> {
 	
 	protected int deviceID;
-	protected int directoryID; 		//object parentID
-	protected int fileID; 			//object fileID
+	//parent object ID when inserted; directoryID when queried
+	protected int directoryID;
+	//object ID when inserted; fileID when queried
+	protected int fileID; 			 
 	protected boolean isRecovered;
 	protected boolean isModified;
 	protected boolean isDirectory;
 	protected String fileName;
 	protected String filePath;
 	protected String fileExt; 		// example gif, jpg without .
-	protected int fileExtID; 		// currently not used
+	protected int fileExtID; 		
 	protected String dateDeleted;
 	protected String modifiedExt;
 	protected String dateCreated;
@@ -19,8 +21,7 @@ public class FileEntity implements Comparable<FileEntity> {
 	protected String dateModified;
 	protected String category;
 	protected String directoryName;
-	
-	
+		
 	public FileEntity() {
 		
 		isRecovered = false;

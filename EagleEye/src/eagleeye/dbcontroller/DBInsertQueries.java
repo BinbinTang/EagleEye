@@ -19,24 +19,22 @@ public class DBInsertQueries {
 	
 	public String insertNewRootDirectory() {
 		
-		String script = "INSERT INTO Directory(DirectoryName, DeviceID, PreDirectory, OriginDirectory) "
+		String script = "INSERT INTO Directory(DirectoryName, DeviceID, ParentObjectID, ObjectID) "
 						+ "VALUES (?,?,?,?)";
 		return script;
 	}
 	
 	public String insertNewDirectory(){
 		
-		String script = "INSERT INTO Directory(DirectoryName, DeviceID, PreDirectory, OriginDirectory, DateCreated, DateAccessed, DateModified, IsRecovered, DateDeleted) "
+		String script = "INSERT INTO Directory(DirectoryName, ObjectID, ParentObjectID, DeviceID, DateCreated, DateAccessed, DateModified, IsRecovered, DateDeleted)"
 					 	+ "VALUES (?,?,?,?,?,?,?,?,?)";
 		
 		return script;
 	}
 	
-	public String insertNewFile(){
-				
-		String script = "INSERT INTO File(FileName,FileExt,IsRecovered,DateDeleted,IsModified,ModifiedExt"
-						+",DateCreated,DateAccessed,DateModified,FilePath,DirectoryID,DeviceID) "
-						+"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";	
+	public String updateDirectoryRoute(){
+		
+		String script = "UPDATE Directory Set ParentDirectoryID = (SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = Directory.ParentObjectID AND e.DeviceID = Directory.DeviceID AND e.DeviceID = ?)";
 		
 		return script;
 	}
@@ -46,8 +44,30 @@ public class DBInsertQueries {
 		String script = "INSERT OR IGNORE INTO Extension(ExtName,ExtTypeID) "
 						+ "VALUES (?,?)";
 		
-		return script;
+		return script;		
+	}
+	
+	public String insertNewFile(){
+				
+		String script = "INSERT INTO File(FileName,FileExt,DateCreated,DateAccessed,DateModified,IsModified,ModifiedExt,IsRecovered,DateDeleted,"
+						+"FilePath,ObjectID,ParentObjectID) "
+						+"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";	
 		
+		return script;
+	}
+	
+	public String updateFileExtID() {
+		
+		String script = "UPDATE File SET FileExtID = (Select ExtID FROM Extension WHERE File.FileExt = Extension.ExtName)";
+		
+		return script;
+	}
+	
+	public String updateFileDirectoryID() {
+		
+		String script = "UPDATE File Set DirectoryID = (SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = File.ParentObjectID AND e.DeviceID = ?)";
+		
+		return script;
 	}
 	
 }

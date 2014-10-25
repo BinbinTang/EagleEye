@@ -55,6 +55,11 @@ public class DBInsertTransaction {
 			conn.commit();
 			System.out.println("All Directories insert success");
 			
+			stmt = conn.prepareStatement(queryMaker.updateDirectoryRoute());
+			controller.updateDirectoryRoute(stmt);
+			conn.commit();
+			System.out.println("Directories route success");
+						
 			stmt = conn.prepareStatement(queryMaker.insertNewExt());
 			controller.insertNewFileExt(listOfFiles,stmt);
 			conn.commit();
@@ -64,6 +69,16 @@ public class DBInsertTransaction {
 			controller.insertNewFile(listOfFiles, stmt);
 			conn.commit();
 			System.out.println("All Files insert success");
+			
+			stmt = conn.prepareStatement(queryMaker.updateFileExtID());
+			controller.updateFileExtID(stmt);
+			conn.commit();
+			System.out.println("All fileExtID updated");
+			
+			stmt = conn.prepareStatement(queryMaker.updateFileDirectoryID());
+			controller.updateFileDirectoryID(stmt);
+			conn.commit();
+			System.out.println("All Files' directoryID updated");
 			
 			conn.close();
 			return true;
