@@ -184,7 +184,7 @@ public class UnpackDirectoryService extends Service<Void>
 		System.out.println("located at: "+diskimgPath);
 		
 		String outputPath=System.getProperty("user.dir").replace("\\", "/");
-		outputPath += "/Output";
+		outputPath += "/EagleEye/output";
 		System.out.println("will be unpacked to: "+outputPath);
 		
 		String pluginFolder="PluginBinaries";

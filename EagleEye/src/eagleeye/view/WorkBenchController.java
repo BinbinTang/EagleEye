@@ -50,6 +50,7 @@ import javafx.util.StringConverter;
 import eagleeye.controller.MainApp;
 import eagleeye.datacarving.unpack.service.UnpackDirectoryService;
 import eagleeye.dbcontroller.DBQueryController;
+import eagleeye.entities.Device;
 import eagleeye.entities.Directory;
 import eagleeye.entities.FileEntity;
 import eagleeye.model.RequestHandler;
@@ -548,9 +549,22 @@ public class WorkBenchController {
 	 * Methods of workbench
 	 */
 	
-	public void refreshCase(){
+	//retrieve device list from db through RequestHandler
+	public ArrayList<Device> getExisitingDevices(){
+		ArrayList<Device> DeviceList;
+		RequestHandler rh= new UIRequestHandler();
+		DeviceList = rh.getExistingDevices();
+		return DeviceList;
+		
+	}
+	
+	public void loadExistingDevice(int deviceID){
+		refreshCase(deviceID);
+	}
+	
+	public void refreshCase(int deviceID){
 		DBQueryController dbController = new DBQueryController();
-		dbController.setDeviceID(1);
+		dbController.setDeviceID(deviceID);
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
 		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
@@ -737,7 +751,8 @@ public class WorkBenchController {
 		service.start();
 		dialog.show();
 		
-		this.refreshCase();
+		//TODO: if multiple device exists, deviceID need to be queried before refresh
+		this.refreshCase(1);
 	}
 
 	private Stage createProgressDialog(final Service<Void> service) {
