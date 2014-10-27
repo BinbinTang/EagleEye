@@ -126,8 +126,6 @@ public class WorkBenchController {
 	@FXML
 	private MenuItem newClick;
 	@FXML
-	private MenuItem openClick;
-	@FXML
 	private Menu openMenu;
 	@FXML
 	private MenuItem saveClick;
