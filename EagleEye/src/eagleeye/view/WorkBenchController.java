@@ -29,6 +29,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
@@ -58,6 +59,9 @@ import eagleeye.model.UIRequestHandler;
 
 public class WorkBenchController {
 
+	// DataBase
+	private DBQueryController dbController;
+	
 	// File chooser
 	private File file;
 	private Label labelFilePath = new Label();
@@ -66,6 +70,7 @@ public class WorkBenchController {
 
 	// Path to identify current case
 	private String casePath = "";
+	private int currentCaseID = -1;
 	ArrayList<eagleeye.entities.FileEntity> folderStructure;
 	ArrayList<Directory> TreeStructure;
 
@@ -122,6 +127,8 @@ public class WorkBenchController {
 	private MenuItem newClick;
 	@FXML
 	private MenuItem openClick;
+	@FXML
+	private Menu openMenu;
 	@FXML
 	private MenuItem saveClick;
 	@FXML
@@ -412,9 +419,11 @@ public class WorkBenchController {
 			}
 		});
 
-		// directory chooser
-		newClick.setOnAction(this::handleOpenDirectory);
-		//openClick.setOnAction(this::handleOpenDirectory);
+		// new device
+		newClick.setOnAction(this::handleNewDirectory);
+		
+		// open
+		refreshDevice();
 
 		// save
 		saveClick.setOnAction(new EventHandler<ActionEvent>() {
@@ -563,7 +572,7 @@ public class WorkBenchController {
 	}
 	
 	public void refreshCase(int deviceID){
-		DBQueryController dbController = new DBQueryController();
+		dbController = new DBQueryController();
 		dbController.setDeviceID(deviceID);
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
@@ -579,10 +588,12 @@ public class WorkBenchController {
 			TreeView<String> tree = new TreeView<String>(rootNode);
 
 			// Force root node ID to be 0
-			TreeStructure.get(0).modifyDirectoryID(0);
+			//TreeStructure.get(0).modifyDirectoryID(0);
 
+			int rootDirID = TreeStructure.get(0).getDirectoryID();
 			// Whenever a directory found its parent, we remove it from copied
 			// list
+			
 			while (CopyTreeStructure.size() > 0) {
 				int startSize = CopyTreeStructure.size();
 				for (Directory dir : CopyTreeStructure) {
@@ -590,7 +601,7 @@ public class WorkBenchController {
 					System.out.println("Current remaining Size: "
 							+ CopyTreeStructure.size());
 					// check if it is root
-					if (dir.getDirectoryID() == 0) {
+					if (dir.getDirectoryID() == rootDirID) {
 						casePath = dir.getDirectoryName();
 						this.addFiles(dir, rootNode);
 						CopyTreeStructure.remove(dir);
@@ -601,15 +612,12 @@ public class WorkBenchController {
 					TreeItem<String> newItem = new TreeItem<String>(
 							dir.getDirectoryName());
 
-					Directory parent = findDir(TreeStructure,
-							dir.getParentDirectory());
+					Directory parent = findDir(TreeStructure,dir.getParentDirectory());
 
 					if (parent != null) {
-						targetParent = findItem(rootNode,
-								parent.getDirectoryName());
+						targetParent = findItem(rootNode,parent.getDirectoryName());
 					} else {
-						System.out.println("Cannot find parent"
-								+ dir.getParentDirectory());
+						System.out.println("Cannot find parent" + dir.getParentDirectory());
 					}
 
 					if (targetParent != null) {
@@ -677,6 +685,24 @@ public class WorkBenchController {
 				btn.setPrefWidth(130);
 				categoryViewPane.getChildren().add(btn);
 			}
+			
+		}
+		refreshDevice();
+	}
+	
+	public void refreshDevice(){
+		dbController = new DBQueryController();
+		ArrayList<Device> devices = dbController.getAllDevices();
+		for (Device device : devices){
+			int ID = device.getDeviceID();
+			MenuItem newItem = new MenuItem(""+ ID);
+			openMenu.getItems().add(newItem);
+			newItem.setOnAction(new EventHandler<ActionEvent>() {
+				@Override public void handle(ActionEvent e) {
+					currentCaseID = ID;
+	                refreshCase(ID);
+	            }
+			});
 		}
 	}
 
@@ -733,8 +759,8 @@ public class WorkBenchController {
 		// obtain current case path
 		casePath = (mainApp.getCasePath());
 	}
-
-	private void handleOpenDirectory(ActionEvent event) {
+	
+	private void handleNewDirectory(ActionEvent event) {
 		DirectoryChooser dirChooser = new DirectoryChooser();
 
 		// Show open file dialog
@@ -751,7 +777,7 @@ public class WorkBenchController {
 		service.start();
 		dialog.show();
 		
-		//TODO: if multiple device exists, deviceID need to be queried before refresh
+		//For New device, ID is 1
 		this.refreshCase(1);
 	}
 
