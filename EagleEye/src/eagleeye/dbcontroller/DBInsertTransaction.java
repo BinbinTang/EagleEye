@@ -122,4 +122,9 @@ public class DBInsertTransaction {
 		Collections.sort(listOfDirectory);
 		Collections.sort(listOfFiles);		
 	}
+	
+	public int getDeviceID () {
+		
+		return this.deviceID;
+	}
 }

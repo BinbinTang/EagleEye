@@ -1,14 +1,8 @@
 package eagleeye.datacarving.unpack.service;
 
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.sax.BodyContentHandler;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -169,7 +163,7 @@ public class UnpackDirectoryService extends Service<Void>
 			if(fileList.size() > 0)
 			{
 				DBInsertTransaction transaction = new DBInsertTransaction();
-				transaction.insertNewDeviceData(new Device("Test Device", "100GB", "Dennis"), fileList);
+				transaction.insertNewDeviceData(new Device("Test Device 02", "100GB", "Dennis"), fileList);
 			}
 		}
 	}
@@ -184,7 +178,7 @@ public class UnpackDirectoryService extends Service<Void>
 		System.out.println("located at: "+diskimgPath);
 		
 		String outputPath=System.getProperty("user.dir").replace("\\", "/");
-		outputPath += "/EagleEye/output";
+		outputPath += "/output";
 		System.out.println("will be unpacked to: "+outputPath);
 		
 		String pluginFolder="PluginBinaries";

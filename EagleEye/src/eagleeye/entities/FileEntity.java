@@ -10,6 +10,7 @@ public class FileEntity implements Comparable<FileEntity> {
 	protected boolean isRecovered;
 	protected boolean isModified;
 	protected boolean isDirectory;
+	//Can be a filename or a directory name 
 	protected String fileName;
 	protected String filePath;
 	protected String fileExt; 		// example gif, jpg without .

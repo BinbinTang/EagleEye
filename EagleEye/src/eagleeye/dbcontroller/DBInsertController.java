@@ -54,7 +54,7 @@ public class DBInsertController {
 			
 		for(FileEntity newDirectory : listOfDirectory){
 			
-			stmt.setString(1, newDirectory.getDirectoryName());
+			stmt.setString(1, newDirectory.getFileName());
 			stmt.setInt(2, newDirectory.getFileID());
 			stmt.setInt(3, newDirectory.getDirectoryID());
 			stmt.setInt(4, deviceID);
@@ -71,8 +71,9 @@ public class DBInsertController {
 	}
 	
 	public void updateDirectoryRoute(PreparedStatement stmt) throws Exception {
-		
+
 		stmt.setInt(1, deviceID);
+		stmt.setInt(2, deviceID);
 		stmt.execute();
 		
 	}

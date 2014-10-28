@@ -242,6 +242,12 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					
 					if (header != null) // Chunk is an object header
 					{
+						// Discard ghost headers
+						if(header.getName().length() == 0 && objectId > 1)
+						{
+							continue;
+						}
+						
 						if(header.getName().equals("deleted") && header.getParentObjectId() == 4)
 						{
 							isDeleted = true;
@@ -263,10 +269,12 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 						
 						if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
 						{
-							if(objectId == 0)
+							if(objectId <= 1)
 							{
 								header.setName(file.getName());
+								header.setParentObjectId(0);
 							}
+							
 							yaffs2ParentObjects.put(objectId, header);
 						}
 		
@@ -371,11 +379,6 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				int parentId = header.getParentObjectId();
 				String filePath = rootFilePath;
 				
-				if(yaffs2Object.getId() == 2600)
-				{
-					System.out.println("FOUND");
-				}
-				
 				if(header.getName().equals("deleted") && parentId == 4)
 				{
 					continue;
@@ -436,7 +439,11 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				
 				if(header.getName().indexOf('.') > -1)
 				{
-					genericFile.modifyFileExt(header.getName().substring(header.getName().lastIndexOf('.')));
+					if(header.getName().lastIndexOf('.') + 1 < header.getName().length())
+					{
+						genericFile.modifyFileExt(header.getName().substring(header.getName().lastIndexOf('.') + 1));
+					}
+					
 					genericFile.modifyFileName(header.getName().substring(0, header.getName().lastIndexOf('.')));
 				}
 				else
