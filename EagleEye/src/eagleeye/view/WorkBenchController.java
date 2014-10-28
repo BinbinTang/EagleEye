@@ -693,7 +693,7 @@ public class WorkBenchController {
 		ArrayList<Device> devices = dbController.getAllDevices();
 		for (Device device : devices){
 			int ID = device.getDeviceID();
-			MenuItem newItem = new MenuItem(""+ ID);
+			MenuItem newItem = new MenuItem(device.getDeviceName());
 			openMenu.getItems().add(newItem);
 			newItem.setOnAction(new EventHandler<ActionEvent>() {
 				@Override public void handle(ActionEvent e) {
