@@ -806,7 +806,7 @@ public class WorkBenchControllerVisualization implements MapComponentInitialized
 		this.refreshCase();
 	}
 
-	private Stage createProgressDialog(final Service<Void> service) {
+	private Stage createProgressDialog(final Service<Integer> service) {
 		Stage dialog = new Stage();
 		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.initStyle(StageStyle.UTILITY);

@@ -19,6 +19,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -772,28 +773,24 @@ public class WorkBenchController {
 		service.setDirectory(file);
 
 		Stage dialog = this.createProgressDialog(service);
+		
+		service.setOnSucceeded(new EventHandler<WorkerStateEvent>()
+		{
+			
+			@Override
+			public void handle(WorkerStateEvent e)
+			{
+				int deviceId = (int) e.getSource().getValue();
+				
+				refreshCase(deviceId);
+			}
+		});
 
 		service.start();
 		dialog.show();
-		
-		service.stateProperty().addListener
-		(
-			new ChangeListener<State>()
-			{
-				@Override
-				public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue)
-				{
-					if (newValue == State.CANCELLED || newValue == State.FAILED || newValue == State.SUCCEEDED)
-					{
-						//For New device, ID is 1
-						refreshCase(1);
-					}
-				}
-			}
-		);
 	}
 
-	private Stage createProgressDialog(final Service<Void> service) {
+	private Stage createProgressDialog(final Service<Integer> service) {
 		Stage dialog = new Stage();
 		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.initStyle(StageStyle.UTILITY);
