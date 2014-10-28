@@ -691,6 +691,7 @@ public class WorkBenchController {
 	public void refreshDevice(){
 		dbController = new DBQueryController();
 		ArrayList<Device> devices = dbController.getAllDevices();
+		openMenu.getItems().clear();
 		for (Device device : devices){
 			int ID = device.getDeviceID();
 			MenuItem newItem = new MenuItem(""+ ID);
