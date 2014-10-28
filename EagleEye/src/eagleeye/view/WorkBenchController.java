@@ -776,8 +776,21 @@ public class WorkBenchController {
 		service.start();
 		dialog.show();
 		
-		//For New device, ID is 1
-		this.refreshCase(1);
+		service.stateProperty().addListener
+		(
+			new ChangeListener<State>()
+			{
+				@Override
+				public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue)
+				{
+					if (newValue == State.CANCELLED || newValue == State.FAILED || newValue == State.SUCCEEDED)
+					{
+						//For New device, ID is 1
+						refreshCase(1);
+					}
+				}
+			}
+		);
 	}
 
 	private Stage createProgressDialog(final Service<Void> service) {
