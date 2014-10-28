@@ -34,7 +34,7 @@ public class DBInsertQueries {
 	
 	public String updateDirectoryRoute(){
 		
-		String script = "UPDATE Directory Set ParentDirectoryID = (SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = Directory.ParentObjectID AND e.DeviceID = Directory.DeviceID AND e.DeviceID = ?)";
+		String script = "UPDATE Directory Set ParentDirectoryID = (SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = Directory.ParentObjectID AND e.DeviceID = Directory.DeviceID AND e.DeviceID = ?) WHERE DeviceID = ?";
 		
 		return script;
 	}
