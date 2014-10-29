@@ -53,18 +53,11 @@
 										</Menu>
 									</menus>
 								</MenuBar>
-								<ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0);" GridPane.rowIndex="1">
+								<ToolBar prefHeight="55.0" prefWidth="180.0" style="-fx-background-color: rgba(0, 0, 0, 0);" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="TOP">
 									<items>
-										<Button id="contactHistoryBtn" fx:id="contactHistoryBtn" mnemonicParsing="false" text="Contact History" />
-										<Button mnemonicParsing="false" text="Wifi History" />
-									</items>
-									<padding>
-										<Insets bottom="3.0" left="5.0" right="30.0" top="3.0" />
-									</padding>
-								</ToolBar>
-								<ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0);" GridPane.rowIndex="2">
-									<items>
-										<Button mnemonicParsing="false" text="Timeline " />
+										<Button id="contactHistoryBtn" fx:id="contactHistoryBtn" alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Contact History" />
+										<Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Wifi History" />
+										<Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Timeline " />
 									</items>
 									<padding>
 										<Insets bottom="3.0" left="5.0" right="30.0" top="3.0" />
@@ -241,9 +234,12 @@
 								</AnchorPane>
 								<AnchorPane minHeight="300.0" minWidth="100.0" prefHeight="500.0" prefWidth="600.0">
 									<children>
-										<ScrollPane layoutX="120.0" layoutY="57.0" prefHeight="493.0" prefWidth="594.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+										<ScrollPane fitToHeight="true" fitToWidth="true" layoutX="120.0" layoutY="57.0" prefHeight="493.0" prefWidth="594.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 											<content>
-												<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="557.0" />
+												<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="557.0">
+                                       <children>
+                                          <ListView fx:id="resultListView" prefHeight="488.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children></AnchorPane>
 											</content>
 										</ScrollPane>
 									</children>
