@@ -87,7 +87,7 @@ public class WorkBenchController {
 
 	// SearchButton
 	private final Image searchIcon = new Image(getClass().getResourceAsStream(
-			"Icons/seach button small.png"), 16, 16, false, false);
+			"Icons/search icon1.png"), 16, 16, false, false);
 	@FXML
 	private Button searchButton;
 
