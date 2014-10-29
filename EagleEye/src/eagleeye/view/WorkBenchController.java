@@ -1,25 +1,19 @@
 package eagleeye.view;
 
 import java.awt.Desktop;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
 
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Worker.State;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -32,7 +26,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -47,7 +40,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.StringConverter;
 import eagleeye.controller.MainApp;
 import eagleeye.datacarving.unpack.service.UnpackDirectoryService;
 import eagleeye.dbcontroller.DBQueryController;
@@ -760,28 +752,24 @@ public class WorkBenchController {
 		service.setDirectory(file);
 
 		Stage dialog = this.createProgressDialog(service);
+		
+		service.setOnSucceeded(new EventHandler<WorkerStateEvent>()
+		{
+			
+			@Override
+			public void handle(WorkerStateEvent e)
+			{
+				int deviceId = (int) e.getSource().getValue();
+				
+				refreshCase(deviceId);
+			}
+		});
 
 		service.start();
 		dialog.show();
-		
-		service.stateProperty().addListener
-		(
-			new ChangeListener<State>()
-			{
-				@Override
-				public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue)
-				{
-					if (newValue == State.CANCELLED || newValue == State.FAILED || newValue == State.SUCCEEDED)
-					{
-						//For New device, ID is 1
-						refreshCase(1);
-					}
-				}
-			}
-		);
 	}
 
-	private Stage createProgressDialog(final Service<Void> service) {
+	private Stage createProgressDialog(final Service<Integer> service) {
 		Stage dialog = new Stage();
 		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.initStyle(StageStyle.UTILITY);

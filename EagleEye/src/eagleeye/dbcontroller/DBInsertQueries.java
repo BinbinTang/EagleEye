@@ -65,7 +65,10 @@ public class DBInsertQueries {
 	
 	public String updateFileDirectoryID() {
 		
-		String script = "UPDATE File Set DirectoryID = (SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = File.ParentObjectID AND e.DeviceID = ?)";
+		String script = "UPDATE File SET DirectoryID = " +
+						"(SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = File.ParentObjectID AND e.DeviceID = ?) " +
+						"WHERE FileID IN " +
+						"(SELECT FileID FROM Directory e WHERE e.ObjectID = File.ParentObjectID AND e.DeviceID = ?)";
 		
 		return script;
 	}

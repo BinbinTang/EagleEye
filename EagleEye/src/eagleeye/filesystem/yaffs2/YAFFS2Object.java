@@ -4,6 +4,8 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import eagleeye.datacarving.unpack.service.UnpackDirectoryService;
+
 public class YAFFS2Object
 {
 	protected int id = -1;

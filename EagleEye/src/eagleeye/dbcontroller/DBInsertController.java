@@ -123,8 +123,9 @@ public class DBInsertController {
 	}
 
 	public void updateFileDirectoryID(PreparedStatement stmt) throws Exception {
-		
+
 		stmt.setInt(1, deviceID);
+		stmt.setInt(2, deviceID);
 		stmt.execute();
 	}
 

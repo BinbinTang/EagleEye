@@ -19,7 +19,7 @@ import eagleeye.filesystem.format.FormatIdentifierManager;
 import eagleeye.filesystem.format.YAFFS2FormatIdentifier;
 import eagleeye.pluginmanager.PluginManager;
 
-public class UnpackDirectoryService extends Service<Void>
+public class UnpackDirectoryService extends Service<Integer>
 {
 	private File directory;
 	private DiskImageUnpackerManager diskImageUnpackerManager;
@@ -35,23 +35,24 @@ public class UnpackDirectoryService extends Service<Void>
 	}
 	
 	@Override
-	protected Task<Void> createTask()
+	protected Task<Integer> createTask()
 	{
 		File directory = this.getDirectory();
-		return new Task<Void>()
+		return new Task<Integer>()
 		{
 			@Override
-			protected Void call() throws Exception
+			protected Integer call() throws Exception
 			{
 				try
 				{
-					loadDirectory(directory);
+					return loadDirectory(directory);
 					//loadDirectoryFromPlugin(directory);
 				} catch (Exception e)
 				{
 					e.printStackTrace();
 				}
-				return null;
+				
+				return -1;
 			}
 		};
 	}
@@ -67,7 +68,7 @@ public class UnpackDirectoryService extends Service<Void>
 		}
     }
 	
-	private void loadDirectory(File directory) throws Exception
+	private int loadDirectory(File directory) throws Exception
 	{
 		// Assuming files are all in main directory
 		File[] files = directory.listFiles();
@@ -164,8 +165,12 @@ public class UnpackDirectoryService extends Service<Void>
 			{
 				DBInsertTransaction transaction = new DBInsertTransaction();
 				transaction.insertNewDeviceData(new Device("Test Device 02", "100GB", "Dennis"), fileList);
+				
+				return transaction.getDeviceID();
 			}
 		}
+		
+		return -1;
 	}
 	
 	//ALTERNATIVE LOAD METHOD
