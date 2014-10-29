@@ -71,6 +71,7 @@ public class WorkBenchController {
 	// Path to identify current case
 	private String casePath = "";
 	private int currentCaseID = -1;
+	private String currentDir = "";
 	ArrayList<eagleeye.entities.FileEntity> folderStructure;
 	ArrayList<Directory> TreeStructure;
 
@@ -442,26 +443,6 @@ public class WorkBenchController {
 		// Search
 		searchButton.setGraphic(new ImageView(searchIcon));
 
-		// Connect to DB
-		/*
-		 * RequestHandler rh= new UIRequestHandler();
-		 * 
-		 * ArrayList<eagleeye.entities.File> dummyList= rh.getFolderStructure();
-		 * myFiles = new ArrayList<MyFile>(); for(eagleeye.entities.File f:
-		 * dummyList){ //"fdcbcc689c21421c9e5abb6868884fd8", ".jpg", false,
-		 * false,"/UI Test" myFiles.add(new
-		 * MyFile(f.getFileName(),f.getFileExt()
-		 * ,f.getIsDirectory(),f.getIsModified
-		 * (),f.getFilePath(),f.getCategory())); }
-		 */
-		/*
-		 * UIRequestHandler test = new UIRequestHandler();
-		 * 
-		 * folderStructure = test.getFolderStructure();
-		 */
-		
-		
-		
 			
 			/*
 			rootNodeC = new TreeItem<String>(TreeStructure.get(0)
@@ -569,6 +550,7 @@ public class WorkBenchController {
 		refreshCase(deviceID);
 	}
 	
+	// Refresh Case that Loaded in View
 	public void refreshCase(int deviceID){
 		dbController = new DBQueryController();
 		dbController.setDeviceID(deviceID);
@@ -688,6 +670,7 @@ public class WorkBenchController {
 		refreshDevice();
 	}
 	
+	// Refresh Device in Menu List
 	public void refreshDevice(){
 		dbController = new DBQueryController();
 		ArrayList<Device> devices = dbController.getAllDevices();
@@ -703,6 +686,11 @@ public class WorkBenchController {
 	            }
 			});
 		}
+	}
+	
+	// Method to Decide What to Show in Result Pane View
+	public void displayResult(){
+		
 	}
 
 	// Find whether a target is inside the tree of root, by recursion
