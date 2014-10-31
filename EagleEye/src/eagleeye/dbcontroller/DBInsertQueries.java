@@ -26,8 +26,8 @@ public class DBInsertQueries {
 	
 	public String insertNewDirectory(){
 		
-		String script = "INSERT INTO Directory(DirectoryName, ObjectID, ParentObjectID, DeviceID, DateCreated, DateAccessed, DateModified, IsRecovered, DateDeleted)"
-					 	+ "VALUES (?,?,?,?,?,?,?,?,?)";
+		String script = "INSERT INTO Directory(DirectoryName, ObjectID, ParentObjectID, DeviceID, DateCreated, DateAccessed, DateModified, IsRecovered)"
+					 	+ "VALUES (?,?,?,?,?,?,?,?)";
 		
 		return script;
 	}
@@ -49,9 +49,9 @@ public class DBInsertQueries {
 	
 	public String insertNewFile(){
 				
-		String script = "INSERT INTO File(FileName,FileExt,DateCreated,DateAccessed,DateModified,IsModified,ModifiedExt,IsRecovered,DateDeleted,"
+		String script = "INSERT INTO File(FileName,FileExt,DateCreated,DateAccessed,DateModified,IsModified,ContentType,IsRecovered,"
 						+"FilePath,ObjectID,ParentObjectID) "
-						+"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";	
+						+"VALUES (?,?,?,?,?,?,?,?,?,?,?)";	
 		
 		return script;
 	}

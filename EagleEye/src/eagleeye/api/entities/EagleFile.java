@@ -19,12 +19,10 @@ public interface EagleFile {
 	public int getFileExtID();
 		
 	public boolean getIsRecovered();
-	
-	public String getDateDeleted();
 		
 	public boolean getIsModified();
 	
-	public String getModifiedExt();
+	public String getContentType();
 
 	public String getDateCreated();
 	
@@ -52,11 +50,9 @@ public interface EagleFile {
 	
 	public void modifyIsRecovered(boolean isRecovered);
 	
-	public void modifyDateDeleted(String dateDeleted);
-		
 	public void modifyIsModified(boolean isModified);
 	
-	public void modifyModifiedExt(String modifiedExt);
+	public void modifyContentType(String contentType);
 		
 	public void modifyDateCreated(String dateCreated);
 	
@@ -66,5 +62,5 @@ public interface EagleFile {
 	
 	public void modifyCategory(String category);
 
-	public int compareTo(EagleFile anotherFile);
+	//public int compareTo(EagleFile anotherFile);
 }

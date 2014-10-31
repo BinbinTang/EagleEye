@@ -22,6 +22,7 @@ public class DBQueryController {
 	}
 	
 	public int getDeviceID(){
+	
 		return deviceID;
 	}
 	
@@ -99,7 +100,6 @@ public class DBQueryController {
 				d.modifyDateAccessed(rs.getString("DateAccessed"));
 				d.modifyDateModified(rs.getString("DateModified"));
 				d.modifyIsRecovered(rs.getBoolean("IsRecovered"));
-				d.modifyDateDeleted(rs.getString("DateDeleted"));
 				
 				listOfDirectory.add(d);
 			}
@@ -143,9 +143,8 @@ public class DBQueryController {
 				f.modifyDateAccessed(rs.getString("DateAccessed"));
 				f.modifyDateModified(rs.getString("DateModified"));
 				f.modifyIsModified(rs.getBoolean("IsModified"));
-				f.modifyModifiedExt(rs.getString("ModifiedExt"));
+				f.modifyContentType(rs.getString("ContentType"));
 				f.modifyIsRecovered(rs.getBoolean("IsRecovered"));
-				f.modifyDateDeleted(rs.getString("DateDeleted"));
 				f.modifyFilePath(rs.getString("FilePath"));
 				f.modifyCategory(rs.getString("ExtTypeName"));
 								
@@ -198,9 +197,8 @@ public class DBQueryController {
 				f.modifyDateAccessed(rs.getString("DateAccessed"));
 				f.modifyDateModified(rs.getString("DateModified"));
 				f.modifyIsModified(rs.getBoolean("IsModified"));
-				f.modifyModifiedExt(rs.getString("ModifiedExt"));
+				f.modifyContentType(rs.getString("ContentType"));
 				f.modifyIsRecovered(rs.getBoolean("IsRecovered"));
-				f.modifyDateDeleted(rs.getString("DateDeleted"));
 				f.modifyFilePath(rs.getString("FilePath"));
 				f.modifyCategory(rs.getString("ExtTypeName"));
 								

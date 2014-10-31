@@ -13,7 +13,6 @@ public class Directory {
 	protected String dateAccessed;
 	protected String dateModified;
 	protected boolean isRecovered;
-	protected String dateDeleted;
 	protected ArrayList<FileEntity> fileList;
 	
 	public Directory(){
@@ -62,11 +61,6 @@ public class Directory {
 		return isRecovered;
 	}
 	
-	public String getDateDeleted(){
-		
-		return dateDeleted;
-	}
-	
 	public ArrayList<FileEntity> getFiles(){
 		
 		return fileList;
@@ -105,11 +99,6 @@ public class Directory {
 	public void modifyDateModified(String dateModified){
 		
 		this.dateModified = dateModified;		
-	}
-	
-	public void modifyDateDeleted(String dateDeleted){
-		
-		this.dateDeleted = dateDeleted;
 	}
 	
 	public void modifyIsRecovered(boolean isRecovered){

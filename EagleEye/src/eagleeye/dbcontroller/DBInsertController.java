@@ -62,7 +62,6 @@ public class DBInsertController {
 			stmt.setString(6, newDirectory.getDateAccessed());
 			stmt.setString(7, newDirectory.getDateModified());
 			stmt.setBoolean(8, newDirectory.getIsRecovered());
-			stmt.setString(9, newDirectory.getDateDeleted());
 			
 			stmt.addBatch();
 		}		
@@ -104,12 +103,11 @@ public class DBInsertController {
 			stmt.setString(4, newFile.getDateAccessed());
 			stmt.setString(5, newFile.getDateModified());
 			stmt.setBoolean(6, newFile.getIsModified());
-			stmt.setString(7, newFile.getModifiedExt());
+			stmt.setString(7, newFile.getContentType());
 			stmt.setBoolean(8, newFile.getIsRecovered());
-			stmt.setString(9, newFile.getDateDeleted());
-			stmt.setString(10, newFile.getFilePath());
-			stmt.setInt(11, newFile.getFileID());
-			stmt.setInt(12, newFile.getDirectoryID());
+			stmt.setString(9, newFile.getFilePath());
+			stmt.setInt(10, newFile.getFileID());
+			stmt.setInt(11, newFile.getDirectoryID());
 			
 			stmt.addBatch();
 		}

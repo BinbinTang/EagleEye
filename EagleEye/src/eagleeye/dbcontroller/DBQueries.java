@@ -19,7 +19,7 @@ public class DBQueries {
 		
 		String query = "SELECT FileID, FileName, File.DirectoryID, DirectoryName, FileExt,"
 					   +"FileExtID,File.DateCreated,File.DateAccessed,File.DateModified,"
-					   +"File.IsModified,ModifiedExt,File.IsRecovered,File.DateDeleted,FilePath,"
+					   +"File.IsModified,ContentType,File.IsRecovered,FilePath,"
 					   +"ExtTypeName FROM File "
 					   +"INNER JOIN Directory ON Directory.DirectoryID = File.DirectoryID "
 					   +"INNER JOIN ExtensionType ON Extension.ExtTypeID = ExtensionType.ExtTypeID "
@@ -38,7 +38,7 @@ public class DBQueries {
 			
 			query = "SELECT FileID, FileName, File.DirectoryID, DirectoryName, FileExt,"
 					+"FileExtID,File.DateCreated,File.DateAccessed,File.DateModified,"
-					+"File.IsModified,ModifiedExt,File.IsRecovered,File.DateDeleted,FilePath,"
+					+"File.IsModified,ContentType,File.IsRecovered,FilePath,"
 					+"ExtTypeName, Extension.ExtTypeID FROM File "
 					+"INNER JOIN Directory ON Directory.DirectoryID = File.DirectoryID "
 					+"INNER JOIN ExtensionType ON Extension.ExtTypeID = ExtensionType.ExtTypeID "
@@ -53,7 +53,7 @@ public class DBQueries {
 				
 				query = "SELECT FileID, FileName, File.DirectoryID, DirectoryName, FileExt,"
 						+"FileExtID,File.DateCreated,File.DateAccessed,File.DateModified,"
-						+"File.IsModified,ModifiedExt,File.IsRecovered,File.DateDeleted,FilePath,"
+						+"File.IsModified,ContentType,File.IsRecovered,FilePath,"
 						+"ExtTypeName, Extension.ExtTypeID FROM File "
 						+"INNER JOIN Directory ON Directory.DirectoryID = File.DirectoryID "
 						+"INNER JOIN ExtensionType ON Extension.ExtTypeID = ExtensionType.ExtTypeID "
@@ -67,7 +67,7 @@ public class DBQueries {
 				
 				query = "SELECT FileID, FileName, File.DirectoryID, DirectoryName, FileExt,"
 						+"FileExtID,File.DateCreated,File.DateAccessed,File.DateModified,"
-						+"File.IsModified,ModifiedExt,File.IsRecovered,File.DateDeleted,FilePath,"
+						+"File.IsModified,ContentType,File.IsRecovered,FilePath,"
 						+"ExtTypeName, Extension.ExtTypeID FROM File "
 						+"INNER JOIN Directory ON Directory.DirectoryID = File.DirectoryID "
 						+"INNER JOIN ExtensionType ON Extension.ExtTypeID = ExtensionType.ExtTypeID "
@@ -80,7 +80,7 @@ public class DBQueries {
 				
 				query = "SELECT FileID, FileName, File.DirectoryID, DirectoryName, FileExt,"
 						+"FileExtID,File.DateCreated,File.DateAccessed,File.DateModified,"
-						+"File.IsModified,ModifiedExt,File.IsRecovered,File.DateDeleted,FilePath,"
+						+"File.IsModified,ContentType,File.IsRecovered,FilePath,"
 						+"ExtTypeName, Extension.ExtTypeID FROM File "
 						+"INNER JOIN Directory ON Directory.DirectoryID = File.DirectoryID "
 						+"INNER JOIN ExtensionType ON Extension.ExtTypeID = ExtensionType.ExtTypeID "
