@@ -11,7 +11,7 @@ public class DBQueryController {
 	protected DBQueries queryMaker;
 		
 	public DBQueryController() {
-		
+		System.out.println("new DB set");
 		this.deviceID = -1;
 		queryMaker = new DBQueries();
 	}
@@ -19,6 +19,10 @@ public class DBQueryController {
 	public void setDeviceID(int deviceID){
 		
 		this.deviceID = deviceID;
+	}
+	
+	public int getDeviceID(){
+		return deviceID;
 	}
 	
 	public ArrayList<Device> getAllDevices() {

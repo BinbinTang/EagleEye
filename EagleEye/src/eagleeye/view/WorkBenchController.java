@@ -420,7 +420,7 @@ public class WorkBenchController {
 		newClick.setOnAction(this::handleNewDirectory);
 		
 		// open
-		refreshDevice();
+		refreshDeviceList();
 
 		// save
 		saveClick.setOnAction(new EventHandler<ActionEvent>() {
@@ -552,6 +552,7 @@ public class WorkBenchController {
 	public void refreshCase(int deviceID){
 		dbController = new DBQueryController();
 		dbController.setDeviceID(deviceID);
+		System.out.println("new device: " +deviceID);
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
 		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
@@ -682,6 +683,12 @@ public class WorkBenchController {
 		            public void handle(ActionEvent event) {
 		                listItems.clear();
 		                filter.modifyCategoryName(category);
+		                System.out.println(filter.getCategoryName());
+		                System.out.println(filter.getCategoryID());
+		                System.out.println(filter.getStartDateAsString());
+		                System.out.println(filter.getEndDateAsString());
+		                System.out.println(filter.getStartTime());
+		                System.out.println(filter.getEndTime());
 		                System.out.println("Getting filter category: "+ category);
 		                displayResult(listItems, "category");
 		            }
@@ -690,11 +697,11 @@ public class WorkBenchController {
 			}
 			
 		}
-		refreshDevice();
+		//refreshDevice();
 	}
 	
 	// Refresh Device in Menu List
-	public void refreshDevice(){
+	public void refreshDeviceList(){
 		dbController = new DBQueryController();
 		ArrayList<Device> devices = dbController.getAllDevices();
 		openMenu.getItems().clear();
@@ -727,6 +734,7 @@ public class WorkBenchController {
 		ObservableList<String> resultList = FXCollections.observableArrayList(); 
 		
         ArrayList<FileEntity> results = dbController.getFilteredFiles(filter);
+        System.out.println("now: " + dbController.getDeviceID());
         System.out.println("filtered result size: " + results.size());
         
         for (FileEntity resultFile : results){
