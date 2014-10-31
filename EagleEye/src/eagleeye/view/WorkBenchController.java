@@ -11,6 +11,8 @@ import java.util.Arrays;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Worker.State;
 import javafx.concurrent.WorkerStateEvent;
@@ -23,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
@@ -81,9 +84,10 @@ public class WorkBenchController {
 	@FXML
 	private VBox categoryViewPane;
 
-	// UI elements
+	// result pane view
+	final ObservableList<String> listItems = FXCollections.observableArrayList("For testing purpose"); 
 	@FXML
-	private GridPane topGridPane;
+	private ListView resultListView;
 
 	// SearchButton
 	private final Image searchIcon = new Image(getClass().getResourceAsStream(
@@ -619,12 +623,26 @@ public class WorkBenchController {
 			tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent mouseEvent) {
-					if (mouseEvent.getClickCount() == 2) {
-						TreeItem<String> item = tree.getSelectionModel()
-								.getSelectedItem();
-						System.out.println("Selected Text : " + item.getValue());
 
+					TreeItem<String> item = tree.getSelectionModel().getSelectedItem();
+					System.out.println("Selected Text : " + item.getValue());
+					
+					// Change Result pane view if a folder
+					if (!item.isLeaf()){
+						listItems.clear();
+						for(TreeItem<String> subFile : item.getChildren()){
+							if (subFile.isLeaf()){
+								listItems.add("File:" + subFile.getValue());
+							}else{
+								listItems.add("Folder: " + subFile.getValue());
+							}
+						}
+						displayResult(listItems);
+					}
+					
+					if (mouseEvent.getClickCount() == 2) {
 						// Check if it is a file, and open
+						/*
 						if (item.isLeaf()) {
 							String filePath = item.getValue();
 							item = item.getParent();
@@ -643,6 +661,7 @@ public class WorkBenchController {
 								e.printStackTrace();
 							}
 						}
+						*/
 					}
 				}
 			});
@@ -681,8 +700,14 @@ public class WorkBenchController {
 	}
 	
 	// Method to Decide What to Show in Result Pane View
-	public void displayResult(){
-		
+	public void displayResult(ObservableList<String> list){
+		ObservableList<String> resultList = filterResult(list);
+		resultListView.setItems(resultList);
+	}
+	
+	// Filters 
+	public ObservableList<String> filterResult(ObservableList<String> list){
+		return list;
 	}
 
 	// Find whether a target is inside the tree of root, by recursion
