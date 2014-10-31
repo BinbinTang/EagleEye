@@ -29,11 +29,10 @@
 							<children>
 								<MenuBar prefHeight="31.0" prefWidth="797.0" GridPane.columnSpan="3" GridPane.valignment="TOP">
 									<menus>
-										<Menu mnemonicParsing="false" text="File">
+										<Menu mnemonicParsing="false" text="Device">
 											<items>
 												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New Device Folder" />
                                     <Menu fx:id="openMenu" mnemonicParsing="false" text="Open Device" />
-												<MenuItem fx:id="saveClick" disable="true" mnemonicParsing="false" text="Save" visible="false" />
 												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Exit" />
 											</items>
 										</Menu>
@@ -79,12 +78,12 @@
 												<Tooltip text="Choose the start date and end date." />
 											</tooltip>
                                  <font>
-                                    <Font name="Segoe UI" size="12.0" />
+                                    <Font name="Segoe UI Light" size="12.0" />
                                  </font>
 										</Label>
 										<Label prefHeight="27.0" prefWidth="11.0" text="~" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-										<DatePicker id="startDatePicker" fx:id="startDatePicker" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="130.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-										<DatePicker id="endDatePicker" fx:id="endDatePicker" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="130.0" GridPane.columnIndex="3" GridPane.halignment="LEFT" />
+										<DatePicker id="startDatePicker" fx:id="startDatePicker" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+										<DatePicker id="endDatePicker" fx:id="endDatePicker" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="130.0" GridPane.columnIndex="3" GridPane.halignment="LEFT" />
 									</children>
 								</GridPane>
 								<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="290.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -103,19 +102,19 @@
 										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 									</rowConstraints>
 									<children>
-										<TextField fx:id="startHourTf" text="00" GridPane.columnIndex="1">
+										<TextField fx:id="startHourTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="00" GridPane.columnIndex="1">
                                  <font>
                                     <Font name="Segoe UI" size="12.0" />
                                  </font></TextField>
-										<TextField fx:id="startMinuteTf" text="00" GridPane.columnIndex="3">
+										<TextField fx:id="startMinuteTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="00" GridPane.columnIndex="3">
                                  <font>
                                     <Font name="Segoe UI" size="12.0" />
                                  </font></TextField>
-										<TextField fx:id="endHourTf" text="23" GridPane.columnIndex="5">
+										<TextField fx:id="endHourTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="23" GridPane.columnIndex="5">
                                  <font>
                                     <Font name="Segoe UI" size="12.0" />
                                  </font></TextField>
-										<TextField fx:id="endMinuteTf" text="59" GridPane.columnIndex="7">
+										<TextField fx:id="endMinuteTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="59" GridPane.columnIndex="7">
                                  <font>
                                     <Font name="Segoe UI" size="12.0" />
                                  </font></TextField>
@@ -126,6 +125,9 @@
 											<tooltip>
 												<Tooltip text="Specify the time range to be included of everyday." />
 											</tooltip>
+                                 <font>
+                                    <Font name="Segoe UI Light" size="12.0" />
+                                 </font>
 										</Label>
 									</children>
 								</GridPane>
@@ -140,11 +142,17 @@
 									</rowConstraints>
 									<children>
 										<Button fx:id="searchButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" GridPane.columnIndex="2" GridPane.halignment="LEFT" />
-										<TextField minWidth="-Infinity" prefHeight="24.0" prefWidth="196.0" GridPane.columnIndex="1" />
+										<TextField maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="196.0" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font name="Segoe UI Light" size="12.0" />
+                                 </font></TextField>
 										<Label maxWidth="-Infinity" minWidth="-Infinity" prefWidth="70.0" text="Keywords:" GridPane.halignment="RIGHT">
 											<tooltip>
 												<Tooltip text="Use spacebar to seperate keywords." />
 											</tooltip>
+                                 <font>
+                                    <Font name="Segoe UI Light" size="12.0" />
+                                 </font>
 										</Label>
 									</children>
 								</GridPane>
@@ -166,6 +174,9 @@
 																	<GridPane.margin>
 																		<Insets left="10.0" />
 																	</GridPane.margin>
+                                 <font>
+                                    <Font name="Segoe UI Light" size="12.0" />
+                                 </font>
 																</CheckBox>
 																<CheckBox fx:id="isDeletedCheckBox" layoutX="8.0" layoutY="34.0" mnemonicParsing="false" selected="true" text="Deleted " GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
 																	<tooltip>
@@ -174,6 +185,9 @@
 																	<GridPane.margin>
 																		<Insets left="10.0" />
 																	</GridPane.margin>
+                                 <font>
+                                    <Font name="Segoe UI Light" size="12.0" />
+                                 </font>
 																</CheckBox>
 																<CheckBox fx:id="isModifiedCheckBox" layoutX="8.0" layoutY="64.0" mnemonicParsing="false" selected="true" text="Modified" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
 																	<tooltip>
@@ -182,8 +196,14 @@
 																	<GridPane.margin>
 																		<Insets left="10.0" />
 																	</GridPane.margin>
+                                 <font>
+                                    <Font name="Segoe UI Light" size="12.0" />
+                                 </font>
 																</CheckBox>
-                              <Label fx:id="DataTypeLabel" text="DataType:" />
+                              <Label fx:id="DataTypeLabel" text="DataType:">
+                                 <font>
+                                    <Font name="Segoe UI Light" size="12.0" />
+                                 </font></Label>
 															</children>
 														</GridPane>
 							</children>
