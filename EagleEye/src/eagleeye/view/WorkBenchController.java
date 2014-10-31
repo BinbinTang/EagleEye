@@ -49,6 +49,7 @@ import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.Device;
 import eagleeye.entities.Directory;
 import eagleeye.entities.FileEntity;
+import eagleeye.entities.Filter;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
 
@@ -77,7 +78,7 @@ public class WorkBenchController {
 			"Icons/fileIcon.jpg"));
 	TreeItem<String> rootNode;
 	TreeItem<String> rootNodeC;
-	ArrayList<String> categoryList = new ArrayList(Arrays.asList("Photos","Videos","Audios","Documents","Database","Others"));
+	ArrayList<String> categoryList = new ArrayList(Arrays.asList("Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
 
 	@FXML
 	private StackPane treeViewPane;
@@ -85,6 +86,7 @@ public class WorkBenchController {
 	private VBox categoryViewPane;
 
 	// result pane view
+	private Filter filter = new Filter();
 	final ObservableList<String> listItems = FXCollections.observableArrayList("For testing purpose"); 
 	@FXML
 	private ListView resultListView;
@@ -637,7 +639,8 @@ public class WorkBenchController {
 								listItems.add("Folder: " + subFile.getValue());
 							}
 						}
-						displayResult(listItems);
+
+						displayResult(listItems, "tree");
 					}
 					
 					if (mouseEvent.getClickCount() == 2) {
@@ -674,6 +677,15 @@ public class WorkBenchController {
 				Button btn = new Button(category);
 				btn.setPrefHeight(40);
 				btn.setPrefWidth(130);
+				btn.setOnAction(new EventHandler<ActionEvent>() {
+		            @Override
+		            public void handle(ActionEvent event) {
+		                listItems.clear();
+		                filter.modifyCategoryName(category);
+		                System.out.println("Getting filter category: "+ category);
+		                displayResult(listItems, "category");
+		            }
+		        });
 				categoryViewPane.getChildren().add(btn);
 			}
 			
@@ -700,14 +712,30 @@ public class WorkBenchController {
 	}
 	
 	// Method to Decide What to Show in Result Pane View
-	public void displayResult(ObservableList<String> list){
-		ObservableList<String> resultList = filterResult(list);
-		resultListView.setItems(resultList);
+	public void displayResult(ObservableList<String> list, String type){
+		if(type == "category"){
+			ObservableList<String> resultList = filterResult();
+			resultListView.setItems(resultList);
+		}else if(type == "tree"){
+			resultListView.setItems(list);
+		}
 	}
 	
 	// Filters 
-	public ObservableList<String> filterResult(ObservableList<String> list){
-		return list;
+	public ObservableList<String> filterResult(){
+
+		ObservableList<String> resultList = FXCollections.observableArrayList(); 
+		
+        ArrayList<FileEntity> results = dbController.getFilteredFiles(filter);
+        System.out.println("filtered result size: " + results.size());
+        
+        for (FileEntity resultFile : results){
+        	String name = resultFile.getFileName();
+        	String ext = resultFile.getFileExt();
+        	resultList.add(name + ext);
+        }
+        
+		return resultList;
 	}
 
 	// Find whether a target is inside the tree of root, by recursion
