@@ -422,14 +422,6 @@ public class WorkBenchController {
 		// open
 		refreshDeviceList();
 
-		// save
-		saveClick.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-
-			}
-		});
-
 		// exit
 		exitClick.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -683,13 +675,6 @@ public class WorkBenchController {
 		            public void handle(ActionEvent event) {
 		                listItems.clear();
 		                filter.modifyCategoryName(category);
-		                System.out.println(filter.getCategoryName());
-		                System.out.println(filter.getCategoryID());
-		                System.out.println(filter.getStartDateAsString());
-		                System.out.println(filter.getEndDateAsString());
-		                System.out.println(filter.getStartTime());
-		                System.out.println(filter.getEndTime());
-		                System.out.println("Getting filter category: "+ category);
 		                displayResult(listItems, "category");
 		            }
 		        });
