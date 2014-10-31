@@ -29,9 +29,9 @@
 							<children>
 								<MenuBar prefHeight="31.0" prefWidth="797.0" GridPane.columnSpan="3" GridPane.valignment="TOP">
 									<menus>
-										<Menu mnemonicParsing="false" text="Device">
+										<Menu mnemonicParsing="false" text="File">
 											<items>
-												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New Device" />
+												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New Device Folder" />
                                     <Menu fx:id="openMenu" mnemonicParsing="false" text="Open Device" />
 												<MenuItem fx:id="saveClick" disable="true" mnemonicParsing="false" text="Save" visible="false" />
 												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Exit" />
