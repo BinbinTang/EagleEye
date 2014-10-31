@@ -23,6 +23,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
 
+import eagleeye.entities.FileEntity;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.yaffs2.YAFFS2Object;
 import eagleeye.filesystem.yaffs2.YAFFS2ObjectHeader;
@@ -58,7 +59,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	}
 
 	@Override
-	public ArrayList<eagleeye.entities.FileEntity> unpack(FormatDescription formatDescription) throws Exception
+	public ArrayList<FileEntity> unpack(FormatDescription formatDescription) throws Exception
 	{
 		this.formatDescription = formatDescription;
 		
@@ -67,7 +68,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			return null;
 		}
 		
-		java.io.File file = this.formatDescription.getFile();
+		File file = this.formatDescription.getFile();
 		this.fileInputStream = new FileInputStream(file);
 		this.inputStream = new DataInputStream(this.fileInputStream);
 		
@@ -294,7 +295,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			}
 		}
 
-		ArrayList<eagleeye.entities.FileEntity> files = new ArrayList<eagleeye.entities.FileEntity>();
+		ArrayList<FileEntity> files = new ArrayList<FileEntity>();
 		
 		String rootFilePath = "." + File.separator + "output" + File.separator + file.getName();
 		HashMap<Integer, String> parentPaths = new HashMap<Integer, String>();
@@ -394,7 +395,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					filePath = parentPaths.get(parentId);
 				}
 				
-				eagleeye.entities.FileEntity genericFile = new eagleeye.entities.FileEntity();
+				FileEntity genericFile = new FileEntity();
 				
 				genericFile.modifyIsRecovered(header.isDeleted());
 				
@@ -419,14 +420,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					
 					stream.close();
 					
-					String extension = "";
-					if(header.getName().lastIndexOf('.') > -1)
-					{
-						extension = header.getName().substring(header.getName().lastIndexOf('.'));
-					}
-					
-					System.out.printf("Ext %s Type %s", extension, metaData.get(Metadata.CONTENT_TYPE));
-					System.out.println();					
+					genericFile.modifyContentType(metaData.get(Metadata.CONTENT_TYPE));
 				}
 				
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");

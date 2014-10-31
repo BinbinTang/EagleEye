@@ -12,6 +12,7 @@ import eagleeye.datacarving.unpack.FAT32ImageUnpacker;
 import eagleeye.datacarving.unpack.YAFFS2ImageUnpacker;
 import eagleeye.dbcontroller.DBInsertTransaction;
 import eagleeye.entities.Device;
+import eagleeye.entities.FileEntity;
 import eagleeye.filesystem.format.AndroidBootFormatIdentifier;
 import eagleeye.filesystem.format.FAT32FormatIdentifier;
 import eagleeye.filesystem.format.FormatDescription;
@@ -144,7 +145,7 @@ public class UnpackDirectoryService extends Service<Integer>
 				}
 			}
 			
-			ArrayList<eagleeye.entities.FileEntity> fileList = new ArrayList<eagleeye.entities.FileEntity>();
+			ArrayList<FileEntity> fileList = new ArrayList<FileEntity>();
 			
 			for (FormatDescription formatDescription : formatDescriptions)
 			{
@@ -153,7 +154,7 @@ public class UnpackDirectoryService extends Service<Integer>
 					continue;
 				}
 				
-				ArrayList<eagleeye.entities.FileEntity> newFileList = diskImageUnpackerManager.unpack(formatDescription);
+				ArrayList<FileEntity> newFileList = diskImageUnpackerManager.unpack(formatDescription);
 				
 				if(newFileList != null)
 				{
