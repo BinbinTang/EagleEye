@@ -787,77 +787,7 @@ public class WorkBenchControllerVisualization implements MapComponentInitialized
 	}
 
 	private void handleOpenDirectory(ActionEvent event) {
-		DirectoryChooser dirChooser = new DirectoryChooser();
-
-		// Show open file dialog
-		file = dirChooser.showDialog(null);
-
-		labelDirPath.setText(file.getPath());
-		System.out.println(labelDirPath);
-
-		UnpackDirectoryService service = new UnpackDirectoryService();
-		service.setDirectory(file);
-
-		Stage dialog = this.createProgressDialog(service);
-
-		service.start();
-		dialog.show();
-		
-		this.refreshCase();
 	}
-
-	private Stage createProgressDialog(final Service<Integer> service) {
-		Stage dialog = new Stage();
-		dialog.initModality(Modality.APPLICATION_MODAL);
-		dialog.initStyle(StageStyle.UTILITY);
-		dialog.setTitle("Import in Progress...");
-		dialog.setWidth(150);
-		dialog.setHeight(70);
-		dialog.setResizable(false);
-
-		VBox root = new VBox();
-		root.setMaxWidth(Double.MAX_VALUE);
-
-		Scene scene = new Scene(root);
-		dialog.setScene(scene);
-
-		final ProgressBar indicator = new ProgressBar();
-		indicator.setMaxWidth(Double.MAX_VALUE);
-
-		indicator.progressProperty().bind(service.progressProperty());
-		indicator.setPrefHeight(35);
-		root.getChildren().add(indicator);
-
-		service.stateProperty().addListener(new ChangeListener<State>() {
-			@Override
-			public void changed(ObservableValue<? extends State> observable,
-					State oldValue, State newValue) {
-				if (newValue == State.CANCELLED || newValue == State.FAILED
-						|| newValue == State.SUCCEEDED) {
-					dialog.hide();
-				}
-			}
-		});
-
-		Button cancel = new Button("Cancel");
-		cancel.setPrefHeight(35);
-		cancel.setMaxWidth(Double.MAX_VALUE);
-		root.getChildren().add(cancel);
-
-		cancel.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				service.cancel();
-			}
-		});
-
-		return dialog;
-	}
-
-
-	
-	
-
 }
 
 
