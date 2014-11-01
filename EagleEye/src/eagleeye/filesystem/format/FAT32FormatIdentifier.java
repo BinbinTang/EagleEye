@@ -9,6 +9,7 @@ import java.nio.ByteOrder;
 public class FAT32FormatIdentifier implements IFormatIdentifier {
 
 	protected int pageSize;
+	private boolean cancel = false;
 	
 	public FAT32FormatIdentifier(){
 		this.setPageSize(512);
@@ -17,8 +18,7 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 	public void setPageSize(int pageSize){
 		this.pageSize = pageSize;
 	}
-	
-	
+		
 	@Override
 	public FormatDescription identify(File file) throws Exception {
 		
@@ -76,4 +76,9 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 		return null;
 	}
 
+	@Override
+	public void cancel()
+	{
+		this.cancel = true;
+	}
 }

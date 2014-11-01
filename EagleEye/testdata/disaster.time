@@ -1,0 +1,22 @@
+#TIMEFLOW	format version	1
+#TIMEFLOW	source	[source unspecified]
+#TIMEFLOW	description	
+#TIMEFLOW	field	DATE	Date/Time
+#TIMEFLOW	field	STATE	Text
+#TIMEFLOW	field	Types	List
+#TIMEFLOW	end-metadata
+#TIMEFLOW	alias	TIMEFLOW_START	DATE
+#TIMEFLOW	alias	TIMEFLOW_LABEL	STATE
+#TIMEFLOW	alias	TIMEFLOW_TRACK	Types
+#TIMEFLOW	alias	TITLE	Types
+#TIMEFLOW	====== End of Header. Data below is in tab-delimited format. =====
+DATE	STATE	Types
+2010-7-27	Iowa	Severe Storms, Flooding
+2010-7-27	Idaho	Severe Storms, Flooding
+2010-7-26	Oklahoma	Severe Storms, Tornadoes, Straight-line Winds,  Flooding
+2010-7-23	Kentucky	Severe Storms, Flooding,  Mudslides
+2010-7-15	Nebraska	Severe Storms, Flooding, Tornadoes
+2010-7-14	Wyoming	Flooding
+2010-7-10	Montana	Severe Storms, Flooding
+2010-7-2	Minnesota	Severe Storms,Tornadoes,Flooding
+2010-7-1	Maine	Severe Storms,Flooding
