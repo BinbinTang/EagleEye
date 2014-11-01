@@ -259,6 +259,19 @@
 																		</AnchorPane>
 																	</content>
 																</Tab>
+																<Tab text="Timeline">
+																	<content>
+																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+																			<children>
+																				<ScrollPane fitToHeight="true" fitToWidth="true" layoutY="33.0" prefHeight="361.0" prefWidth="198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+							                                                         <content>
+							                                                            <StackPane fx:id="TimelinePane" />
+							                                                         </content>
+							                                                    </ScrollPane>
+																			</children>
+																		</AnchorPane>
+																	</content>
+																</Tab>
 															</tabs>
 														</TabPane>
 													</children>

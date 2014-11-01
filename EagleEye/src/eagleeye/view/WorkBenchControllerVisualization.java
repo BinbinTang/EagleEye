@@ -1,8 +1,13 @@
 package eagleeye.view;
 
+import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -14,6 +19,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
+import timeflow.app.ui.GlobalDisplayPanel;
+import timeflow.app.ui.LinkTabPane;
+import timeflow.app.ui.filter.FilterControlPanel;
+import timeflow.model.Display;
+import timeflow.model.TFEvent;
+import timeflow.model.TFListener;
+import timeflow.model.TFModel;
+import timeflow.views.AbstractView;
+import timeflow.views.BarGraphView;
+import timeflow.views.CalendarView;
+import timeflow.views.DescriptionView;
+import timeflow.views.IntroView;
+import timeflow.views.ListView;
+import timeflow.views.SummaryView;
+import timeflow.views.TableView;
+import timeflow.views.TimelineView;
+
 import com.lynden.gmapsfx.GoogleMapView;
 
 import javafx.application.Platform;
@@ -23,6 +50,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Service;
 import javafx.concurrent.Worker.State;
+import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -58,10 +86,11 @@ import eagleeye.entities.Directory;
 import eagleeye.entities.FileEntity;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
+import eagleeye.analysis.*;
+import eagleeye.api.*;
+import eagleeye.api.analyzer.EagleLocationAnalyzer;
+import eagleeye.api.entities.EagleLocation;
 
-
-
-import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.GoogleMap;
 import com.lynden.gmapsfx.javascript.object.LatLong;
@@ -70,9 +99,32 @@ import com.lynden.gmapsfx.javascript.object.MapTypeIdEnum;
 import com.lynden.gmapsfx.javascript.object.Marker;
 import com.lynden.gmapsfx.javascript.object.MarkerOptions;
 
+import timeflow.app.AboutWindow;
+import timeflow.app.AppState;
+import timeflow.app.TimeflowApp;
+import timeflow.app.testApp;
+import timeflow.data.db.ActDB;
+import timeflow.format.file.FileExtensionCatalog;
+import timeflow.format.file.Import;
 
 public class WorkBenchControllerVisualization implements MapComponentInitializedListener{
 	
+	//timeline view attributes
+	public TFModel model=new TFModel();
+	public JFileChooser fileChooser;
+	
+	AboutWindow splash;
+	String[][] examples;
+	String[] templates;
+
+	AppState state=new AppState();
+	JMenu openRecent=new JMenu("Open Recent");
+	public JMenu filterMenu;
+	JMenuItem save=new JMenuItem("Save");
+	FilterControlPanel filterControlPanel;
+	LinkTabPane leftPanel;
+	
+	//map view attributes
 	GoogleMapView mapView;
 	GoogleMap map;
 	
@@ -104,6 +156,8 @@ public class WorkBenchControllerVisualization implements MapComponentInitialized
 	private StackPane LocationPane;
 	@FXML
 	private StackPane GraphPane;
+	@FXML
+	private StackPane TimelinePane;
 	
 
 	// UI elements
@@ -181,7 +235,7 @@ public class WorkBenchControllerVisualization implements MapComponentInitialized
 		
 		addGeoView();
 		addPieChartView();
-		
+		addTimelineView();
 
 		/*
 		startDatePicker.setConverter(new StringConverter<LocalDate>() {
@@ -576,6 +630,60 @@ public class WorkBenchControllerVisualization implements MapComponentInitialized
 	/*
 	 * Methods of workbench
 	 */
+	
+	public void addTimelineView(){
+		
+		String testFile="testdata/monet.time";
+		load(testFile, FileExtensionCatalog.get(testFile), false);
+		
+		final LinkTabPane center=new LinkTabPane();
+		//final IntroView intro=new IntroView(model); // we refer to this a bit later.
+		final TimelineView timeline=new TimelineView(model);
+		AbstractView[] views={
+				timeline,
+				new CalendarView(model),
+				new ListView(model),
+				new TableView(model),
+				new BarGraphView(model),
+				new DescriptionView(model),
+				new SummaryView(model),
+		};
+
+		for (int i=0; i<views.length; i++)
+		{
+			center.addTab(views[i], views[i].getName(), i<5);
+			//displayPanel.addLocalControl(views[i].getName(), views[i].getControls());
+		}
+		
+		SwingNode swingNode = new SwingNode();
+		swingNode.setContent(center);
+		
+		TimelinePane.getChildren().add(swingNode);
+	}
+	
+	void load(final String fileName, final Import importer, boolean readOnly)
+	{
+		try
+		{
+			final File f=new File(fileName);
+			ActDB db=importer.importFile(f);	
+			model.setDB(db, fileName, readOnly, this);
+			if (!readOnly)
+				noteFileUse(fileName);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace(System.out);
+			//showUserError("Couldn't read file.");
+			model.noteError(this);
+		}
+	}
+	public void noteFileUse(String file)
+	{
+		state.setCurrentFile(new File(file));
+		state.save();
+	}
+	
 	public void addPieChartView(){
 		PieChart chart = new PieChart(
 	      FXCollections.observableArrayList(
@@ -600,7 +708,7 @@ public class WorkBenchControllerVisualization implements MapComponentInitialized
 		//Set the initial properties of the map.
 	    MapOptions mapOptions = new MapOptions();
 
-	    mapOptions.center(new LatLong(1.297221, 103.776379))
+	    mapOptions.center(new LatLong(1.352083, 103.819836))
 	            .mapType(MapTypeIdEnum.ROADMAP)
 	            .overviewMapControl(false)
 	            .panControl(false)
@@ -611,7 +719,25 @@ public class WorkBenchControllerVisualization implements MapComponentInitialized
 	            .zoom(12);
 
 	    map = mapView.createMap(mapOptions);
+	  //Add markers to the map
+	    LocationAnalyzer gla = new LocationAnalyzer();
+	    List<EagleLocation> locs = gla.getLocations();
+	    for(int i=0; i<locs.size();i++){
+	    	//System.out.println(locs.get(i).getLatitude()+","+locs.get(i).getLongitude());
+	    	markLocations(locs.get(i).getLatitude(),locs.get(i).getLongitude(),locs.get(i).getDescription());
+	    }
 		
+	}
+	public void markLocations(double lat, double longit, String description){
+		MarkerOptions markerOptions = new MarkerOptions();
+		
+	    markerOptions.position( new LatLong(lat, longit) )
+	                .visible(Boolean.TRUE)
+	                .title(description);
+
+	    Marker marker = new Marker( markerOptions );
+
+	    map.addMarker(marker);
 	}
 	
 	public void refreshCase(){

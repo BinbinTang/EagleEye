@@ -85,7 +85,7 @@ public class VisualizationApp extends Application {
     	String resultCasePath = "TestCaseForUI";
         return resultCasePath;
     }
-
+    
     public static void main(String[] args) {
         launch(args);
     }

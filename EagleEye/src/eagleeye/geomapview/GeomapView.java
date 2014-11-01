@@ -51,12 +51,12 @@ public void mapInitialized() {
 
     map = mapView.createMap(mapOptions);
 
-   /* //Add markers to the map
+    /*//Add markers to the map
     double[][] locs = {{1.297221,103.776379},{1.297521,103.778379}};
     for(int i=0; i<locs.length;i++){
     	markLocations(locs[i][0],locs[i][1]);
-    }
-*/
+    }*/
+
 }
 
 
