@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -109,6 +110,11 @@ public class WorkBenchControllerAdvanced {
 	private String startMinute = "00";
 	private String endHour = "23";
 	private String endMinute = "59";
+
+	private String startHourDaily = "00";
+	private String startMinuteDaily = "00";
+	private String endHourDaily = "23";
+	private String endMinuteDaily = "59";
 	@FXML
 	private TextField startHourTf;
 	@FXML
@@ -117,6 +123,14 @@ public class WorkBenchControllerAdvanced {
 	private TextField endHourTf;
 	@FXML
 	private TextField endMinuteTf;
+	@FXML
+	private TextField startHourDailyTf;
+	@FXML
+	private TextField startMinuteDailyTf;
+	@FXML
+	private TextField endHourDailyTf;
+	@FXML
+	private TextField endMinuteDailyTf;
 
 	// Menubar
 	@FXML
@@ -129,6 +143,9 @@ public class WorkBenchControllerAdvanced {
 	// Analysis Buttons
 	@FXML
 	private Button contactHistoryBtn;
+	
+	// Progress information label
+	@FXML private Label progressLabel;
 
 	// Reference to the main application.
 	private MainAppAdvanced mainApp;
@@ -162,6 +179,7 @@ public class WorkBenchControllerAdvanced {
 
 
 		// Time, start: 00:00-23:59. end: 00:00-23:59. start <= end check not implemented
+		
 		startHourTf.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
@@ -277,7 +295,7 @@ public class WorkBenchControllerAdvanced {
 					System.out.println("no match");
 				}
 
-				if (startHourTf.getText().length() == 0) {
+				if (endHourTf.getText().length() == 0) {
 					System.out.println("no input");
 					endHourTf.setText("00");
 				}
@@ -368,6 +386,215 @@ public class WorkBenchControllerAdvanced {
 					}
 				});
 
+		// Daily Time
+		startHourDailyTf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!(newValue.matches("[0-9]*"))) {
+					startHourDailyTf.setText(newValue.substring(0,
+							newValue.length() - 1));
+					System.out.println("no match");
+				}
+
+				if (startHourDailyTf.getText().length() == 0) {
+					System.out.println("no input");
+					startHourDailyTf.setText("00");
+				}
+
+			}
+		});
+		
+		startHourDailyTf.focusedProperty().addListener(
+				new ChangeListener<Boolean>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Boolean> arg0,
+							Boolean oldPropertyValue, Boolean newPropertyValue) {
+						if (newPropertyValue) {
+							System.out.println("Textfield on focus");
+						} else {
+							// Check range
+							if (Integer.parseInt(startHourDailyTf.getText()) > 23) {
+								System.out.println("too large");
+								startHourDailyTf.setText("23");
+							} else if (Integer.parseInt(startHourDailyTf.getText()) < 0) {
+								System.out.println("too small");
+								startHourDailyTf.setText("0");
+							}
+							// Check length
+							if (startHourDailyTf.getText().length() > 2) {
+								System.out.println("too long");
+								startHourDailyTf.setText("23");
+							} else if (startHourDailyTf.getText().length() == 1) {
+								System.out.println("1 degit");
+								startHourDailyTf.setText("0" + startHourDailyTf.getText());
+							} else if (startHourDailyTf.getText().length() == 0) {
+								System.out.println("no input");
+								startHourDailyTf.setText("00");
+							}
+							startHourDaily = startHourDailyTf.getText();
+							System.out.println("startHourDaily is " + startHourDaily);
+						}
+					}
+				});
+
+		startMinuteDailyTf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!(newValue.matches("[0-9]*"))) {
+					startMinuteDailyTf.setText(newValue.substring(0,
+							newValue.length() - 1));
+					System.out.println("no match");
+				}
+
+				if (startMinuteDailyTf.getText().length() == 0) {
+					System.out.println("no input");
+					startMinuteDailyTf.setText("00");
+				}
+
+			}
+		});
+		
+		startMinuteDailyTf.focusedProperty().addListener(
+				new ChangeListener<Boolean>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Boolean> arg0,
+							Boolean oldPropertyValue, Boolean newPropertyValue) {
+						if (newPropertyValue) {
+							System.out.println("Textfield on focus");
+						} else {
+							// Check range
+							if (Integer.parseInt(startMinuteDailyTf.getText()) > 59) {
+								System.out.println("too large");
+								startMinuteDailyTf.setText("59");
+							} else if (Integer.parseInt(startMinuteDailyTf.getText()) < 0) {
+								System.out.println("too small");
+								startMinuteDailyTf.setText("0");
+							}
+							// Check length
+							if (startMinuteDailyTf.getText().length() > 2) {
+								System.out.println("too long");
+								startMinuteDailyTf.setText("59");
+							} else if (startMinuteDailyTf.getText().length() == 1) {
+								System.out.println("1 degit");
+								startMinuteDailyTf.setText("0"
+										+ startMinuteDailyTf.getText());
+							} else if (startMinuteDailyTf.getText().length() == 0) {
+								System.out.println("no input");
+								startMinuteDailyTf.setText("00");
+							}
+							startMinuteDaily = startMinuteDailyTf.getText();
+							System.out.println("startMinuteDaily is " + startMinuteDaily);
+						}
+					}
+				});
+		
+		endHourDailyTf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!(newValue.matches("[0-9]*"))) {
+					endHourDailyTf.setText(newValue.substring(0,
+							newValue.length() - 1));
+					System.out.println("no match");
+				}
+
+				if (endHourDailyTf.getText().length() == 0) {
+					System.out.println("no input");
+					endHourDailyTf.setText("00");
+				}
+
+			}
+		});
+		
+		endHourDailyTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean oldPropertyValue, Boolean newPropertyValue) {
+				if (newPropertyValue) {
+					System.out.println("Textfield on focus");
+				} else {
+					// Check range
+					if (Integer.parseInt(endHourDailyTf.getText()) > 23) {
+						System.out.println("too large");
+						endHourDailyTf.setText("23");
+					} else if (Integer.parseInt(endHourDailyTf.getText()) < 0) {
+						System.out.println("too small");
+						endHourDailyTf.setText("0");
+					}
+					// Check length
+					if (endHourDailyTf.getText().length() > 2) {
+						System.out.println("too long");
+						endHourDailyTf.setText("23");
+					} else if (endHourDailyTf.getText().length() == 1) {
+						System.out.println("1 degit");
+						endHourDailyTf.setText("0" + endHourDailyTf.getText());
+					} else if (endHourDailyTf.getText().length() == 0) {
+						System.out.println("no input");
+						endHourDailyTf.setText("00");
+					}
+					endHourDaily = endHourDailyTf.getText();
+					System.out.println("endHourDaily is " + endHourDaily);
+				}
+			}
+		});
+		
+		endMinuteDailyTf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!(newValue.matches("[0-9]*"))) {
+					endMinuteDailyTf.setText(newValue.substring(0,
+							newValue.length() - 1));
+					System.out.println("no match");
+				}
+
+				if (endMinuteDailyTf.getText().length() == 0) {
+					System.out.println("no input");
+					endMinuteDailyTf.setText("00");
+				}
+
+			}
+		});
+		
+		endMinuteDailyTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Boolean> arg0,
+							Boolean oldPropertyValue, Boolean newPropertyValue) {
+						if (newPropertyValue) {
+							System.out.println("Textfield on focus");
+						} else {
+							// Check range
+							if (Integer.parseInt(endMinuteDailyTf.getText()) > 59) {
+								System.out.println("too large");
+								endMinuteDailyTf.setText("59");
+							} else if (Integer.parseInt(endMinuteDailyTf.getText()) < 0) {
+								System.out.println("too small");
+								endMinuteDailyTf.setText("0");
+							}
+							// Check length
+							if (endMinuteDailyTf.getText().length() > 2) {
+								System.out.println("too long");
+								endMinuteDailyTf.setText("59");
+							} else if (endMinuteDailyTf.getText().length() == 1) {
+								System.out.println("1 degit");
+								endMinuteDailyTf.setText("0" + endMinuteDailyTf.getText());
+							} else if (endMinuteDailyTf.getText().length() == 0) {
+								System.out.println("no input");
+								endMinuteDailyTf.setText("00");
+							}
+							endMinuteDaily = endMinuteDailyTf.getText();
+							System.out.println("endMinuteDaily is " + endMinuteDaily);
+						}
+					}
+				});
+		
+		
+		
 		// menubar new/open device 
 		// new device
 		newClick.setOnAction(new EventHandler<ActionEvent>() {
@@ -396,7 +623,7 @@ public class WorkBenchControllerAdvanced {
 		});
 
 		// Search
-		searchButton.setGraphic(new ImageView(searchIcon));
+		//searchButton.setGraphic(new ImageView(searchIcon));
 	}
 
 	/*
