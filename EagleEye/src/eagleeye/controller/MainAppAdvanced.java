@@ -1,23 +1,14 @@
 package eagleeye.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
-import eagleeye.view.WorkBenchController;
 import eagleeye.view.WorkBenchControllerAdvanced;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class MainAppAdvanced extends Application {
 
@@ -66,7 +57,7 @@ public class MainAppAdvanced extends Application {
     public void showWorkBench() {
         try {
             // Load the fxml file and set into the center of the main layout
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("../view/WorkBenchAdvaced.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainAppAdvanced.class.getResource("../view/WorkBenchAdvanced.fxml"));
             AnchorPane overviewPage = (AnchorPane) loader.load();
             rootLayout.setCenter(overviewPage);
             overviewPage.setMinHeight(400);

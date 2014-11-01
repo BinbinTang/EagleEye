@@ -1,9 +1,6 @@
 package eagleeye.view;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +32,6 @@ import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -43,7 +39,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import eagleeye.controller.MainApp;
 import eagleeye.controller.MainAppAdvanced;
 import eagleeye.datacarving.unpack.service.UnpackDirectoryService;
 import eagleeye.dbcontroller.DBQueryController;
@@ -88,7 +83,8 @@ public class WorkBenchControllerAdvanced {
 
 	// result pane view
 	private Filter filter = new Filter();
-	final ObservableList<String> listItems = FXCollections.observableArrayList("For testing purpose"); 
+	final ObservableList<String> listItems = FXCollections.observableArrayList(); 
+	
 	@FXML
 	private ListView resultListView;
 
@@ -122,17 +118,15 @@ public class WorkBenchControllerAdvanced {
 	@FXML
 	private TextField endMinuteTf;
 
-	// Menu
+	// Menubar
 	@FXML
 	private MenuItem newClick;
 	@FXML
 	private Menu openMenu;
 	@FXML
-	private MenuItem saveClick;
-	@FXML
 	private MenuItem exitClick;
 
-	// Function Buttons
+	// Analysis Buttons
 	@FXML
 	private Button contactHistoryBtn;
 
@@ -167,9 +161,8 @@ public class WorkBenchControllerAdvanced {
 		});
 
 
-		// Time, start: 00:00-23:59. end: 00:00-23:59. start <= end
+		// Time, start: 00:00-23:59. end: 00:00-23:59. start <= end check not implemented
 		startHourTf.textProperty().addListener(new ChangeListener<String>() {
-
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
@@ -186,6 +179,7 @@ public class WorkBenchControllerAdvanced {
 
 			}
 		});
+		
 		startHourTf.focusedProperty().addListener(
 				new ChangeListener<Boolean>() {
 					@Override
@@ -221,7 +215,6 @@ public class WorkBenchControllerAdvanced {
 				});
 
 		startMinuteTf.textProperty().addListener(new ChangeListener<String>() {
-
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
@@ -238,6 +231,7 @@ public class WorkBenchControllerAdvanced {
 
 			}
 		});
+		
 		startMinuteTf.focusedProperty().addListener(
 				new ChangeListener<Boolean>() {
 					@Override
@@ -272,8 +266,8 @@ public class WorkBenchControllerAdvanced {
 						}
 					}
 				});
+		
 		endHourTf.textProperty().addListener(new ChangeListener<String>() {
-
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
@@ -290,6 +284,7 @@ public class WorkBenchControllerAdvanced {
 
 			}
 		});
+		
 		endHourTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> arg0,
@@ -321,8 +316,8 @@ public class WorkBenchControllerAdvanced {
 				}
 			}
 		});
+		
 		endMinuteTf.textProperty().addListener(new ChangeListener<String>() {
-
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
@@ -339,8 +334,8 @@ public class WorkBenchControllerAdvanced {
 
 			}
 		});
-		endMinuteTf.focusedProperty().addListener(
-				new ChangeListener<Boolean>() {
+		
+		endMinuteTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
 					@Override
 					public void changed(
 							ObservableValue<? extends Boolean> arg0,
@@ -373,27 +368,20 @@ public class WorkBenchControllerAdvanced {
 					}
 				});
 
-		// file chooser
+		// menubar new/open device 
+		// new device
 		newClick.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				FileChooser fileChooser = new FileChooser();
-
-				// Set extension filter
-				// FileChooser.ExtensionFilter extFilter = new
-				// FileChooser.ExtensionFilter("AVI files (*.avi)", "*.avi");
-				// fileChooser.getExtensionFilters().add(extFilter);
-
 				// Show open file dialog
 				file = fileChooser.showOpenDialog(null);
 
 				labelFilePath.setText(file.getPath());
 				System.out.println(labelFilePath);
-
 			}
 		});
 
-		// new device
 		newClick.setOnAction(this::handleNewDirectory);
 		
 		// open
@@ -409,95 +397,6 @@ public class WorkBenchControllerAdvanced {
 
 		// Search
 		searchButton.setGraphic(new ImageView(searchIcon));
-
-			
-			/*
-			rootNodeC = new TreeItem<String>(TreeStructure.get(0)
-					.getDirectoryName(), rootIcon);
-			TreeView<String> treeC = new TreeView<String>(rootNodeC);
-			
-			for (FileEntity file : allFiles) {
-				TreeItem<String> empLeaf = new TreeItem<String>(
-						file.getFileName(), new ImageView(fileIcon));
-				boolean foundPath = false;
-				boolean foundDep = false;
-				for (TreeItem<String> pathNode : rootNodeC.getChildren()) {
-					for (TreeItem<String> depNode : pathNode.getChildren()) {
-						// Check if path match
-						if (pathNode.getValue().contentEquals(file.getCategory())) {
-							// Check if format match
-							if (depNode.getValue().contentEquals(
-									file.getFileExt())) {
-								depNode.getChildren().add(empLeaf);
-								foundDep = true;
-								break;
-							}
-							if (!foundDep) {
-								TreeItem<String> newDepNode = new TreeItem<String>(
-										file.getFileExt());
-								pathNode.getChildren().add(newDepNode);
-								newDepNode.getChildren().add(empLeaf);
-							}
-							foundPath = true;
-							break;
-						}
-						if (!foundPath) {
-							TreeItem<String> newPathNode = new TreeItem<String>(
-									file.getCategory());
-							TreeItem<String> newDepNode = new TreeItem<String>(
-									file.getFileExt());
-							rootNodeC.getChildren().add(newPathNode);
-							newPathNode.setExpanded(true);
-							newPathNode.getChildren().add(newDepNode);
-							newDepNode.getChildren().add(empLeaf);
-						}
-					}
-				}
-				if (!foundPath && !foundDep) {
-					System.out.println("first time");
-					TreeItem<String> newPathNode = new TreeItem<String>(
-							file.getCategory());
-					TreeItem<String> newDepNode = new TreeItem<String>(
-							file.getFileExt());
-					rootNodeC.getChildren().add(newPathNode);
-					newPathNode.setExpanded(true);
-					newPathNode.getChildren().add(newDepNode);
-					newDepNode.getChildren().add(empLeaf);
-				}
-				
-				tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
-					@Override
-					public void handle(MouseEvent mouseEvent) {
-						if (mouseEvent.getClickCount() == 2) {
-							TreeItem<String> item = tree.getSelectionModel()
-									.getSelectedItem();
-							System.out.println("Selected Text : " + item.getValue());
-
-							// Check if it is a file, and open
-							if (item.isLeaf()) {
-								String filePath = item.getValue();
-								item = item.getParent();
-								while (item instanceof TreeItem) {
-									filePath = item.getValue() + "/" + filePath;
-									item = item.getParent();
-								}
-								System.out.println("Selected File : " + filePath);
-								String location = Paths.get(".").toAbsolutePath()
-										.normalize().toString();
-								File currentFile = new File(location + filePath);
-								try {
-									Desktop.getDesktop().open(currentFile);
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-						}
-					}
-				});
-				categoryViewPane.getChildren().add(treeC);
-			}
-			*/
 	}
 
 	/*
@@ -710,13 +609,9 @@ public class WorkBenchControllerAdvanced {
 
 	// Find whether a target is inside the tree of root, by recursion
 	public TreeItem<String> findItem(TreeItem<String> root, String target) {
-		// System.out.println("I want: " + target + " current: "
-		// +root.getValue());
 		TreeItem<String> result = null;
 
 		if (root.getValue() == target) {
-			// System.out.println("found: " + target + " current: "+
-			// root.getValue());
 			return root;
 		} else if (root.getChildren().size() != 0) {
 			for (TreeItem<String> sub : root.getChildren()) {
@@ -725,9 +620,6 @@ public class WorkBenchControllerAdvanced {
 					return subResult;
 				}
 			}
-		} else {
-			// System.out.println("cannot find: " + target +
-			// " current: "+root.getValue());
 		}
 
 		return result;
