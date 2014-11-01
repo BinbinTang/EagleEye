@@ -25,6 +25,9 @@ public class UnpackDirectoryService extends Service<Integer>
 	private File directory;
 	private DiskImageUnpackerManager diskImageUnpackerManager;
 	
+	//Added Code
+	private Device newDevice;
+	
 	public File getDirectory()
 	{
 		return directory;
@@ -34,6 +37,12 @@ public class UnpackDirectoryService extends Service<Integer>
 	{
 		this.directory = directory;
 	}
+	
+	public void setDevice(Device newDevice)
+	{
+		this.newDevice = newDevice;
+	}
+	
 	
 	@Override
 	protected Task<Integer> createTask()
@@ -165,7 +174,9 @@ public class UnpackDirectoryService extends Service<Integer>
 			if(fileList.size() > 0)
 			{
 				DBInsertTransaction transaction = new DBInsertTransaction();
-				transaction.insertNewDeviceData(new Device("Test Device 02", "100GB", "Dennis"), fileList);
+				newDevice.modifyContentSize("100GB");
+				//transaction.insertNewDeviceData(new Device("Test Device 02", "100GB", "Dennis"), fileList);
+				transaction.insertNewDeviceData(newDevice, fileList);
 				
 				return transaction.getDeviceID();
 			}

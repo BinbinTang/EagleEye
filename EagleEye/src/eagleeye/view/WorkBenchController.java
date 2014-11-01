@@ -786,33 +786,42 @@ public class WorkBenchController {
 	}
 	
 	private void handleNewDirectory(ActionEvent event) {
-		DirectoryChooser dirChooser = new DirectoryChooser();
+		
+		
+		/*DirectoryChooser dirChooser = new DirectoryChooser();
 
+		
 		// Show open file dialog
 		file = dirChooser.showDialog(null);
 
 		labelDirPath.setText(file.getPath());
 		System.out.println(labelDirPath);
-
-		UnpackDirectoryService service = new UnpackDirectoryService();
-		service.setDirectory(file);
-
-		Stage dialog = this.createProgressDialog(service);
+		 */
 		
-		service.setOnSucceeded(new EventHandler<WorkerStateEvent>()
-		{
-			
-			@Override
-			public void handle(WorkerStateEvent e)
-			{
-				int deviceId = (int) e.getSource().getValue();
+		Device newDevice = mainApp.showNewDeviceDialogDialog();
+		if(newDevice!=null) {
 				
-				refreshCase(deviceId);
-			}
-		});
+			UnpackDirectoryService service = new UnpackDirectoryService();
+			service.setDirectory(newDevice.getDeviceImageFolder());
+			service.setDevice(newDevice);
+		 
+			Stage dialog = this.createProgressDialog(service);
+		
+			service.setOnSucceeded(new EventHandler<WorkerStateEvent>()
+			{
+			
+				@Override
+				public void handle(WorkerStateEvent e)
+				{
+					int deviceId = (int) e.getSource().getValue();
+				
+					refreshCase(deviceId);
+				}
+			});
 
-		service.start();
-		dialog.show();
+			service.start();
+			dialog.show();
+		}
 	}
 
 	private Stage createProgressDialog(final Service<Integer> service) {
