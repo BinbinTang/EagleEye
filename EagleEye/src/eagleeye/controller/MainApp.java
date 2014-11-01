@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import eagleeye.entities.Device;
+import eagleeye.view.NewDeviceDialogController;
 import eagleeye.view.WorkBenchController;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -14,6 +16,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -79,8 +82,37 @@ public class MainApp extends Application {
         }
     }
     
+    public Device showNewDeviceDialogDialog() {
+  	  try {
+  		  
+  	    FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("../view/NewDeviceDialog.fxml"));
+  	    AnchorPane page = (AnchorPane) loader.load();
+  	    Stage dialogStage = new Stage();
+  	    dialogStage.setTitle("Import a New Device Image");
+  	    dialogStage.initModality(Modality.WINDOW_MODAL);
+  	    dialogStage.initOwner(primaryStage);
+  	    Scene scene = new Scene(page);
+  	    dialogStage.setScene(scene);
+  	  
+  	    NewDeviceDialogController controller = loader.getController();
+  	    controller.setDialogStage(dialogStage);
+  	    dialogStage.showAndWait();
+  	    
+  	    if(controller.isImportClickedSuccess())
+  	    	return controller.getDevice();
+  	    
+  	    else
+  	    	return null;
+  	    
+  	  } catch (IOException e) {
+  	    e.printStackTrace();
+  	    return null;
+  	  }
+  	}
+    
     // Method to obtain current case path
     public String getCasePath() {
+    	
     	String resultCasePath = "TestCaseForUI";
         return resultCasePath;
     }
@@ -88,4 +120,17 @@ public class MainApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
