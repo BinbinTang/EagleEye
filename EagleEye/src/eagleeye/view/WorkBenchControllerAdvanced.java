@@ -18,6 +18,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -40,13 +41,17 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import eagleeye.controller.MainAppAdvanced;
+import eagleeye.datacarving.unpack.service.FileSystemFormatDescriptorService;
 import eagleeye.datacarving.unpack.service.UnpackDirectoryService;
+import eagleeye.dbcontroller.DBInsertTransaction;
 import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.Device;
 import eagleeye.entities.Directory;
 import eagleeye.entities.FileEntity;
 import eagleeye.entities.Filter;
+import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
 
@@ -148,7 +153,7 @@ public class WorkBenchControllerAdvanced {
 	@FXML private Label progressLabel;
 
 	// Reference to the main application.
-	private MainAppAdvanced mainApp;
+	private MainAppAdvanced mainAppAdvanced;
 
 	/**
 	 * The constructor.
@@ -875,43 +880,123 @@ public class WorkBenchControllerAdvanced {
 	// private void handleStartDateClick
 
 	public void setMainApp(MainAppAdvanced mainAppAdvanced) {
-		this.mainApp = mainAppAdvanced;
+		this.mainAppAdvanced = mainAppAdvanced;
 
 		// obtain current case path
 		casePath = (mainAppAdvanced.getCasePath());
 	}
 	
 	private void handleNewDirectory(ActionEvent event) {
-		DirectoryChooser dirChooser = new DirectoryChooser();
-
-		// Show open file dialog
-		file = dirChooser.showDialog(null);
-
-		labelDirPath.setText(file.getPath());
-		System.out.println(labelDirPath);
-
-		UnpackDirectoryService service = new UnpackDirectoryService();
-		service.setDirectory(file);
-
-		Stage dialog = this.createProgressDialog(service);
+		Device newDevice = mainAppAdvanced.showNewDeviceDialogDialog();
 		
-		service.setOnSucceeded(new EventHandler<WorkerStateEvent>()
+		if(newDevice == null)
 		{
-			
+			return;
+		}
+
+		Stage dialog = this.createProgressDialog();
+	
+		Service<?> service = new FileSystemFormatDescriptorService(newDevice.getDeviceImageFolder());
+		
+		ChangeListener<State> handleServiceChange =	new ChangeListener<State>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue)
+			{
+				if (newValue == State.CANCELLED || newValue == State.FAILED)
+				{
+					dialog.close();
+				}
+			}
+		};
+
+		service.stateProperty().addListener(handleServiceChange);
+
+		dialog.setOnHidden(new EventHandler<WindowEvent>()
+		{
+			@Override
+			public void handle(WindowEvent arg0)
+			{
+				service.cancel();
+			}
+		});
+		
+		EventHandler<WorkerStateEvent> handleUnpackServiceSucceed = new EventHandler<WorkerStateEvent>()
+		{
 			@Override
 			public void handle(WorkerStateEvent e)
 			{
-				int deviceId = (int) e.getSource().getValue();
+				@SuppressWarnings("unchecked")
+				ArrayList<FileEntity> entityList = (ArrayList<FileEntity>)(e.getSource().getValue());
 				
-				refreshCase(deviceId);
+				if(entityList.size() > 0)
+				{
+					dialog.close();
+					DBInsertTransaction transaction = new DBInsertTransaction();
+					transaction.insertNewDeviceData(newDevice, entityList);
+					refreshCase(transaction.getDeviceID());
+				}
 			}
-		});
+		};
 
+		EventHandler<WorkerStateEvent> handleFSServiceSucceed = new EventHandler<WorkerStateEvent>()
+		{
+			@Override
+			public void handle(WorkerStateEvent e)
+			{
+				@SuppressWarnings("unchecked")
+				ArrayList<FormatDescription> formatDescriptions = (ArrayList<FormatDescription>)(e.getSource().getValue());
+				
+				long contentSize = 0;
+				
+				for(FormatDescription formatDescription : formatDescriptions)
+				{
+					contentSize += formatDescription.getFile().length();
+				}
+				
+				String contentSizeString = "";
+				
+				int unit = 1024;
+				
+				if(contentSize < unit)
+				{
+					contentSizeString = contentSize + " B";
+				}
+				else
+				{
+					int exp = (int) (Math.log(contentSize) / Math.log(unit));
+					
+
+				    char pre = ("KMGTPE").charAt(exp-1);
+				    contentSizeString = String.format("%.1f %sB", contentSize / Math.pow(unit, exp), pre);
+				}
+				
+				newDevice.modifyContentSize(contentSizeString);
+				
+				Service<?> service = new UnpackDirectoryService(formatDescriptions);
+				service.setOnSucceeded(handleUnpackServiceSucceed);
+				service.stateProperty().addListener(handleServiceChange);
+				service.start();
+
+				dialog.setOnHidden(new EventHandler<WindowEvent>()
+				{
+					@Override
+					public void handle(WindowEvent arg0)
+					{
+						service.cancel();
+					}
+				});
+			}
+		};
+
+		service.setOnSucceeded(handleFSServiceSucceed);
+		
 		service.start();
 		dialog.show();
 	}
-
-	private Stage createProgressDialog(final Service<Integer> service) {
+	
+	private Stage createProgressDialog()
+	{
 		Stage dialog = new Stage();
 		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.initStyle(StageStyle.UTILITY);
@@ -921,43 +1006,30 @@ public class WorkBenchControllerAdvanced {
 		dialog.setResizable(false);
 
 		VBox root = new VBox();
-		root.setMaxWidth(Double.MAX_VALUE);
-
+		root.setAlignment(Pos.CENTER);
+		
 		Scene scene = new Scene(root);
 		dialog.setScene(scene);
 
-		final ProgressBar indicator = new ProgressBar();
-		indicator.setMaxWidth(Double.MAX_VALUE);
+		ProgressBar indicator = new ProgressBar();
 
-		indicator.progressProperty().bind(service.progressProperty());
-		indicator.setPrefHeight(35);
 		root.getChildren().add(indicator);
 
-		service.stateProperty().addListener(new ChangeListener<State>() {
-			@Override
-			public void changed(ObservableValue<? extends State> observable,
-					State oldValue, State newValue) {
-				if (newValue == State.CANCELLED || newValue == State.FAILED
-						|| newValue == State.SUCCEEDED) {
-					dialog.hide();
+		Button cancel = new Button("Cancel");
+		root.getChildren().add(cancel);
+		
+		cancel.setOnAction
+		(
+			new EventHandler<ActionEvent>()
+			{
+				@Override
+				public void handle(ActionEvent event)
+				{
+					dialog.close();
 				}
 			}
-		});
-
-		Button cancel = new Button("Cancel");
-		cancel.setPrefHeight(35);
-		cancel.setMaxWidth(Double.MAX_VALUE);
-		root.getChildren().add(cancel);
-
-		cancel.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				service.cancel();
-			}
-		});
+		);
 
 		return dialog;
 	}
 }
-
-

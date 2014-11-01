@@ -1,6 +1,9 @@
 package eagleeye.controller;
 
 import java.io.IOException;
+
+import eagleeye.entities.Device;
+import eagleeye.view.NewDeviceDialogController;
 import eagleeye.view.WorkBenchControllerAdvanced;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainAppAdvanced extends Application {
@@ -67,13 +71,43 @@ public class MainAppAdvanced extends Application {
         }
     }
     
-    // Method to obtain current case path
-    public String getCasePath() {
-    	String resultCasePath = "TestCaseForUI";
-        return resultCasePath;
-    }
+    public Device showNewDeviceDialogDialog() {
+    	  try {
+    		  
+    	    FXMLLoader loader = new FXMLLoader(MainAppAdvanced.class.getResource("../view/NewDeviceDialog.fxml"));
+    	    AnchorPane page = (AnchorPane) loader.load();
+    	    Stage dialogStage = new Stage();
+    	    dialogStage.setTitle("Import a New Device Image");
+    	    dialogStage.initModality(Modality.WINDOW_MODAL);
+    	    dialogStage.initOwner(primaryStage);
+    	    Scene scene = new Scene(page);
+    	    dialogStage.setScene(scene);
+    	  
+    	    NewDeviceDialogController controller = loader.getController();
+    	    controller.setDialogStage(dialogStage);
+    	    dialogStage.showAndWait();
+    	    
+    	    if(controller.isImportClickedSuccess())
+    	    	return controller.getDevice();
+    	    
+    	    else
+    	    	return null;
+    	    
+    	  } catch (IOException e) {
+    	    e.printStackTrace();
+    	    return null;
+    	  }
+    	}
+      
+      // Method to obtain current case path
+      public String getCasePath() {
+      	
+      	String resultCasePath = "TestCaseForUI";
+          return resultCasePath;
+      }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-}
+      public static void main(String[] args) {
+          launch(args);
+      }
+ 
+  }
