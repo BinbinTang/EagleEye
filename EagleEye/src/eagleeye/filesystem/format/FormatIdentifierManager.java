@@ -40,4 +40,12 @@ public class FormatIdentifierManager
 		
 		return formatDescription;
 	}
+
+	public void cancelAll()
+	{
+		for(IFormatIdentifier formatIdentifier : formatIdentifiers)
+		{
+			formatIdentifier.cancel();
+		}
+	}
 }
