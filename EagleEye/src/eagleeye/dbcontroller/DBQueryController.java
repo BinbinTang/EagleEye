@@ -178,12 +178,16 @@ public class DBQueryController {
 		
 		try {
 			
-			PreparedStatement stmt = conn.prepareStatement(queryMaker.getFilteredFiles(isKeywordPresent, isCategoryPresent));
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getFilteredFiles(isKeywordPresent, isCategoryPresent, filter));
 			stmt = setFieldsForFilter(stmt,isKeywordPresent,isCategoryPresent,filter);
+			System.out.println("query is " + stmt.getMetaData());
 			
 			ResultSet rs = stmt.executeQuery();
 			
+			int count = 0;
 			while(rs.next()){
+				
+				
 				
 				FileEntity f = new FileEntity();
 			
@@ -203,8 +207,10 @@ public class DBQueryController {
 				f.modifyCategory(rs.getString("ExtTypeName"));
 								
 				listOfFiles.add(f);
+				count ++;
 			}
 			
+			System.out.println("resultset count is " + count);
 			conn.close();
 		} catch (Exception e) {
 			
@@ -253,8 +259,6 @@ public class DBQueryController {
 			stmt.setString(5, filter.getEndDateAsString());
 			stmt.setString(6, filter.getStartTime());
 			stmt.setString(7, filter.getEndTime());
-			stmt.setInt(8, filter.getIsModified());
-			stmt.setInt(9, filter.getIsRecovered());
 						
 		} else {
 			
@@ -266,8 +270,6 @@ public class DBQueryController {
 				stmt.setString(4, filter.getEndDateAsString());
 				stmt.setString(5, filter.getStartTime());
 				stmt.setString(6, filter.getEndTime());
-				stmt.setInt(7, filter.getIsModified());
-				stmt.setInt(8, filter.getIsRecovered());
 			
 			} else if (isCategoryPresent) {
 				
@@ -277,8 +279,6 @@ public class DBQueryController {
 				stmt.setString(4, filter.getEndDateAsString());
 				stmt.setString(5, filter.getStartTime());
 				stmt.setString(6, filter.getEndTime());
-				stmt.setInt(7, filter.getIsModified());
-				stmt.setInt(8, filter.getIsRecovered());
 			
 			} else {
 				
@@ -287,8 +287,6 @@ public class DBQueryController {
 				stmt.setString(3, filter.getEndDateAsString());
 				stmt.setString(4, filter.getStartTime());
 				stmt.setString(5, filter.getEndTime());
-				stmt.setInt(6, filter.getIsModified());
-				stmt.setInt(7, filter.getIsRecovered());
 			}
 			
 		}

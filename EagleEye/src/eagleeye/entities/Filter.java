@@ -14,6 +14,8 @@ public class Filter {
 	private String endTime;
 	private int isModified;
 	private int isRecovered;
+	private int isOriginal;
+	
 	
 	public Filter() {
 		
@@ -24,8 +26,9 @@ public class Filter {
 		endDate = LocalDate.now();
 		startTime = "00:00:00";
 		endTime = "23:59:00";
-		isModified = 0;
-		isRecovered = 0;
+		isModified = 1;
+		isRecovered = 1;
+		isOriginal = 1;
 	}
 	
 	public String getKeyword() {
@@ -135,6 +138,19 @@ public class Filter {
 			this.isRecovered = 0;
 	}
 	
+	public int getIsOriginal()  {
+		
+		return isOriginal;
+	}
+	
+	public void modifiyIsOriginal(boolean isOriginal) {
+		
+		if(isOriginal)
+			this.isOriginal = 1;
+		else
+			this.isOriginal = 0;
+	}
+	
 	public String getStartDateAsString() {
 		
 		return startDate.toString();
@@ -143,6 +159,13 @@ public class Filter {
 	public String getEndDateAsString() {
 		
 		return endDate.toString();
+	}
+	
+	public String getCheckBoxCombination() {
+		
+		String combination = isModified + "" + isOriginal + "" + isRecovered;
+		
+		return combination;
 	}
 	
 	

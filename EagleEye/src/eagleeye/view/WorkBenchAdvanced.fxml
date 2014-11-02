@@ -56,7 +56,7 @@
 							<items>
 								<AnchorPane minWidth="120.0" prefWidth="150.0">
 									<children>
-														<TabPane prefHeight="458.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+														<TabPane fx:id="leftTabPane" prefHeight="458.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 															<tabs>
 																<Tab text="Tree">
 																	<content>
@@ -244,7 +244,7 @@
                                                             </Label>
                                                         <AnchorPane>
                                                                <children>
-                                    										<TextField layoutX="14.0" layoutY="11.0" prefHeight="30.0" prefWidth="321.0">
+                                    										<TextField fx:id="keywordsTf" layoutX="14.0" layoutY="11.0" prefHeight="30.0" prefWidth="321.0">
                                                                      <font>
                                                                         <Font name="Segoe UI Light" size="12.0" />
                                                                      </font>
@@ -308,7 +308,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane>
                                                                <children>
-                                    										<Button fx:id="searchButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutY="15.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="Search" textAlignment="CENTER">
+                                    										<Button fx:id="searchButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleFilter" onMouseClicked="#handleFilter" prefHeight="30.0" prefWidth="120.0" text="Search" textAlignment="CENTER">
                                                                      <font>
                                                                         <Font name="Segoe UI Light" size="12.0" />
                                                                      </font>

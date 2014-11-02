@@ -22,12 +22,15 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -86,7 +89,7 @@ public class WorkBenchControllerAdvanced {
 	private StackPane treeViewPane;
 	@FXML
 	private VBox categoryViewPane;
-
+	
 	// result pane view
 	private Filter filter = new Filter();
 	final ObservableList<String> listItems = FXCollections.observableArrayList(); 
@@ -136,6 +139,15 @@ public class WorkBenchControllerAdvanced {
 	private TextField endHourDailyTf;
 	@FXML
 	private TextField endMinuteDailyTf;
+	@FXML
+	private TextField keywordsTf;
+	@FXML
+	private CheckBox isDeletedCheckBox;
+	@FXML
+	private CheckBox isModifiedCheckBox;
+	@FXML
+	private CheckBox isOriginalCheckBox;
+	
 
 	// Menubar
 	@FXML
@@ -155,10 +167,22 @@ public class WorkBenchControllerAdvanced {
 	// Reference to the main application.
 	private MainAppAdvanced mainAppAdvanced;
 
+	// Filter's items
+	private String selectedCategory;
+	private final String EMPTY_STRING = "";
+	private final int CATEGORY_TAB_INDEX = 1;
+	@FXML
+	private TabPane leftTabPane;
+	
+	
+	
+	
 	/**
 	 * The constructor.
 	 */
 	public WorkBenchControllerAdvanced() {
+		
+		selectedCategory = EMPTY_STRING;
 	}
 
 	/**
@@ -784,6 +808,9 @@ public class WorkBenchControllerAdvanced {
 		                listItems.clear();
 		                filter.modifyCategoryName(category);
 		                displayResult(listItems, "category");
+		                
+		                selectedCategory = category;
+		                
 		            }
 		        });
 				categoryViewPane.getChildren().add(btn);
@@ -887,6 +914,7 @@ public class WorkBenchControllerAdvanced {
 	}
 	
 	private void handleNewDirectory(ActionEvent event) {
+		
 		Device newDevice = mainAppAdvanced.showNewDeviceDialogDialog();
 		
 		if(newDevice == null)
@@ -1032,4 +1060,49 @@ public class WorkBenchControllerAdvanced {
 
 		return dialog;
 	}
+	
+	//Filters Controller Function
+	@FXML 
+	public void handleFilter() {
+		
+		int selectedTab;
+		selectedTab = leftTabPane.getSelectionModel().getSelectedIndex();
+
+		this.filter = new Filter();
+		
+		if(selectedTab == CATEGORY_TAB_INDEX) {
+			filter.modifyCategoryName(selectedCategory);
+		}
+		
+		if(!startDatePicker.getValue().equals(null))
+			filter.modifyStartDate(startDatePicker.getValue());
+		if(!endDatePicker.getValue().equals(null))
+			filter.modifyEndDate(endDatePicker.getValue());
+		
+		String startTimeDaily = startHourDailyTf.getText() + ":" + startMinuteDailyTf.getText();
+		String endTimeDaily = endHourDailyTf.getText() + ":" + endMinuteDailyTf.getText();
+		
+		filter.modifyStartTime(startTimeDaily);
+		filter.modifyEndTime(endTimeDaily);
+		
+		if(!keywordsTf.getText().equals(EMPTY_STRING))
+			filter.modifyKeyword(keywordsTf.getText());
+		
+		filter.modifyIsModified(isModifiedCheckBox.isSelected());
+		filter.modifyIsRecovered(isDeletedCheckBox.isSelected());
+		filter.modifiyIsOriginal(isOriginalCheckBox.isSelected());
+		
+		displayResult(listItems,"category");
+		
+		
+		
+	}
+	
+	public boolean validationOfFilters () {
+		
+		return true;
+	}
+	
+	
+	
 }
