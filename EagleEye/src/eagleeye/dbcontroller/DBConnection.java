@@ -10,8 +10,13 @@ public class DBConnection {
 		Connection dbConn = null;
 		
 		try {
+			
 			Class.forName("org.sqlite.JDBC");
-			dbConn = DriverManager.getConnection("jdbc:sqlite:DBresources\\ForensicsSuiteDB.sqlite");
+			String OS = System.getProperty("os.name");
+			if (OS.startsWith("Windows"))
+				dbConn = DriverManager.getConnection("jdbc:sqlite:DBresources\\ForensicsSuiteDB.sqlite");
+			else
+				dbConn = DriverManager.getConnection("jdbc:sqlite:DBresources/ForensicsSuiteDB.sqlite");
 			return dbConn;
 			
 		} catch (Exception e) {
