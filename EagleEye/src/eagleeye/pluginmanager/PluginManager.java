@@ -126,9 +126,8 @@ public class PluginManager {
 						ef.modifyFileExt(f.getFileExt());
 						ef.modifyFileExtID(f.getFileExtID());
 						ef.modifyIsRecovered(f.getIsRecovered());
-						ef.modifyDateDeleted(f.getDateDeleted());
 						ef.modifyIsModified(f.getIsModified());
-						ef.modifyModifiedExt(f.getModifiedExt());
+						ef.modifyContentType(f.getContentType());
 						ef.modifyDateCreated(f.getDateCreated());
 						ef.modifyDateAccessed(f.getDateAccessed());
 						ef.modifyDateModified(f.getDateModified());

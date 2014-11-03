@@ -1,5 +1,7 @@
 package eagleeye.entities;
 
+import java.io.File;
+
 public class Device {
 
 	protected int deviceID;
@@ -8,6 +10,7 @@ public class Device {
 	protected String lastViewedOn;
 	protected String dateCreated;
 	protected String deviceOwner;
+	protected File deviceImageFolder;
 	
 	public Device() {
 		
@@ -19,6 +22,11 @@ public class Device {
 		this.deviceName = deviceName;
 		this.contentSize = contentSize;
 		this.deviceOwner = deviceOwner;
+	}
+	
+	public File getDeviceImageFolder() {
+		
+		return deviceImageFolder;
 	}
  
 	public int getDeviceID(){
@@ -51,6 +59,11 @@ public class Device {
 		return deviceOwner;
 	}
  
+	public void modifiyDeviceImageFolder(File deviceImageFolder){
+		
+		this.deviceImageFolder = deviceImageFolder;
+	}
+	
 	public void modifyDeviceID(int deviceID){
 	
 		this.deviceID = deviceID;

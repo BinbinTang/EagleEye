@@ -1,0 +1,9 @@
+CURRENT_FILE	D:\MyFolder\y4\CS3283_MediaTech_Project\CodeX\EagleEye\EagleEye\testdata\monet.time
+CURRENT_DIR	null
+RECENT_FILE	D:\MyFolder\y4\CS3283_MediaTech_Project\CodeX\EagleEye\EagleEye\testdata\monet.time
+RECENT_FILE	D:\MyFolder\y4\CS3283_MediaTech_Project\CodeX\EagleEye\EagleEye\testdata\data.time
+RECENT_FILE	D:\MyFolder\y4\CS3283_MediaTech_Project\CodeX\EagleEye\EagleEye\testdata\monet_2.time
+RECENT_FILE	D:\MyFolder\y4\CS3283_MediaTech_Project\CodeX\EagleEye\EagleEye\testdata\monet_2
+RECENT_FILE	D:\MyFolder\y4\CS3283_MediaTech_Project\CodeX\EagleEye\EagleEye\testdata\disaster.time
+RECENT_FILE	D:\MyFolder\y4\CS3283_MediaTech_Project\CodeX\EagleEye\EagleEye\settings\examples\2. Life of Monet.time
+RECENT_FILE	C:\Users\yoyo\Desktop\data.time

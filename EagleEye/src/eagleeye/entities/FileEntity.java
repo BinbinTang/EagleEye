@@ -1,6 +1,8 @@
 package eagleeye.entities;
 
-public class FileEntity implements Comparable<FileEntity> {
+import eagleeye.api.entities.EagleFile;
+
+public class FileEntity implements EagleFile {
 	
 	protected int deviceID;
 	//parent object ID when inserted; directoryID when queried
@@ -15,8 +17,7 @@ public class FileEntity implements Comparable<FileEntity> {
 	protected String filePath;
 	protected String fileExt; 		// example gif, jpg without .
 	protected int fileExtID; 		
-	protected String dateDeleted;
-	protected String modifiedExt;
+	protected String contentType;
 	protected String dateCreated;
 	protected String dateAccessed;
 	protected String dateModified;
@@ -31,8 +32,7 @@ public class FileEntity implements Comparable<FileEntity> {
 		fileName = "";
 		filePath = "";
 		fileExt = "";
-		modifiedExt = "";
-		dateDeleted = "";
+		contentType = "";
 		dateCreated = "";
 		dateAccessed = "";
 		dateModified = "";
@@ -48,8 +48,7 @@ public class FileEntity implements Comparable<FileEntity> {
 				String _fileName,
 				String _filePath,
 				String _fileExt,
-				String _modifiedExt,
-				String _dateDeleted,
+				String _contentType,
 				String _dateCreated,
 				String _dateAccessed,
 				String _dateModified,
@@ -64,8 +63,7 @@ public class FileEntity implements Comparable<FileEntity> {
 		modifyFileName (_fileName);
 		modifyFilePath (_filePath);
 		modifyFileExt (_fileExt);
-		modifyModifiedExt (_modifiedExt);
-		modifyDateDeleted (_dateDeleted);
+		modifyContentType (_contentType);
 		modifyDateCreated (_dateCreated);
 		modifyDateAccessed (_dateAccessed);
 		modifyDateModified (_dateModified);
@@ -116,20 +114,15 @@ public class FileEntity implements Comparable<FileEntity> {
 	 
 		return isRecovered;
 	}
-	
-	public String getDateDeleted(){
-		 
-		return dateDeleted;
-	}
 		
 	public boolean getIsModified(){
 	 
 		return isModified;
 	}
 	
-	public String getModifiedExt(){
+	public String getContentType(){
 		
-		return modifiedExt;
+		return contentType;
 	}
 
 	public String getDateCreated(){
@@ -202,19 +195,14 @@ public class FileEntity implements Comparable<FileEntity> {
 		this.isRecovered = isRecovered;
 	}
 	
-	public void modifyDateDeleted(String dateDeleted){
-		 
-		this.dateDeleted = dateDeleted;
-	}
-		
 	public void modifyIsModified(boolean isModified){
 	 
 		this.isModified = isModified;
 	}
 	
-	public void modifyModifiedExt(String modifiedExt){
+	public void modifyContentType(String contentType){
 		
-		this.modifiedExt = modifiedExt;
+		this.contentType = contentType;
 	}
 		
 	public void modifyDateCreated(String dateCreated){
@@ -242,14 +230,5 @@ public class FileEntity implements Comparable<FileEntity> {
 		this.directoryName = directoryName;
 	}
 
-	@Override
-	public int compareTo(FileEntity anotherFile) {
-		
-		int anotherFileDirectory = anotherFile.getDirectoryID();
-		return this.getDirectoryID() - anotherFileDirectory;
-	}
 
-
-
- 
 }

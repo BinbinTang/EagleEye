@@ -8,6 +8,7 @@ import java.io.IOException;
 
 public class AndroidBootFormatIdentifier implements IFormatIdentifier
 {
+	private boolean cancel = false;
 
 	@Override
 	public FormatDescription identify(File file)
@@ -51,5 +52,10 @@ public class AndroidBootFormatIdentifier implements IFormatIdentifier
 
 		return null;
 	}
-	
+
+	@Override
+	public void cancel()
+	{
+		this.cancel = true;
+	}
 }

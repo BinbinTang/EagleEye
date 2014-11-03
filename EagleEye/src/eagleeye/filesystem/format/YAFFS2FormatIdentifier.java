@@ -11,7 +11,8 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 {
 	protected int blockSize;
 	protected int oobSize;
-
+	private boolean cancel = false;
+	
 	public YAFFS2FormatIdentifier()
 	{
 		this.setBlockSize(2048);
@@ -42,7 +43,13 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 		ByteBuffer byteBuffer;
 		
 		while (totalFileBytes > totalBytesRead + totalBlockSize)
-		{			
+		{
+			if(cancel)
+			{
+				dataInputStream.close();
+				return null;
+			}
+			
 			inputBytes = new byte[this.blockSize + this.oobSize];
 			dataInputStream.readFully(inputBytes);
 			byteBuffer = ByteBuffer.wrap(inputBytes);
@@ -55,6 +62,12 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 		
 		for (byte[] block : blocks)
 		{
+			if(cancel)
+			{
+				dataInputStream.close();
+				return null;
+			}
+			
 			byteBuffer = ByteBuffer.wrap(block);
 			byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 			
@@ -78,6 +91,12 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 			
 			while(byteBuffer.remaining() > 64)
 			{
+				if(cancel)
+				{
+					dataInputStream.close();
+					return null;
+				}
+				
 				if(byteBuffer.get() != (byte)0xFF)
 				{
 					continue;
@@ -94,6 +113,12 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 
 		dataInputStream.close();
 		return null;
+	}
+
+	@Override
+	public void cancel()
+	{
+		this.cancel = true;
 	}
 	
 }

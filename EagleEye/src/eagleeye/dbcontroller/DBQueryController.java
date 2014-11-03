@@ -22,6 +22,7 @@ public class DBQueryController {
 	}
 	
 	public int getDeviceID(){
+	
 		return deviceID;
 	}
 	
@@ -99,7 +100,6 @@ public class DBQueryController {
 				d.modifyDateAccessed(rs.getString("DateAccessed"));
 				d.modifyDateModified(rs.getString("DateModified"));
 				d.modifyIsRecovered(rs.getBoolean("IsRecovered"));
-				d.modifyDateDeleted(rs.getString("DateDeleted"));
 				
 				listOfDirectory.add(d);
 			}
@@ -143,9 +143,8 @@ public class DBQueryController {
 				f.modifyDateAccessed(rs.getString("DateAccessed"));
 				f.modifyDateModified(rs.getString("DateModified"));
 				f.modifyIsModified(rs.getBoolean("IsModified"));
-				f.modifyModifiedExt(rs.getString("ModifiedExt"));
+				f.modifyContentType(rs.getString("ContentType"));
 				f.modifyIsRecovered(rs.getBoolean("IsRecovered"));
-				f.modifyDateDeleted(rs.getString("DateDeleted"));
 				f.modifyFilePath(rs.getString("FilePath"));
 				f.modifyCategory(rs.getString("ExtTypeName"));
 								
@@ -175,16 +174,28 @@ public class DBQueryController {
 		boolean isCategoryPresent = isCategoryPresent(filter.getCategoryName());
 		ArrayList<FileEntity> listOfFiles = new ArrayList<FileEntity>();
 		
+		System.out.println("StartDateTime = " + filter.getStartDateTimeAsString());
+		System.out.println("EndDateTime = " + filter.getEndDateTimeAsString());
+		System.out.println("StartTimeDaily = " + filter.getStartTimeDaily());
+		System.out.println("EndTimeDaily = " + filter.getEndTimeDaily());
+		System.out.println("Keyword = " + filter.getKeyword());
+		System.out.println("Category = " + filter.getCategoryID());
+		System.out.println("Category Name = " + filter.getCategoryName());
+		
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
 			
-			PreparedStatement stmt = conn.prepareStatement(queryMaker.getFilteredFiles(isKeywordPresent, isCategoryPresent));
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getFilteredFiles(isKeywordPresent, isCategoryPresent, filter));
 			stmt = setFieldsForFilter(stmt,isKeywordPresent,isCategoryPresent,filter);
+			System.out.println("query is " + stmt.getMetaData());
 			
 			ResultSet rs = stmt.executeQuery();
 			
+			int count = 0;
 			while(rs.next()){
+				
+				
 				
 				FileEntity f = new FileEntity();
 			
@@ -198,15 +209,16 @@ public class DBQueryController {
 				f.modifyDateAccessed(rs.getString("DateAccessed"));
 				f.modifyDateModified(rs.getString("DateModified"));
 				f.modifyIsModified(rs.getBoolean("IsModified"));
-				f.modifyModifiedExt(rs.getString("ModifiedExt"));
+				f.modifyContentType(rs.getString("ContentType"));
 				f.modifyIsRecovered(rs.getBoolean("IsRecovered"));
-				f.modifyDateDeleted(rs.getString("DateDeleted"));
 				f.modifyFilePath(rs.getString("FilePath"));
 				f.modifyCategory(rs.getString("ExtTypeName"));
 								
 				listOfFiles.add(f);
+				count ++;
 			}
 			
+			System.out.println("resultset count is " + count);
 			conn.close();
 		} catch (Exception e) {
 			
@@ -251,12 +263,10 @@ public class DBQueryController {
 			stmt.setInt(1,deviceID);
 			stmt.setString(2, filter.getKeyword());
 			stmt.setInt(3, filter.getCategoryID());
-			stmt.setString(4, filter.getStartDateAsString());
-			stmt.setString(5, filter.getEndDateAsString());
-			stmt.setString(6, filter.getStartTime());
-			stmt.setString(7, filter.getEndTime());
-			stmt.setInt(8, filter.getIsModified());
-			stmt.setInt(9, filter.getIsRecovered());
+			stmt.setString(4, filter.getStartDateTimeAsString());
+			stmt.setString(5, filter.getEndDateTimeAsString());
+			stmt.setString(6, filter.getStartTimeDaily());
+			stmt.setString(7, filter.getEndTimeDaily());
 						
 		} else {
 			
@@ -264,33 +274,27 @@ public class DBQueryController {
 				
 				stmt.setInt(1,deviceID);
 				stmt.setString(2, filter.getKeyword());
-				stmt.setString(3, filter.getStartDateAsString());
-				stmt.setString(4, filter.getEndDateAsString());
-				stmt.setString(5, filter.getStartTime());
-				stmt.setString(6, filter.getEndTime());
-				stmt.setInt(7, filter.getIsModified());
-				stmt.setInt(8, filter.getIsRecovered());
+				stmt.setString(3, filter.getStartDateTimeAsString());
+				stmt.setString(4, filter.getEndDateTimeAsString());
+				stmt.setString(5, filter.getStartTimeDaily());
+				stmt.setString(6, filter.getEndTimeDaily());
 			
 			} else if (isCategoryPresent) {
 				
 				stmt.setInt(1,deviceID);
 				stmt.setInt(2, filter.getCategoryID());
-				stmt.setString(3, filter.getStartDateAsString());
-				stmt.setString(4, filter.getEndDateAsString());
-				stmt.setString(5, filter.getStartTime());
-				stmt.setString(6, filter.getEndTime());
-				stmt.setInt(7, filter.getIsModified());
-				stmt.setInt(8, filter.getIsRecovered());
+				stmt.setString(3, filter.getStartDateTimeAsString());
+				stmt.setString(4, filter.getEndDateTimeAsString());
+				stmt.setString(5, filter.getStartTimeDaily());
+				stmt.setString(6, filter.getEndTimeDaily());
 			
 			} else {
 				
 				stmt.setInt(1,deviceID);
-				stmt.setString(2, filter.getStartDateAsString());
-				stmt.setString(3, filter.getEndDateAsString());
-				stmt.setString(4, filter.getStartTime());
-				stmt.setString(5, filter.getEndTime());
-				stmt.setInt(6, filter.getIsModified());
-				stmt.setInt(7, filter.getIsRecovered());
+				stmt.setString(2, filter.getStartDateTimeAsString());
+				stmt.setString(3, filter.getEndDateTimeAsString());
+				stmt.setString(4, filter.getStartTimeDaily());
+				stmt.setString(5, filter.getEndTimeDaily());
 			}
 			
 		}

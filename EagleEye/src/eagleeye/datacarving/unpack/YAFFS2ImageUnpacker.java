@@ -16,6 +16,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
+import java.util.logging.Formatter;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 import java.util.TreeMap;
 
 import org.apache.tika.exception.TikaException;
@@ -23,6 +28,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
 
+import eagleeye.entities.FileEntity;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.yaffs2.YAFFS2Object;
 import eagleeye.filesystem.yaffs2.YAFFS2ObjectHeader;
@@ -45,10 +51,33 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	protected boolean cancel = false;
 	
 	protected TreeMap<Integer, TreeMap<Integer, byte[]>> dataChunks = new TreeMap<>();
+
+	private Logger logger;
 	
 	public YAFFS2ImageUnpacker()
 	{
-		this.setChunkSize(2048); // Assume chunk size of 2048 for now
+		this.setChunkSize(2048);
+		
+		logger = Logger.getLogger(this.getClass().getName());
+		
+		logger.setUseParentHandlers(false);
+		
+		Formatter formatter = new Formatter()
+		{
+			
+			@Override
+			public String format(LogRecord record)
+			{
+		        return record.getLevel() + " [" + record.getSourceClassName() + "." + record.getSourceMethodName() + "]: " + record.getMessage() + "\n";
+			}
+		};
+		
+		StreamHandler handler = new StreamHandler(System.out, formatter);
+		
+		handler.setLevel(Level.ALL);
+		logger.setLevel(Level.ALL);
+		
+		logger.addHandler(handler);
 	}
 	
 	public void setChunkSize(int chunkSize)
@@ -58,7 +87,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 	}
 
 	@Override
-	public ArrayList<eagleeye.entities.FileEntity> unpack(FormatDescription formatDescription) throws Exception
+	public ArrayList<FileEntity> unpack(FormatDescription formatDescription) throws Exception
 	{
 		this.formatDescription = formatDescription;
 		
@@ -67,11 +96,11 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			return null;
 		}
 		
-		java.io.File file = this.formatDescription.getFile();
+		File file = this.formatDescription.getFile();
 		this.fileInputStream = new FileInputStream(file);
 		this.inputStream = new DataInputStream(this.fileInputStream);
 		
-		System.out.printf("- Data carving started for %s...%n", file.getName());
+		logger.fine(String.format("Data carving started for %s...%n", file.getName()));
 		
 		int totalChunkSize = this.chunkSize + this.oobSize;
 		
@@ -119,7 +148,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			this.byteBuffer = ByteBuffer.wrap(chunk);
 			this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
-			System.out.printf("-- Scanning chunk %s. ", chunkCount);
+			logger.finer(String.format("Scanning chunk %s. ", chunkCount));
 
 			this.byteBuffer.position(this.chunkSize); 
 
@@ -128,24 +157,24 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 
 			if (validMarker != (byte)0xFFFF)
 			{
-				System.out.println("Invalid chunk.");
+				logger.finer("Invalid chunk.");
 				continue;
 			}
 			
 			if(blockSequence == 0xFFFFFFFF)
 			{
-				System.out.println("Empty chunk.");
+				logger.finer("Empty chunk.");
 				continue;
 			}
 
-			System.out.printf("Block Sequence: %s ", blockSequence);
+			logger.finer(String.format("Block Sequence: %s ", blockSequence));
 
 			this.inputBytes = new byte[3];
 			this.byteBuffer.get(this.inputBytes);
 			
 		    int objectId = (this.inputBytes[2] & 0xFF) << 8 | (this.inputBytes[1] & 0xFF) << 8 | (this.inputBytes[0] & 0xFF);
 
-		    System.out.printf("Object Id: %s %n", objectId);
+		    logger.finer(String.format("Object Id: %s %n", objectId));
 		    
 		    if(!objects.containsKey(objectId))
 		    {
@@ -178,7 +207,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			
 			int objectId = object.getKey();
 			
-			System.out.printf("- Carving object %s%n", objectId);
+			logger.finer(String.format("Carving object %s%n", objectId));
 			YAFFS2Object yaffs2Object = new YAFFS2Object();
 			yaffs2Object.setId(objectId);
 			yaffs2Object.setChunkSize(chunkSize);
@@ -190,7 +219,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 			{
 				int blockSequence = blockChunks.getKey();
 
-				System.out.printf("-- Analyzing block. Block Sequence: %s%n", blockSequence);
+				logger.finest(String.format("Analyzing block. Block Sequence: %s%n", blockSequence));
 				
 				boolean isDeleted = false;
 				boolean isUnlinked = false;
@@ -200,7 +229,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					this.byteBuffer = ByteBuffer.wrap(chunk);
 					this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
-					System.out.printf("--- Carving chunk ");
+					logger.finest("Carving chunk");
 					
 					this.byteBuffer.position(this.chunkSize); 
 		
@@ -208,7 +237,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 
 					if (validMarker != (byte)0xFFFF)
 					{
-						System.out.println("Invalid chunk.");
+						logger.finest("Invalid chunk.");
 						continue;
 					}
 					
@@ -233,7 +262,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					this.byteBuffer.get(); // Status
 					int nBytes = this.byteBuffer.getInt();				
 					
-					System.out.printf("Parent Id or Chunk Id: %s, Bytes in block: %s. ", parentIdOrChunkId, nBytes);
+					logger.finest(String.format("Parent Id or Chunk Id: %s, Bytes in block: %s. ", parentIdOrChunkId, nBytes));
 					
 					this.byteBuffer.position(0);
 					
@@ -251,14 +280,14 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 						if(header.getName().equals("deleted") && header.getParentObjectId() == 4)
 						{
 							isDeleted = true;
-							System.out.println("Found delete header.");
+							logger.finest("Found delete header.\n");
 							continue;
 						}
 						
 						if(header.getName().equals("unlinked") && header.getParentObjectId() == 3)
 						{
 							isUnlinked = true;
-							System.out.println("Found unlink header.");
+							logger.finest("Found unlink header.\n");
 							continue;
 						}
 						
@@ -283,18 +312,18 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 							yaffs2Objects.add(yaffs2Object);
 						}
 						
-						System.out.println("Found object header.");
+						logger.finest("Found object header.\n");
 						continue;
 					}
 					
 					// Block is data
-					System.out.println("Found data chunk.");
+					logger.finest("Found data chunk.\n");
 					yaffs2Object.addDataChunk(parentIdOrChunkId, Arrays.copyOf(chunk, nBytes));
 				}
 			}
 		}
 
-		ArrayList<eagleeye.entities.FileEntity> files = new ArrayList<eagleeye.entities.FileEntity>();
+		ArrayList<FileEntity> files = new ArrayList<FileEntity>();
 		
 		String rootFilePath = "." + File.separator + "output" + File.separator + file.getName();
 		HashMap<Integer, String> parentPaths = new HashMap<Integer, String>();
@@ -394,7 +423,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					filePath = parentPaths.get(parentId);
 				}
 				
-				eagleeye.entities.FileEntity genericFile = new eagleeye.entities.FileEntity();
+				FileEntity genericFile = new FileEntity();
 				
 				genericFile.modifyIsRecovered(header.isDeleted());
 				
@@ -419,14 +448,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 					
 					stream.close();
 					
-					String extension = "";
-					if(header.getName().lastIndexOf('.') > -1)
-					{
-						extension = header.getName().substring(header.getName().lastIndexOf('.'));
-					}
-					
-					System.out.printf("Ext %s Type %s", extension, metaData.get(Metadata.CONTENT_TYPE));
-					System.out.println();					
+					genericFile.modifyContentType(metaData.get(Metadata.CONTENT_TYPE));
 				}
 				
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
@@ -602,7 +624,7 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 
 		FileOutputStream fileStream = new FileOutputStream(file);
 		
-		System.out.printf("Writing to %s%n", file.getCanonicalPath());
+		logger.fine(String.format("Writing to %s", file.getCanonicalPath()));
 		
 		for (Entry<Integer, byte[]> entry : dataChunks.entrySet())
 		{
