@@ -23,6 +23,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -152,16 +153,37 @@ public class WorkBenchControllerAdvanced {
 	
 
 	// Menubar
+	ArrayList<String> functionList = new ArrayList(Arrays.asList("TimeLine","WifiHistory","ContactHistory"));
 	@FXML
 	private MenuItem newClick;
 	@FXML
 	private Menu openMenu;
 	@FXML
 	private MenuItem exitClick;
+	@FXML 
+	private Menu analysisMenu;
+	
+	// Fucntion Vbox
+	@FXML
+	private VBox functionVBox;
 
+	/*
 	// Analysis Buttons
 	@FXML
 	private Button contactHistoryBtn;
+	@FXML
+	private Button wifiHistoryBtn;
+	@FXML
+	private Button timelineBtn;
+	
+	// Menu
+	@FXML
+	private CheckMenuItem wifiHistoryCheck;
+	@FXML
+	private CheckMenuItem contactHistoryCheck;
+	@FXML
+	private CheckMenuItem timelineCheck;
+	*/
 	
 	// Progress information label
 	@FXML private Label progressLabel;
@@ -193,6 +215,31 @@ public class WorkBenchControllerAdvanced {
 
 	@FXML
 	private void initialize() {
+		
+		// Add bonding to functions checked dynamically and functions visible
+		for(String functionName : functionList){
+			// create menuItem
+			CheckMenuItem newFuctionCheck = new CheckMenuItem(functionName);
+			newFuctionCheck.setSelected(true);
+			analysisMenu.getItems().add(newFuctionCheck);			
+
+			// create function button
+			Button newBtn = new Button(functionName);
+			newBtn.setPrefWidth(100);
+			newBtn.setPrefHeight(40);
+			
+			functionVBox.getChildren().add(newBtn);
+			
+			// set binding dynamically
+			newFuctionCheck.setOnAction(event -> {
+				if(newFuctionCheck.isSelected()){
+					functionVBox.getChildren().add(newBtn);
+				}else{
+					functionVBox.getChildren().remove(newBtn);
+				}
+			});
+		}
+		
 
 		// Initialize for DatePicker
 		startDatePicker.setValue(startDate);
