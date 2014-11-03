@@ -860,7 +860,7 @@ public class WorkBenchControllerAdvanced {
         for (FileEntity resultFile : results){
         	String name = resultFile.getFileName();
         	String ext = resultFile.getFileExt();
-        	resultList.add(name + ext);
+        	resultList.add(name + "." + ext);
         }
         
 		return resultList;
