@@ -95,6 +95,11 @@
                                     <ListView fx:id="resultListView" />
                                  </content>
 										</ScrollPane>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="10.0" layoutY="10.0" prefHeight="538.0" prefWidth="499.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <content>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                                 </content>
+                              </ScrollPane>
                            </children>
                         </AnchorPane>
                         <AnchorPane>
