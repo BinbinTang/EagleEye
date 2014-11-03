@@ -218,12 +218,6 @@ public class WorkBenchControllerAdvanced {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-
-				if (startHourTf.getText().length() == 0) {
-					System.out.println("no input");
-					startHourTf.setText("00");
-				}
-
 			}
 		});
 		
@@ -270,12 +264,6 @@ public class WorkBenchControllerAdvanced {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-
-				if (startMinuteTf.getText().length() == 0) {
-					System.out.println("no input");
-					startMinuteTf.setText("00");
-				}
-
 			}
 		});
 		
@@ -323,12 +311,6 @@ public class WorkBenchControllerAdvanced {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-
-				if (endHourTf.getText().length() == 0) {
-					System.out.println("no input");
-					endHourTf.setText("00");
-				}
-
 			}
 		});
 		
@@ -373,12 +355,6 @@ public class WorkBenchControllerAdvanced {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-
-				if (endMinuteTf.getText().length() == 0) {
-					System.out.println("no input");
-					endMinuteTf.setText("00");
-				}
-
 			}
 		});
 		
@@ -425,12 +401,6 @@ public class WorkBenchControllerAdvanced {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-
-				if (startHourDailyTf.getText().length() == 0) {
-					System.out.println("no input");
-					startHourDailyTf.setText("00");
-				}
-
 			}
 		});
 		
@@ -477,12 +447,6 @@ public class WorkBenchControllerAdvanced {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-
-				if (startMinuteDailyTf.getText().length() == 0) {
-					System.out.println("no input");
-					startMinuteDailyTf.setText("00");
-				}
-
 			}
 		});
 		
@@ -530,12 +494,6 @@ public class WorkBenchControllerAdvanced {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-
-				if (endHourDailyTf.getText().length() == 0) {
-					System.out.println("no input");
-					endHourDailyTf.setText("00");
-				}
-
 			}
 		});
 		
@@ -580,12 +538,6 @@ public class WorkBenchControllerAdvanced {
 							newValue.length() - 1));
 					System.out.println("no match");
 				}
-
-				if (endMinuteDailyTf.getText().length() == 0) {
-					System.out.println("no input");
-					endMinuteDailyTf.setText("00");
-				}
-
 			}
 		});
 		
