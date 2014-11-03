@@ -798,6 +798,7 @@ public class WorkBenchControllerAdvanced {
 			// Category View
 			categoryViewPane.setSpacing(5);
 			categoryViewPane.setPadding(new Insets(5,5,5,5));
+			categoryViewPane.getChildren().clear();
 			for (String category : categoryList){
 				Button btn = new Button(category);
 				btn.setPrefHeight(40);
@@ -818,6 +819,7 @@ public class WorkBenchControllerAdvanced {
 			
 		}
 		//refreshDevice();
+		refreshDeviceList();
 	}
 	
 	// Refresh Device in Menu List
