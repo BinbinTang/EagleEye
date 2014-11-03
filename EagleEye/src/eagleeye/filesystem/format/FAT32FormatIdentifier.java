@@ -48,6 +48,9 @@ public class FAT32FormatIdentifier implements IFormatIdentifier {
 			// Case 1: jmpBoot[0] = 0xE9 jmpBoot[1] = 0x?? jmpBoot[2] = 0x??;
 			if (byteBuffer.get() == (byte) 0xE9)
 			{
+				byteBuffer.position(11);
+				
+				//if (byteBuffer.get()!= (byte) 0x)
 				FormatDescription formatDescription = new FormatDescription();
 				formatDescription.setFile(file);
 				formatDescription.setBinaryImageType("FAT32");

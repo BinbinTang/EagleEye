@@ -163,7 +163,15 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 				break;
 			}
 		}
-			
+		
+		StringBuilder hex = new StringBuilder(chunk.length * 2);
+		
+		for(byte b : chunk)
+		{
+			hex.append(String.format("%02X ", b));
+		}
+		
+		System.out.println(hex.toString());
 		FAT32ObjectBootSector bootSector = readObjectBootSector(chunk);
 		
 		
