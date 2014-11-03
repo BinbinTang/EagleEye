@@ -102,6 +102,8 @@ public class WorkBenchControllerAdvanced {
 			"Icons/search icon1.png"), 16, 16, false, false);
 	@FXML
 	private Button searchButton;
+	@FXML
+	private Button resetSearchButton;
 
 	// DatePicker
 	private LocalDate startDate = LocalDate.parse("1992-05-08");
@@ -1053,9 +1055,21 @@ public class WorkBenchControllerAdvanced {
 		filter.modifiyIsOriginal(isOriginalCheckBox.isSelected());
 		
 		displayResult(listItems,"category");
-		
-		
-		
+	}
+	
+	@FXML 
+	public void resetFilter() {
+		startDate = LocalDate.parse("1992-05-08");
+		endDate = LocalDate.now();
+		startHourTf.setText("00");
+		startMinuteTf.setText("00");
+		endHourTf.setText("23");
+		endMinuteTf.setText("59");
+		startHourDailyTf.setText("00");
+		startMinuteDailyTf.setText("00");
+		endHourDailyTf.setText("23");
+		endMinuteDailyTf.setText("59");
+		handleFilter();
 	}
 	
 	public boolean validationOfFilters () {

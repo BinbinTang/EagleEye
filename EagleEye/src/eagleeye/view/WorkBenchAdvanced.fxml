@@ -34,9 +34,9 @@
 										</Menu>
 										<Menu mnemonicParsing="false" text="Analysis">
 											<items>
-                              <CheckMenuItem mnemonicParsing="false" selected="true" text="Contact History" />
-                              <CheckMenuItem mnemonicParsing="false" selected="true" text="Wifi History" />
-                              <CheckMenuItem mnemonicParsing="false" selected="true" text="TimeLine" />
+                              <CheckMenuItem fx:id="timelineCheck" mnemonicParsing="false" selected="true" text="TimeLine" />
+                              <CheckMenuItem fx:id="contactHistoryCheck" mnemonicParsing="false" selected="true" text="Contact History" />
+                              <CheckMenuItem fx:id="wifiHistoryCheck" mnemonicParsing="false" selected="true" text="Wifi History" />
 												<MenuItem mnemonicParsing="false" text="Add New Function" />
 											</items>
 										</Menu>
@@ -318,6 +318,11 @@
                                                                         <Font name="Segoe UI Light" size="12.0" />
                                                                      </font>
                                                                   </Button>
+                                                                  <Button fx:id="resetSearchBtn" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="149.0" layoutY="15.0" mnemonicParsing="false" onAction="#resetFilter" onMouseClicked="#handleFilter" prefHeight="30.0" prefWidth="120.0" text="Reset" textAlignment="CENTER">
+                                                                     <font>
+                                                                        <Font name="Segoe UI Light" size="12.0" />
+                                                                     </font>
+                                                                  </Button>
                                                                </children>
                                                             </AnchorPane>
                                                          </children>
@@ -336,19 +341,11 @@
                                                                <children>
                                                                   <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <children>
-                                          										<Button id="contactHistoryBtn" fx:id="contactHistoryBtn" alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" text="Contact History">
+                                          										<Button fx:id="timelineBtn" alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Timeline ">
                                                                            <HBox.margin>
                                                                               <Insets left="10.0" />
                                                                            </HBox.margin>
                                                                         </Button>
-                                                                        <Label alignment="TOP_LEFT" text="Contact History">
-                                                                           <font>
-                                                                              <Font name="Segoe UI" size="12.0" />
-                                                                           </font>
-                                                                           <HBox.margin>
-                                                                              <Insets left="5.0" />
-                                                                           </HBox.margin>
-                                                                        </Label>
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -360,19 +357,11 @@
                                                                <children>
                                                                   <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <children>
-                                          										<Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" text="Timeline ">
+                                          										<Button id="contactHistoryBtn" fx:id="contactHistoryBtn" alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Contact History">
                                                                            <HBox.margin>
                                                                               <Insets left="10.0" />
                                                                            </HBox.margin>
                                                                         </Button>
-                                                                        <Label alignment="TOP_LEFT" text="Time Line">
-                                                                           <font>
-                                                                              <Font name="Segoe UI" size="12.0" />
-                                                                           </font>
-                                                                           <HBox.margin>
-                                                                              <Insets left="5.0" />
-                                                                           </HBox.margin>
-                                                                        </Label>
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -384,19 +373,11 @@
                                                                <children>
                                                                   <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <children>
-                                          										<Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" text="Wifi History">
+                                          										<Button fx:id="wifiHistoryBtn" alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Wifi History">
                                                                            <HBox.margin>
                                                                               <Insets left="10.0" />
                                                                            </HBox.margin>
                                                                         </Button>
-                                                                        <Label alignment="TOP_LEFT" text="Wifi History">
-                                                                           <font>
-                                                                              <Font name="Segoe UI" size="12.0" />
-                                                                           </font>
-                                                                           <HBox.margin>
-                                                                              <Insets left="5.0" />
-                                                                           </HBox.margin>
-                                                                        </Label>
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -426,7 +407,7 @@
 				</AnchorPane>
           <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="0.0" prefHeight="20.0" prefWidth="160.0" style="-fx-background-color: black;" GridPane.rowIndex="2">
                <children>
-                  <Label fx:id="progressLabel" prefHeight="20.0" prefWidth="800.0" style="-fx-text-fill: white;" text="Progress information not implemented, the id is: progressLabel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label fx:id="progressLabel" prefHeight="20.0" prefWidth="800.0" style="-fx-text-fill: white;" text="Welcome to Eyegle." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="Segoe UI" size="12.0" />
                      </font>
