@@ -166,24 +166,6 @@ public class WorkBenchControllerAdvanced {
 	// Fucntion Vbox
 	@FXML
 	private VBox functionVBox;
-
-	/*
-	// Analysis Buttons
-	@FXML
-	private Button contactHistoryBtn;
-	@FXML
-	private Button wifiHistoryBtn;
-	@FXML
-	private Button timelineBtn;
-	
-	// Menu
-	@FXML
-	private CheckMenuItem wifiHistoryCheck;
-	@FXML
-	private CheckMenuItem contactHistoryCheck;
-	@FXML
-	private CheckMenuItem timelineCheck;
-	*/
 	
 	// Progress information label
 	@FXML private Label progressLabel;
