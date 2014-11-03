@@ -1081,9 +1081,15 @@ public class WorkBenchControllerAdvanced {
 		
 		String startTimeDaily = startHourDailyTf.getText() + ":" + startMinuteDailyTf.getText();
 		String endTimeDaily = endHourDailyTf.getText() + ":" + endMinuteDailyTf.getText();
+		String startTime = startHourTf.getText() +":"+ startMinuteTf.getText();
+		String endTime = endHourTf.getText() + ":" + endMinuteTf.getText();
 		
-		filter.modifyStartTime(startTimeDaily);
-		filter.modifyEndTime(endTimeDaily);
+		
+		filter.modifyStartTimeDaily(startTimeDaily);
+		filter.modifyEndTimeDaily(endTimeDaily);
+		filter.modifyStartTime(startTime);
+		filter.modifyEndTime(endTime);
+		
 		
 		if(!keywordsTf.getText().equals(EMPTY_STRING))
 			filter.modifyKeyword(keywordsTf.getText());

@@ -174,6 +174,13 @@ public class DBQueryController {
 		boolean isCategoryPresent = isCategoryPresent(filter.getCategoryName());
 		ArrayList<FileEntity> listOfFiles = new ArrayList<FileEntity>();
 		
+		System.out.println("StartDateTime = " + filter.getStartDateTimeAsString());
+		System.out.println("EndDateTime = " + filter.getEndDateTimeAsString());
+		System.out.println("StartTimeDaily = " + filter.getStartTimeDaily());
+		System.out.println("EndTimeDaily = " + filter.getEndTimeDaily());
+		System.out.println("Keyword = " + filter.getKeyword());
+		
+		
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
@@ -255,10 +262,10 @@ public class DBQueryController {
 			stmt.setInt(1,deviceID);
 			stmt.setString(2, filter.getKeyword());
 			stmt.setInt(3, filter.getCategoryID());
-			stmt.setString(4, filter.getStartDateAsString());
-			stmt.setString(5, filter.getEndDateAsString());
-			stmt.setString(6, filter.getStartTime());
-			stmt.setString(7, filter.getEndTime());
+			stmt.setString(4, filter.getStartDateTimeAsString());
+			stmt.setString(5, filter.getEndDateTimeAsString());
+			stmt.setString(6, filter.getStartTimeDaily());
+			stmt.setString(7, filter.getEndTimeDaily());
 						
 		} else {
 			
@@ -266,27 +273,27 @@ public class DBQueryController {
 				
 				stmt.setInt(1,deviceID);
 				stmt.setString(2, filter.getKeyword());
-				stmt.setString(3, filter.getStartDateAsString());
-				stmt.setString(4, filter.getEndDateAsString());
-				stmt.setString(5, filter.getStartTime());
-				stmt.setString(6, filter.getEndTime());
+				stmt.setString(3, filter.getStartDateTimeAsString());
+				stmt.setString(4, filter.getEndDateTimeAsString());
+				stmt.setString(5, filter.getStartTimeDaily());
+				stmt.setString(6, filter.getEndTimeDaily());
 			
 			} else if (isCategoryPresent) {
 				
 				stmt.setInt(1,deviceID);
 				stmt.setInt(2, filter.getCategoryID());
-				stmt.setString(3, filter.getStartDateAsString());
-				stmt.setString(4, filter.getEndDateAsString());
-				stmt.setString(5, filter.getStartTime());
-				stmt.setString(6, filter.getEndTime());
+				stmt.setString(3, filter.getStartDateTimeAsString());
+				stmt.setString(4, filter.getEndDateTimeAsString());
+				stmt.setString(5, filter.getStartTimeDaily());
+				stmt.setString(6, filter.getEndTimeDaily());
 			
 			} else {
 				
 				stmt.setInt(1,deviceID);
-				stmt.setString(2, filter.getStartDateAsString());
-				stmt.setString(3, filter.getEndDateAsString());
-				stmt.setString(4, filter.getStartTime());
-				stmt.setString(5, filter.getEndTime());
+				stmt.setString(2, filter.getStartDateTimeAsString());
+				stmt.setString(3, filter.getEndDateTimeAsString());
+				stmt.setString(4, filter.getStartTimeDaily());
+				stmt.setString(5, filter.getEndTimeDaily());
 			}
 			
 		}
