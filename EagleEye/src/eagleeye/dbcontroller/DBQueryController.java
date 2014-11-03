@@ -179,7 +179,8 @@ public class DBQueryController {
 		System.out.println("StartTimeDaily = " + filter.getStartTimeDaily());
 		System.out.println("EndTimeDaily = " + filter.getEndTimeDaily());
 		System.out.println("Keyword = " + filter.getKeyword());
-		
+		System.out.println("Category = " + filter.getCategoryID());
+		System.out.println("Category Name = " + filter.getCategoryName());
 		
 		Connection conn = DBConnection.dbConnector();
 		

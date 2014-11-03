@@ -107,11 +107,11 @@ public class DBQueries {
 		if(checkBoxCombi.equals("100"))
 			query = query + " AND File.IsModified= 1";
 		if(checkBoxCombi.equals("011"))
-			query = query + " AND (File.IsModified = 0 AND File.IsRecovered = 0) OR File.IsRecovered = 1";
+			query = query + " AND ((File.IsModified = 0 AND File.IsRecovered = 0) OR File.IsRecovered = 1)";
 		if(checkBoxCombi.equals("110"))
-			query = query + " AND (File.IsModified = 0 AND File.IsRecovered = 0) OR File.IsModified = 1";
+			query = query + " AND ((File.IsModified = 0 AND File.IsRecovered = 0) OR File.IsModified = 1)";
 		if(checkBoxCombi.equals("101"))
-			query = query + " AND File.IsModified = 1 OR File.IsRecovered = 1";
+			query = query + " AND (File.IsModified = 1 OR File.IsRecovered = 1)";
 		
 		System.out.println("Query is " + query);
 		
