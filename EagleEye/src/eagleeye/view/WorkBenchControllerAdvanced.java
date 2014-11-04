@@ -802,7 +802,7 @@ public class WorkBenchControllerAdvanced {
 			
 		}
 		//refreshDevice();
-		refreshDeviceList();
+
 	}
 	
 	// Refresh Device in Menu List
