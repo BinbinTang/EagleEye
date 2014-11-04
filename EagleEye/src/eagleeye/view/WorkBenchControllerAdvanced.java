@@ -1032,7 +1032,6 @@ public class WorkBenchControllerAdvanced implements MapComponentInitializedListe
 			
 		}
 		//refreshDevice();
-
 		//refreshDeviceList();
 	}
 	
