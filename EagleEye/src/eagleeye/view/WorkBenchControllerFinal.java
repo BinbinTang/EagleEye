@@ -67,6 +67,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
@@ -216,7 +217,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	
 
 	// Menubar
-	ArrayList<String> functionList = new ArrayList(Arrays.asList("Directory", "Time Line","Location History","Contact History"));
+	ArrayList<String> functionList = new ArrayList(Arrays.asList("Folder Structure", "Time Line","Location History","Contact History"));
 	@FXML
 	private MenuItem newClick;
 	@FXML
@@ -280,13 +281,14 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 
 			// create function button
 			Button newBtn = new Button(functionName);
+			newBtn.setTooltip(new Tooltip(functionName));
 			newBtn.setPrefWidth(80);
 			newBtn.setPrefHeight(30);
 			
 			functionHBox.getChildren().add(newBtn);
 			
 			System.out.println(functionName);
-			if(functionName.equals("Directory")){
+			if(functionName.equals("Folder Structure")){
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent event) {addDirectoryView();}
