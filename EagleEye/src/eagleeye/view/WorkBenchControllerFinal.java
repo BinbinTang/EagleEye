@@ -1324,14 +1324,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	@FXML 
 	public void handleFilter() {
 		
-		int selectedTab;
-		selectedTab = leftTabPane.getSelectionModel().getSelectedIndex();
-
 		this.filter = new Filter();
-		
-		if(selectedTab == CATEGORY_TAB_INDEX) {
-			filter.modifyCategoryName(selectedCategory);
-		}
 		
 		if(!startDatePicker.getValue().equals(null))
 			filter.modifyStartDate(startDatePicker.getValue());
