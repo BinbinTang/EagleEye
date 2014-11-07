@@ -136,7 +136,7 @@ public class PluginManager {
 					}
 					
 					DBInsertTransaction transaction = new DBInsertTransaction();
-					transaction.insertNewDeviceData(new Device("Test Device2", "100GB", "Li"), fs);
+					//transaction.insertNewDeviceData(new Device("Test Device2", "100GB", "Li"), fs);
 					
 					break;
 				}

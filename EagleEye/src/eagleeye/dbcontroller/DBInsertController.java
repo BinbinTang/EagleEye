@@ -69,10 +69,12 @@ public class DBInsertController {
 		stmt.clearBatch();
 	}
 	
-	public void updateDirectoryRoute(PreparedStatement stmt) throws Exception {
+	public void updateDirectoryRoute(PreparedStatement stmt, int markerLower, int markerUpper) throws Exception {
 
 		stmt.setInt(1, deviceID);
-		stmt.setInt(2, deviceID);
+		stmt.setInt(2, markerLower);
+		stmt.setInt(3, markerUpper);
+		stmt.setInt(4, deviceID);
 		stmt.execute();
 		
 	}
@@ -120,11 +122,28 @@ public class DBInsertController {
 		stmt.execute();
 	}
 
-	public void updateFileDirectoryID(PreparedStatement stmt) throws Exception {
+	public void updateFileDirectoryID(PreparedStatement stmt, int markerLower, int markerUpper) throws Exception {
 
 		stmt.setInt(1, deviceID);
-		stmt.setInt(2, deviceID);
+		stmt.setInt(2, markerLower);
+		stmt.setInt(3, markerUpper);
+		stmt.setInt(4, deviceID);
+		stmt.setInt(5, markerLower);
+		stmt.setInt(6, markerUpper);
 		stmt.execute();
+	}
+	
+	public int getDirectoryAutoIncrementMarker(PreparedStatement stmt) throws Exception {
+		
+		ResultSet resultKey = stmt.executeQuery();
+		int marker = 0;
+		
+		while(resultKey.next()){
+				
+			marker = resultKey.getInt(1);					
+		}
+				
+		return marker;
 	}
 
 	

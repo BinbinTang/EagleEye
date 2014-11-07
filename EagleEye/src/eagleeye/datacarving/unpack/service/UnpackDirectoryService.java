@@ -11,7 +11,7 @@ import eagleeye.datacarving.unpack.YAFFS2ImageUnpacker;
 import eagleeye.entities.FileEntity;
 import eagleeye.filesystem.format.FormatDescription;
 
-public class UnpackDirectoryService extends Service<ArrayList<FileEntity>>
+public class UnpackDirectoryService extends Service<ArrayList<ArrayList<FileEntity>>>
 {
 	private ArrayList<FormatDescription> formatDescriptions;
 
@@ -33,12 +33,12 @@ public class UnpackDirectoryService extends Service<ArrayList<FileEntity>>
 	}
 	
 	@Override
-	protected Task<ArrayList<FileEntity>> createTask()
+	protected Task<ArrayList<ArrayList<FileEntity>>> createTask()
 	{
-		return new Task<ArrayList<FileEntity>>()
+		return new Task<ArrayList<ArrayList<FileEntity>>>()
 		{
 			@Override
-			protected ArrayList<FileEntity> call() throws Exception
+			protected ArrayList<ArrayList<FileEntity>> call() throws Exception
 			{
 				try
 				{
@@ -65,7 +65,7 @@ public class UnpackDirectoryService extends Service<ArrayList<FileEntity>>
 		}
     }
 	
-	private ArrayList<FileEntity> unpackDirectory() throws Exception
+	private ArrayList<ArrayList<FileEntity>> unpackDirectory() throws Exception
 	{
 		/*
 		 * STEP 03 - DATA CARVING BASED ON DATA FROM FILE SYSTEM LAYER, CARVE OUT DATA FROM FILE
@@ -78,7 +78,7 @@ public class UnpackDirectoryService extends Service<ArrayList<FileEntity>>
 		diskImageUnpackerManager.load(new YAFFS2ImageUnpacker());
 		diskImageUnpackerManager.load(new FAT32ImageUnpacker());
 
-		ArrayList<FileEntity> fileList = new ArrayList<FileEntity>();
+		ArrayList<ArrayList<FileEntity>> fileList = new ArrayList<ArrayList<FileEntity>>();
 		
 		if (formatDescriptions.size() > 0)
 		{
@@ -102,8 +102,6 @@ public class UnpackDirectoryService extends Service<ArrayList<FileEntity>>
 				}
 			}
 			
-			ArrayList<ArrayList<FileEntity>> newFileList = new ArrayList<ArrayList<FileEntity>>();
-			
 			for (FormatDescription formatDescription : formatDescriptions)
 			{
 				if (formatDescription.getOperatingSystem() != null)
@@ -115,7 +113,7 @@ public class UnpackDirectoryService extends Service<ArrayList<FileEntity>>
 				
 				if(currentFileList != null)
 				{
-					newFileList.add(currentFileList);
+					fileList.add(currentFileList);
 				}
 			}
 		}

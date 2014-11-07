@@ -34,7 +34,8 @@ public class DBInsertQueries {
 	
 	public String updateDirectoryRoute(){
 		
-		String script = "UPDATE Directory Set ParentDirectoryID = (SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = Directory.ParentObjectID AND e.DeviceID = Directory.DeviceID AND e.DeviceID = ?) WHERE DeviceID = ?";
+		String script = "UPDATE Directory Set ParentDirectoryID = (SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = Directory.ParentObjectID AND e.DeviceID = Directory.DeviceID AND e.DeviceID = ? AND ((e.DirectoryID > ? AND e.DirectoryID <= ?) OR e.DirectoryName ='root')) WHERE DeviceID = ? "
+						+ "AND Directory.ParentDirectoryID IS NULL";
 		
 		return script;
 	}
@@ -66,12 +67,20 @@ public class DBInsertQueries {
 	public String updateFileDirectoryID() {
 		
 		String script = "UPDATE File SET DirectoryID = " +
-						"(SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = File.ParentObjectID AND e.DeviceID = ?) " +
+						"(SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = File.ParentObjectID AND e.DeviceID = ? AND e.DirectoryID > ? AND e.DirectoryID <= ?) " +
 						"WHERE FileID IN " +
-						"(SELECT FileID FROM Directory e WHERE e.ObjectID = File.ParentObjectID AND e.DeviceID = ?)";
+						"(SELECT FileID FROM Directory e WHERE e.ObjectID = File.ParentObjectID AND e.DeviceID = ? AND e.DirectoryID > ? AND e.DirectoryID <= ?) AND "
+						+"File.DirectoryID IS NULL";
 		
 		return script;
 	}
 	
+	public String getDirectoryAutoIncrementMarker() {
+		
+		String script = "SELECT seq FROM sqlite_sequence WHERE name= 'Directory'";
+		
+		return script;
+		
+	}
 }
 

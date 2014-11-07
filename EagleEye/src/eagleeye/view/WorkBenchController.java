@@ -845,7 +845,8 @@ public class WorkBenchController {
 			public void handle(WorkerStateEvent e)
 			{
 				@SuppressWarnings("unchecked")
-				ArrayList<FileEntity> entityList = (ArrayList<FileEntity>)(e.getSource().getValue());
+				ArrayList<ArrayList<FileEntity>> entityList = (ArrayList<ArrayList<FileEntity>>)(e.getSource().getValue());
+				
 				
 				if(entityList.size() > 0)
 				{
