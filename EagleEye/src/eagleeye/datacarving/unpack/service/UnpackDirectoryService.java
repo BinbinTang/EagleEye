@@ -22,9 +22,9 @@ public class UnpackDirectoryService extends Service<ArrayList<FileEntity>>
 		return formatDescriptions;
 	}
 
-	public void setFormatDescriptions(ArrayList<FormatDescription> formatDescriptions2)
+	public void setFormatDescriptions(ArrayList<FormatDescription> formatDescriptions)
 	{
-		this.formatDescriptions = formatDescriptions2;
+		this.formatDescriptions = formatDescriptions;
 	}
 
 	public UnpackDirectoryService(ArrayList<FormatDescription> formatDescriptions)
@@ -102,6 +102,8 @@ public class UnpackDirectoryService extends Service<ArrayList<FileEntity>>
 				}
 			}
 			
+			ArrayList<ArrayList<FileEntity>> newFileList = new ArrayList<ArrayList<FileEntity>>();
+			
 			for (FormatDescription formatDescription : formatDescriptions)
 			{
 				if (formatDescription.getOperatingSystem() != null)
@@ -109,21 +111,13 @@ public class UnpackDirectoryService extends Service<ArrayList<FileEntity>>
 					continue;
 				}
 				
-				ArrayList<FileEntity> newFileList = diskImageUnpackerManager.unpack(formatDescription);
+				ArrayList<FileEntity> currentFileList = diskImageUnpackerManager.unpack(formatDescription);
 				
-				if(newFileList != null)
+				if(currentFileList != null)
 				{
-					fileList.addAll(newFileList);
+					newFileList.add(currentFileList);
 				}
 			}
-			/*
-			if(fileList.size() > 0)
-			{
-				DBInsertTransaction transaction = new DBInsertTransaction();
-				transaction.insertNewDeviceData(new Device("Test Device 02", "100GB", "Dennis"), fileList);
-				
-				return transaction.getDeviceID();
-			}*/
 		}
 		
 		return fileList;
