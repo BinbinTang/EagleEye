@@ -265,6 +265,12 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 		// Initialize DB
 		dbController = new DBQueryController();
 		
+		// Check device ID
+		if(dbController.getDeviceID() == -1){
+			Label noDevice = new Label("No device has been chosen.");
+			MainResultPane.setContent(noDevice);
+		}
+		
 		// Add bonding to functions checked dynamically and functions visible
 		for(String functionName : functionList){
 			// create menuItem
@@ -314,7 +320,6 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 				}
 			});
 		}
-		
 
 		// Initialize for DatePicker
 		startDatePicker.setValue(startDate);
@@ -739,6 +744,11 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 		System.out.println("timeline clicked");
 	}
 	public void addDirectoryView(){
+		if(dbController.getDeviceID() == -1){
+			Label noDevice = new Label("No device has been chosen.");
+			MainResultPane.setContent(noDevice);
+		}
+		
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
 		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
@@ -809,6 +819,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 				}
 			}
 
+			/*
 			tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent mouseEvent) {
@@ -832,7 +843,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 					
 					if (mouseEvent.getClickCount() == 2) {
 						// Check if it is a file, and open
-						/*
+						
 						if (item.isLeaf()) {
 							String filePath = item.getValue();
 							item = item.getParent();
@@ -851,10 +862,11 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 								e.printStackTrace();
 							}
 						}
-						*/
+						
 					}
 				}
 			});
+			*/
 			//treeViewPane.getChildren().add(tree);
 		    MainResultPane.setContent(tree);
 		}
@@ -1018,6 +1030,10 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	// Refresh Case that Loaded in View
 	public void refreshCase(int deviceID){
 		//dbController = new DBQueryController();
+		if(functionHBox.getChildren().size() != 0){
+			Label noDevice = new Label("No function has been chosen.");
+			MainResultPane.setContent(noDevice);
+		}
 		dbController.setDeviceID(deviceID);
 		System.out.println("new device: " +deviceID);
 		ArrayList<Directory> TreeStructure = dbController
@@ -1048,6 +1064,11 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 				categoryViewPane.getChildren().add(btn);
 			}
 			
+		}
+		
+		if(functionHBox.getChildren().size() != 0){
+			Label noDevice = new Label("No function has been chosen.");
+			MainResultPane.setContent(noDevice);
 		}
 		//refreshDevice();
 		//refreshDeviceList();
