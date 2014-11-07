@@ -56,42 +56,8 @@
             </AnchorPane>
 				<AnchorPane GridPane.rowIndex="2">
 					<children>
-						<SplitPane blendMode="EXCLUSION" dividerPositions="0.19172932330827067, 0.49373433583959897" prefHeight="481.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+						<SplitPane blendMode="EXCLUSION" dividerPositions="0.7731829573934837" prefHeight="481.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<items>
-								<AnchorPane minWidth="120.0" prefWidth="150.0">
-									<children>
-														<TabPane fx:id="leftTabPane" prefHeight="458.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-															<tabs>
-																<Tab text="Tree">
-																	<content>
-																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-																			<children>
-																				<ScrollPane fitToHeight="true" fitToWidth="true" layoutY="33.0" prefHeight="450.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <content>
-                                                      <StackPane fx:id="treeViewPane" />
-                                                   </content>
-                                                </ScrollPane>
-																			</children>
-																		</AnchorPane>
-																	</content>
-																</Tab>
-																<Tab text="Category">
-																	<content>
-																		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="150.0">
-                                             <children>
-                                                <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="450.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <content>
-                                                      <VBox fx:id="categoryViewPane" />
-                                                   </content>
-                                                </ScrollPane>
-                                             </children>
-																		</AnchorPane>
-																	</content>
-																</Tab>
-															</tabs>
-														</TabPane>
-									</children>
-								</AnchorPane>
                         <AnchorPane prefWidth="400.0">
                            <children>
 										<ScrollPane fx:id="MainResultPane" fitToHeight="true" fitToWidth="true" prefHeight="478.0" prefWidth="489.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -334,6 +300,11 @@
                                                 </AnchorPane>
                                           </content>
                                         </TitledPane>
+                                          <TitledPane animated="false" text="Category">
+                                             <content>
+                                                <VBox fx:id="categoryViewPane" />
+                                             </content>
+                                          </TitledPane>
                                       </panes>
                                     </Accordion>
                                  </content>
@@ -351,8 +322,17 @@
                      <font>
                         <Font name="Segoe UI" size="12.0" />
                      </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
                   </Label>
-               </children></AnchorPane>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></AnchorPane>
          </children>
       </GridPane>
 	</children>

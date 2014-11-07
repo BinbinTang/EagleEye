@@ -143,8 +143,6 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	ArrayList<String> categoryList = new ArrayList(Arrays.asList("Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
 
 	@FXML
-	private StackPane treeViewPane;
-	@FXML
 	private VBox categoryViewPane;
 	
 	// result pane view
@@ -218,7 +216,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	
 
 	// Menubar
-	ArrayList<String> functionList = new ArrayList(Arrays.asList("Time Line","Location History","Contact History"));
+	ArrayList<String> functionList = new ArrayList(Arrays.asList("Directory", "Time Line","Location History","Contact History"));
 	@FXML
 	private MenuItem newClick;
 	@FXML
@@ -264,6 +262,9 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	@FXML
 	private void initialize() {
 		
+		// Initialize DB
+		dbController = new DBQueryController();
+		
 		// Add bonding to functions checked dynamically and functions visible
 		for(String functionName : functionList){
 			// create menuItem
@@ -279,6 +280,12 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 			functionHBox.getChildren().add(newBtn);
 			
 			System.out.println(functionName);
+			if(functionName.equals("Directory")){
+				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
+					@Override
+					public void handle(MouseEvent event) {addDirectoryView();}
+				});
+			}
 			if(functionName.equals("Time Line")){
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
@@ -731,6 +738,128 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	public void dosomething(){
 		System.out.println("timeline clicked");
 	}
+	public void addDirectoryView(){
+		ArrayList<Directory> TreeStructure = dbController
+				.getAllDirectoriesAndFiles();
+		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
+
+		// Check if DB empty
+		if (TreeStructure.size() != 0) {
+			// TreeView
+			rootNode = new TreeItem<String>(TreeStructure.get(0)
+					.getDirectoryName(), rootIcon);
+			ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
+					TreeStructure);
+			TreeView<String> tree = new TreeView<String>(rootNode);
+
+			// Force root node ID to be 0
+			//TreeStructure.get(0).modifyDirectoryID(0);
+
+			int rootDirID = TreeStructure.get(0).getDirectoryID();
+			// Whenever a directory found its parent, we remove it from copied
+			// list
+			
+			while (CopyTreeStructure.size() > 0) {
+				int startSize = CopyTreeStructure.size();
+				for (Directory dir : CopyTreeStructure) {
+					TreeItem<String> targetParent = null;
+					//System.out.println("Current remaining Size: "
+					//		+ CopyTreeStructure.size());
+					// check if it is root
+					if (dir.getDirectoryID() == rootDirID) {
+						casePath = dir.getDirectoryName();
+						this.addFiles(dir, rootNode);
+						CopyTreeStructure.remove(dir);
+						// System.out.println("root met, removed");
+						break;
+					}
+
+					TreeItem<String> newItem = new TreeItem<String>(
+							dir.getDirectoryName());
+
+					Directory parent = findDir(TreeStructure,dir.getParentDirectory());
+
+					if (parent != null) {
+						targetParent = findItem(rootNode,parent.getDirectoryName());
+					} else {
+						//System.out.println("Cannot find parent" + dir.getParentDirectory());
+					}
+
+					if (targetParent != null) {
+						// System.out.println("parent found");
+						targetParent.getChildren().add(newItem);
+						this.addFiles(dir, newItem);
+						CopyTreeStructure.remove(dir);
+						break;
+					} else {
+						//System.out.println("cannot find parent");
+					}
+				}
+				int endSize = CopyTreeStructure.size();
+				// check if no change in size, then we print out remaining list
+				// and exit
+				if (startSize == endSize) {
+					System.out.println("Remaining Directories:");
+					for (Directory dir : CopyTreeStructure) {
+						System.out.println(dir.getDirectoryName()
+								+ " needed parent not found: "
+								+ dir.getParentDirectory());
+					}
+					break;
+				}
+			}
+
+			tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+
+					TreeItem<String> item = tree.getSelectionModel().getSelectedItem();
+					System.out.println("Selected Text : " + item.getValue());
+					
+					// Change Result pane view if a folder
+					if (!item.isLeaf()){
+						listItems.clear();
+						for(TreeItem<String> subFile : item.getChildren()){
+							if (subFile.isLeaf()){
+								listItems.add("File:" + subFile.getValue());
+							}else{
+								listItems.add("Folder: " + subFile.getValue());
+							}
+						}
+
+						displayResult(listItems, "tree");
+					}
+					
+					if (mouseEvent.getClickCount() == 2) {
+						// Check if it is a file, and open
+						/*
+						if (item.isLeaf()) {
+							String filePath = item.getValue();
+							item = item.getParent();
+							while (item instanceof TreeItem) {
+								filePath = item.getValue() + "/" + filePath;
+								item = item.getParent();
+							}
+							System.out.println("Selected File : " + filePath);
+							String location = Paths.get(".").toAbsolutePath()
+									.normalize().toString();
+							File currentFile = new File(location + filePath);
+							try {
+								Desktop.getDesktop().open(currentFile);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						*/
+					}
+				}
+			});
+			//treeViewPane.getChildren().add(tree);
+		    MainResultPane.setContent(tree);
+		}
+	}
+	
 	public void addTimelineView(){
 		
 		String testFile="testdata/monet.time";
@@ -888,7 +1017,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	
 	// Refresh Case that Loaded in View
 	public void refreshCase(int deviceID){
-		dbController = new DBQueryController();
+		//dbController = new DBQueryController();
 		dbController.setDeviceID(deviceID);
 		System.out.println("new device: " +deviceID);
 		ArrayList<Directory> TreeStructure = dbController
@@ -897,118 +1026,6 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 
 		// Check if DB empty
 		if (TreeStructure.size() != 0) {
-			// TreeView
-			rootNode = new TreeItem<String>(TreeStructure.get(0)
-					.getDirectoryName(), rootIcon);
-			ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
-					TreeStructure);
-			TreeView<String> tree = new TreeView<String>(rootNode);
-
-			// Force root node ID to be 0
-			//TreeStructure.get(0).modifyDirectoryID(0);
-
-			int rootDirID = TreeStructure.get(0).getDirectoryID();
-			// Whenever a directory found its parent, we remove it from copied
-			// list
-			
-			while (CopyTreeStructure.size() > 0) {
-				int startSize = CopyTreeStructure.size();
-				for (Directory dir : CopyTreeStructure) {
-					TreeItem<String> targetParent = null;
-					//System.out.println("Current remaining Size: "
-					//		+ CopyTreeStructure.size());
-					// check if it is root
-					if (dir.getDirectoryID() == rootDirID) {
-						casePath = dir.getDirectoryName();
-						this.addFiles(dir, rootNode);
-						CopyTreeStructure.remove(dir);
-						// System.out.println("root met, removed");
-						break;
-					}
-
-					TreeItem<String> newItem = new TreeItem<String>(
-							dir.getDirectoryName());
-
-					Directory parent = findDir(TreeStructure,dir.getParentDirectory());
-
-					if (parent != null) {
-						targetParent = findItem(rootNode,parent.getDirectoryName());
-					} else {
-						//System.out.println("Cannot find parent" + dir.getParentDirectory());
-					}
-
-					if (targetParent != null) {
-						// System.out.println("parent found");
-						targetParent.getChildren().add(newItem);
-						this.addFiles(dir, newItem);
-						CopyTreeStructure.remove(dir);
-						break;
-					} else {
-						//System.out.println("cannot find parent");
-					}
-				}
-				int endSize = CopyTreeStructure.size();
-				// check if no change in size, then we print out remaining list
-				// and exit
-				if (startSize == endSize) {
-					System.out.println("Remaining Directories:");
-					for (Directory dir : CopyTreeStructure) {
-						System.out.println(dir.getDirectoryName()
-								+ " needed parent not found: "
-								+ dir.getParentDirectory());
-					}
-					break;
-				}
-			}
-
-			tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouseEvent) {
-
-					TreeItem<String> item = tree.getSelectionModel().getSelectedItem();
-					System.out.println("Selected Text : " + item.getValue());
-					
-					// Change Result pane view if a folder
-					if (!item.isLeaf()){
-						listItems.clear();
-						for(TreeItem<String> subFile : item.getChildren()){
-							if (subFile.isLeaf()){
-								listItems.add("File:" + subFile.getValue());
-							}else{
-								listItems.add("Folder: " + subFile.getValue());
-							}
-						}
-
-						displayResult(listItems, "tree");
-					}
-					
-					if (mouseEvent.getClickCount() == 2) {
-						// Check if it is a file, and open
-						/*
-						if (item.isLeaf()) {
-							String filePath = item.getValue();
-							item = item.getParent();
-							while (item instanceof TreeItem) {
-								filePath = item.getValue() + "/" + filePath;
-								item = item.getParent();
-							}
-							System.out.println("Selected File : " + filePath);
-							String location = Paths.get(".").toAbsolutePath()
-									.normalize().toString();
-							File currentFile = new File(location + filePath);
-							try {
-								Desktop.getDesktop().open(currentFile);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-						*/
-					}
-				}
-			});
-			treeViewPane.getChildren().add(tree);
-
 			// Category View
 			categoryViewPane.setSpacing(5);
 			categoryViewPane.setPadding(new Insets(5,5,5,5));
@@ -1039,7 +1056,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	// Refresh Device in Menu List
 	public void refreshDeviceList(){
 		System.out.println("refreshDeviceList");
-		dbController = new DBQueryController();
+		//dbController = new DBQueryController();
 		ArrayList<Device> devices = dbController.getAllDevices();
 		openMenu.getItems().clear();
 		for (Device device : devices){
@@ -1062,8 +1079,8 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 			resultListView.setItems(resultList);
 			MainResultPane.setContent(resultListView);
 		}else if(type == "tree"){
-			resultListView.setItems(list);
-			MainResultPane.setContent(resultListView);
+			//resultListView.setItems(list);
+			//MainResultPane.setContent(resultListView);
 		}
 	}
 	
