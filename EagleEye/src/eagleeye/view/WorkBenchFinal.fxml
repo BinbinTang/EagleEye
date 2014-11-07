@@ -33,7 +33,7 @@
 												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Exit" />
 											</items>
 										</Menu>
-										<Menu fx:id="analysisMenu" mnemonicParsing="false" text="Analysis" />
+										<Menu fx:id="analysisMenu" mnemonicParsing="false" text="Tools" />
 										<Menu mnemonicParsing="false" text="Help">
 											<items>
 												<MenuItem mnemonicParsing="false" text="About" />
