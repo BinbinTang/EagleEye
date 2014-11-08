@@ -90,6 +90,7 @@ public class DateTimeGuesser {
 		//if (lastGoodFormat!=null)
 		//try { return lastGoodFormat.parse(s); }
 		//catch (ParseException e) {}	
+		System.out.println("time guess: "+s);
 		if (s==null || s.trim().length()==0)
 			return null;
 		for (DateTimeParser d: parsers)
@@ -97,6 +98,7 @@ public class DateTimeGuesser {
 			try
 			{
 				RoughTime date= d.parse(s);
+				System.out.println(date.toString());
 				lastGoodFormat=d;
 				return date;
 			}

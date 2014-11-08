@@ -3,16 +3,27 @@ package timeflow.app;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
+import timeflow.app.actions.CopySchemaAction;
+import timeflow.app.actions.NewDataAction;
 import timeflow.app.actions.QuitAction;
 import timeflow.app.ui.GlobalDisplayPanel;
 import timeflow.app.ui.LinkTabPane;
@@ -31,6 +42,10 @@ import timeflow.views.SummaryView;
 import timeflow.views.TableView;
 import timeflow.views.TimelineView;
 import timeflow.app.actions.QuitAction.*;
+import timeflow.data.db.ActDB;
+import timeflow.format.file.FileExtensionCatalog;
+import timeflow.format.file.Import;
+import timeflow.format.file.TimeflowFormat;
 
 public class testApp extends JFrame{
 	public TFModel model=new TFModel();
@@ -53,67 +68,29 @@ public class testApp extends JFrame{
 		setBounds(0,0,Math.min(d.width, 1200), Math.min(d.height, 900));
 		setTitle(Display.version());
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		/*final QuitAction quitAction=new QuitAction(this, model);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				quitAction.quit();
-			}
-			public void windowStateChanged(WindowEvent e) {
-				repaint();
-			}
-		});		
-		/*Image icon = Toolkit.getDefaultToolkit().getImage("images/icon.gif");
-		setIconImage(icon);
-
-		// read example directory
-		String[] ex=getVisibleFiles("settings/examples");
-		int n=ex.length;
-		examples=new String[n][2];
-		for (int i=0; i<n; i++)
-		{
-			String s=ex[i];
-			int dot=s.lastIndexOf('.');
-			if (dot>=0 && dot<s.length()-1);
-				s=s.substring(0,dot);
-			examples[i][0]=s;
-			examples[i][1]="settings/examples/"+ex[i];
-		}
-		templates=getVisibleFiles("settings/templates");
 		fileChooser=new JFileChooser(state.getCurrentFile());
-		*/
 		getContentPane().setLayout(new BorderLayout());	
-		/*
-		// left tab area, with vertical gray divider.
-		JPanel leftHolder=new JPanel();
-		getContentPane().add(leftHolder, BorderLayout.WEST);
-		
-		leftHolder.setLayout(new BorderLayout());
-		JPanel pad=new Pad(3,3);
-		pad.setBackground(Color.gray);
-		leftHolder.add(pad, BorderLayout.EAST);
-		
-		leftPanel=new LinkTabPane();//JTabbedPane();
-		leftHolder.add(leftPanel, BorderLayout.CENTER);
-		
-		JPanel configPanel=new JPanel();
-		configPanel.setLayout(new BorderLayout());		
-		filterMenu=new JMenu("Filters");
-		filterControlPanel=new FilterControlPanel(model, filterMenu);*/
-		final GlobalDisplayPanel displayPanel=new GlobalDisplayPanel(model, filterControlPanel);
-		/*configPanel.add(displayPanel, BorderLayout.NORTH);
-		
-		JPanel legend=new JPanel();
-		legend.setLayout(new BorderLayout());
-		configPanel.add(legend, BorderLayout.CENTER);	
-		legend.add(new SizeLegendPanel(model), BorderLayout.NORTH);
-		legend.add(new ColorLegendPanel(model), BorderLayout.CENTER);		
-		leftPanel.addTab(configPanel, "Display", true);
 
-		leftPanel.addTab(filterControlPanel, "Filter", true);
-		*/
-		// center tab area
+		final GlobalDisplayPanel displayPanel=new GlobalDisplayPanel(model, filterControlPanel);
 		
+		JMenuBar menubar=new JMenuBar();
+		setJMenuBar(menubar);
+		
+		JMenu fileMenu=new JMenu("File");
+		menubar.add(fileMenu);
+		
+		JMenuItem open=new JMenuItem("Open...");
+		fileMenu.add(open);
+		open.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				load(new TimeflowFormat(), false);
+			}});
+		fileMenu.addSeparator();
+		
+		
+		// center tab area
+
 		final LinkTabPane center=new LinkTabPane();
 		getContentPane().add(center, BorderLayout.CENTER);
 		
@@ -124,6 +101,8 @@ public class testApp extends JFrame{
 				displayPanel.showLocalControl(center.getCurrentName());
 			}
 		});		
+		
+
 		
 		final IntroView intro=new IntroView(model); // we refer to this a bit later.
 		final TimelineView timeline=new TimelineView(model);
@@ -143,12 +122,7 @@ public class testApp extends JFrame{
 			center.addTab(views[i], views[i].getName(), i<5);
 			displayPanel.addLocalControl(views[i].getName(), views[i].getControls());
 		}
-		/*
-		// start off with intro screen
-		center.setCurrentName(intro.getName());
-		displayPanel.showLocalControl(intro.getName());
-		*/
-		// but then, once data is loaded, switch directly to the timeline view.
+
 		model.addListener(new TFListener() {
 			@Override
 			public void note(TFEvent e) {
@@ -161,168 +135,148 @@ public class testApp extends JFrame{
 					}
 				}
 			}});
-/*
-		JMenuBar menubar=new JMenuBar();
-		setJMenuBar(menubar);
-		
-		JMenu fileMenu=new JMenu("File");
-		menubar.add(fileMenu);
-			
-		fileMenu.add(new NewDataAction(this));
-		fileMenu.add(new CopySchemaAction(this));
-		
-		JMenu templateMenu=new JMenu("New From Template");
-		fileMenu.add(templateMenu);
-		for (int i=0; i<templates.length; i++)
-		{
-			JMenuItem t=new JMenuItem(templates[i]);
-			final String fileName="settings/templates/"+templates[i];
-			templateMenu.add(t);
-			t.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					load(fileName, FileExtensionCatalog.get(fileName), true);
-				}});
-		}
-		
-		fileMenu.addSeparator();
-
-		
-		JMenuItem open=new JMenuItem("Open...");
-		fileMenu.add(open);
-		open.addActionListener(new ActionListener() {
+		this.addKeyListener(new KeyListener(){
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				load(new TimeflowFormat(), false);
-			}});
-		
-		
-		fileMenu.add(openRecent);
-		makeRecentFileMenu();		
-		fileMenu.addSeparator();		
-		fileMenu.add(new ImportFromPasteAction(this));
-		
-		JMenuItem impDel=new JMenuItem("Import CSV/TSV...");
-		fileMenu.add(impDel);
-		impDel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (checkSaveStatus())
-					importDelimited();
-			}});
-
-		fileMenu.addSeparator();
-		
-		fileMenu.add(save);
-		save.setAccelerator(KeyStroke.getKeyStroke('S',
-			    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		save.setEnabled(false);
-		save.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				save(model.getDbFile());
-				
-			}});
-		model.addListener(new TFListener() {
-			@Override
-			public void note(TFEvent e) {
-				save.setEnabled(!model.getReadOnly());
-			}});
-		
-		JMenuItem saveAs=new JMenuItem("Save As...");
-		fileMenu.add(saveAs);
-		saveAs.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				saveAs();
-			}});	
-		
-		fileMenu.addSeparator();
-		
-		JMenuItem exportTSV=new JMenuItem("Export TSV...");
-		fileMenu.add(exportTSV);
-		exportTSV.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				exportDelimited('\t');
-			}});			
-		JMenuItem exportCSV=new JMenuItem("Export CSV...");
-		fileMenu.add(exportCSV);
-		exportCSV.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				exportDelimited(',');
-			}});	
-		JMenuItem exportHTML=new JMenuItem("Export HTML...");
-		fileMenu.add(exportHTML);
-		exportHTML.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				exportHtml();
-			}});	
-		fileMenu.addSeparator();		
-		//fileMenu.add(quitAction);
-		
-		JMenu editMenu=new JMenu("Edit");
-		menubar.add(editMenu);
-		editMenu.add(new AddRecordAction(this));
-		editMenu.addSeparator();
-		editMenu.add(new DateFieldAction(this));
-		editMenu.add(new AddFieldAction(this));
-		editMenu.add(new RenameFieldAction(this));
-		editMenu.add(new DeleteFieldAction(this));
-		editMenu.add(new ReorderFieldsAction(this));
-		editMenu.addSeparator();
-		editMenu.add(new EditSourceAction(this));		
-		editMenu.addSeparator();		
-		editMenu.add(new DeleteSelectedAction(this));
-		editMenu.add(new DeleteUnselectedAction(this));
-
-		menubar.add(filterMenu);
-		model.addListener(filterMenuMaker);
-
-	
-		JMenu exampleMenu=new JMenu("Examples");
-		menubar.add(exampleMenu);
-		
-		for (int i=0; i<examples.length; i++)
-		{
-			JMenuItem example=new JMenuItem(examples[i][0]);
-			exampleMenu.add(example);
-			final String file=examples[i][1];
-			example.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					load(file, FileExtensionCatalog.get(file), true);
-				}});
-		}
-		
-		JMenu helpMenu=new JMenu("Help");
-		menubar.add(helpMenu);
-		
-		helpMenu.add(new WebDocAction(this));
-		
-		JMenuItem about=new JMenuItem("About TimeFlow");
-		helpMenu.add(about);
-		about.addActionListener(new ActionListener() {
+			public void keyTyped(KeyEvent e) {
+				 System.out.println(e.getKeyCode()+" key typed");
+				 if(e.getKeyCode()==KeyEvent.VK_O){
+					 System.out.println("Key Stroke O");
+				 }
+				 
+				 String testFile="testdata/monet.time";
+	    	     load(testFile, FileExtensionCatalog.get(testFile), false);
+			}
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				splash(true);
-			}});
-		
-		model.addListener(new TFListener() {
+			public void keyPressed(KeyEvent arg0) {
+				//System.out.println("key pressed");
+			}
 
 			@Override
-			public void note(TFEvent e) {
-				if (e.type==TFEvent.Type.DATABASE_CHANGE)
-				{
-					String name=model.getDbFile();
-					int n=Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'));
-					if (n>0)
-						name=name.substring(n+1);
-					setTitle(name);
-				}
-			}});*/
+			public void keyReleased(KeyEvent arg0) {
+				//System.out.println("key released");
+			}
+		});
 	}
+	public void noteFileUse(String file)
+	{
+		System.out.println("ok");
+		state.setCurrentFile(new File(file));
+		state.save();
+		//makeRecentFileMenu();
+		System.out.println("ok");
+	}
+	void load(Import importer, boolean readOnly)
+	{
+		if (!checkSaveStatus())
+			return;
+        try {
+    	    //int retval = fileChooser.showOpenDialog(this);
+    	    //if (retval == fileChooser.APPROVE_OPTION)
+    	    {
+    	    	String testFile="testdata/monet.time";
+    	    	load(testFile, importer, readOnly);
+    	    	//load(fileChooser.getSelectedFile().getAbsolutePath(), importer, readOnly);
+    	    	//noteFileUse(fileChooser.getSelectedFile().getAbsolutePath());
+     	    }
+        } catch (Exception e) {
+        	//showUserError("Couldn't read file.");
+            System.out.println(e);
+        }
+	}
+	void load(final String fileName, final Import importer, boolean readOnly)
+	{
+		System.out.println(fileName);
+		if (!checkSaveStatus())
+			return;
+		try
+		{
+			final File f=new File(fileName);
+			ActDB db=importer.importFile(f);	
+			model.setDB(db, fileName, readOnly, testApp.this);
+			if (!readOnly)
+				noteFileUse(fileName);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace(System.out);
+			//showUserError("Couldn't read file.");
+			model.noteError(this);
+		}
+	}
+	public boolean checkSaveStatus()
+	{
+		boolean needSave=model.isChangedSinceSave();
+		if (!needSave)
+			return true;
+
+		Object[] options=null;
+		if (model.isReadOnly())
+			options= new Object[] {"Save As", "Discard Changes", "Cancel"};
+		else
+			options= new Object[] {"Save", "Save As", "Discard Changes", "Cancel"};
+		int n = JOptionPane.showOptionDialog(
+				this, 
+		    "The current data set has unsaved changes that will be lost.\n"+
+		    "Would you like to save them before continuing?",
+		    "Save Before Closing?",
+		    JOptionPane.YES_NO_OPTION,
+		    JOptionPane.QUESTION_MESSAGE,
+		    null,
+		    options,
+		    model.isReadOnly() ? "Save As" : "Save");
+		Object result=options[n];
+		if ("Discard Changes".equals(result))
+			return true;
+		if ("Cancel".equals(result))
+			return false;
+		if ("Save".equals(result))
+		{
+			return save(model.getDbFile());
+		}
+		
+		// we are now at "save as..."
+		return saveAs();
+	}
+	public boolean save(String fileName)
+	{
+		try
+		{
+			FileWriter fw=new FileWriter(fileName);
+			BufferedWriter out=new BufferedWriter(fw);
+			new TimeflowFormat().export(model, out);
+			out.close();
+			fw.close();
+			noteFileUse(fileName);
+			if (!fileName.equals(model.getDbFile()))
+				model.setDbFile(fileName, false, this);
+			model.setChangedSinceSave(false);
+			model.setReadOnly(false);
+			save.setEnabled(true);
+			return true;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace(System.out);
+			//showUserError("Couldn't save file: "+e);
+			return false;
+		}
+	}
+	public boolean saveAs()
+	{
+		File current=fileChooser.getSelectedFile();
+		if (current!=null)
+			fileChooser.setSelectedFile(new File(current.getAbsolutePath()+" (copy)"));
+		int retval = fileChooser.showSaveDialog(this);
+	    if (retval == fileChooser.APPROVE_OPTION)
+	    {   	    	
+	    	String fileName=fileChooser.getSelectedFile().getAbsolutePath();
+	    	model.setReadOnly(false);
+	    	save.setEnabled(true);
+	    	return save(fileName);
+	    }
+	    else
+	    	return false;
+ 	}
+	
 }

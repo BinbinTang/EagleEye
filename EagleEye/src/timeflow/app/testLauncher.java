@@ -36,14 +36,14 @@ public class testLauncher {
 				{
 					e.printStackTrace(System.out);
 				}
-				t.splash.addMouseListener(new MouseAdapter() {
+				/*t.splash.addMouseListener(new MouseAdapter() {
 
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						t.splash.setVisible(false);
 					}}
 				);
-				//t.splash(false);
+				t.splash(false);*/
 				//t.splash.message=t.model.getDisplay().version();
 			}});
 		

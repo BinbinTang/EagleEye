@@ -102,17 +102,14 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	//timeline view attributes
 	public TFModel model=new TFModel();
 	public JFileChooser fileChooser;
-	
+	private  SwingNode timelineNode;
 	AboutWindow splash;
 	String[][] examples;
 	String[] templates;
 
 	AppState state=new AppState();
-	JMenu openRecent=new JMenu("Open Recent");
 	public JMenu filterMenu;
 	JMenuItem save=new JMenuItem("Save");
-	FilterControlPanel filterControlPanel;
-	LinkTabPane leftPanel;
 	
 	//map view attributes
 	GoogleMapView mapView;
@@ -262,7 +259,6 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 
 	@FXML
 	private void initialize() {
-		
 		// Initialize DB
 		dbController = new DBQueryController();
 		
@@ -287,7 +283,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 			
 			functionHBox.getChildren().add(newBtn);
 			
-			System.out.println(functionName);
+			//System.out.println(functionName);
 			if(functionName.equals("Folder Structure")){
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
@@ -295,9 +291,10 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 				});
 			}
 			if(functionName.equals("Time Line")){
+				initTimelineView();
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
-					public void handle(MouseEvent event) {addTimelineView();}
+					public void handle(MouseEvent event) {SwitchToTimelineView();}
 				});
 			}
 			if(functionName.equals("Location History")){
@@ -873,15 +870,9 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 		    MainResultPane.setContent(tree);
 		}
 	}
-	
-	public void addTimelineView(){
-		
-		String testFile="testdata/monet.time";
-		load(testFile, FileExtensionCatalog.get(testFile), false);
-		
-		final LinkTabPane center=new LinkTabPane();
-		//final IntroView intro=new IntroView(model); // we refer to this a bit later.
-		final TimelineView timeline=new TimelineView(model);
+	public void initTimelineView(){
+		LinkTabPane center=new LinkTabPane();
+		TimelineView timeline=new TimelineView(model);
 		AbstractView[] views={
 				timeline,
 				new CalendarView(model),
@@ -891,19 +882,18 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 				new DescriptionView(model),
 				new SummaryView(model),
 		};
-
 		for (int i=0; i<views.length; i++)
 		{
 			center.addTab(views[i], views[i].getName(), i<5);
-			//displayPanel.addLocalControl(views[i].getName(), views[i].getControls());
-		}
-		
-		SwingNode swingNode = new SwingNode();
-		swingNode.setContent(center);
-		
-		MainResultPane.setContent(swingNode);
-		//timeLineViewPane.getChildren().add(swingNode);
-		//resultListPane.setVisible(false);
+		}	
+		timelineNode = new SwingNode();
+		timelineNode.setContent(center);
+	}
+	
+	public void SwitchToTimelineView(){
+		String testFile="testdata/data.time";
+		load(testFile, FileExtensionCatalog.get(testFile), false);
+		MainResultPane.setContent(timelineNode);
 	}
 	
 	void load(final String fileName, final Import importer, boolean readOnly)
