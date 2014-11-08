@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import eagleeye.entities.Device;
 import eagleeye.view.NewDeviceDialogController;
-import eagleeye.view.WorkBenchControllerAdvanced;
 import eagleeye.view.WorkBenchControllerFinal;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

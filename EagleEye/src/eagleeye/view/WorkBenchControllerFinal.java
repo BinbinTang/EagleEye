@@ -9,7 +9,7 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-
+/*
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.GoogleMap;
@@ -17,23 +17,8 @@ import com.lynden.gmapsfx.javascript.object.LatLong;
 import com.lynden.gmapsfx.javascript.object.MapOptions;
 import com.lynden.gmapsfx.javascript.object.MapTypeIdEnum;
 import com.lynden.gmapsfx.javascript.object.Marker;
-import com.lynden.gmapsfx.javascript.object.MarkerOptions;
+import com.lynden.gmapsfx.javascript.object.MarkerOptions;*/
 
-import timeflow.app.AboutWindow;
-import timeflow.app.AppState;
-import timeflow.app.ui.LinkTabPane;
-import timeflow.app.ui.filter.FilterControlPanel;
-import timeflow.data.db.ActDB;
-import timeflow.format.file.FileExtensionCatalog;
-import timeflow.format.file.Import;
-import timeflow.model.TFModel;
-import timeflow.views.AbstractView;
-import timeflow.views.BarGraphView;
-import timeflow.views.CalendarView;
-import timeflow.views.DescriptionView;
-import timeflow.views.SummaryView;
-import timeflow.views.TableView;
-import timeflow.views.TimelineView;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -97,10 +82,11 @@ import eagleeye.entities.Filter;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
+import eagleeye.pluginmanager.*;
 
-public class WorkBenchControllerFinal implements MapComponentInitializedListener{
+public class WorkBenchControllerFinal {
 	//timeline view attributes
-	public TFModel model=new TFModel();
+	/*public TFModel model=new TFModel();
 	public JFileChooser fileChooser;
 	private  SwingNode timelineNode;
 	AboutWindow splash;
@@ -114,7 +100,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	//map view attributes
 	GoogleMapView mapView;
 	GoogleMap map;
-
+	*/
 	// DataBase
 	private DBQueryController dbController;
 	
@@ -214,7 +200,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	
 
 	// Menubar
-	ArrayList<String> functionList = new ArrayList(Arrays.asList("Folder Structure", "Time Line","Location History","Contact History"));
+	ArrayList<String> functionList;
 	@FXML
 	private MenuItem newClick;
 	@FXML
@@ -241,14 +227,16 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	@FXML
 	private TabPane leftTabPane;
 	
-	
+	//plugin manager
+	private PluginManager pm;
 	
 	
 	/**
 	 * The constructor.
 	 */
 	public WorkBenchControllerFinal() {
-		
+		functionList = new ArrayList(Arrays.asList("Folder Structure"));
+		pm = new PluginManager("PluginBinaries");
 		selectedCategory = EMPTY_STRING;
 		resultListView = new ListView();
 	}
@@ -259,6 +247,16 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 
 	@FXML
 	private void initialize() {
+		//add pluginsnames to functionList
+		List<String> plnames=pm.getGUIPluginNames();
+		System.out.println(plnames.size());
+		for(String s : plnames){
+			System.out.println("PLUG: "+ s);
+			functionList.add(s);
+			
+		}
+		
+		
 		// Initialize DB
 		dbController = new DBQueryController();
 		
@@ -290,24 +288,33 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 					public void handle(MouseEvent event) {addDirectoryView();}
 				});
 			}
-			if(functionName.equals("Time Line")){
+			/*else if(functionName.equals("Time Line")){
 				initTimelineView();
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent event) {SwitchToTimelineView();}
 				});
 			}
-			if(functionName.equals("Location History")){
+			else if(functionName.equals("Location History")){
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent event) {addGeoView();}
 				});
 			}
-			if(functionName.equals("Contact History")){
+			else if(functionName.equals("Contact History")){
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent event) {addContactHistoryView();}
 				});
+			}*/
+			else{
+				Plugin pl = pm.getPluginWithName(functionName);
+				if(pl!=null){
+					newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
+						@Override
+						public void handle(MouseEvent event) {addPluginView(pl);}	
+					});
+				}
 			}
 			
 			// set binding dynamically
@@ -739,9 +746,14 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 	 *Visualization methods 
 	 * 
 	 */
-	public void dosomething(){
-		System.out.println("timeline clicked");
+	
+	public void addPluginView(Plugin pl){
+		Object plview = pl.getResult();
+		//System.out.println(plview.getClass().getName());
+		
+		MainResultPane.setContent((Node)plview);
 	}
+	
 	public void addDirectoryView(){
 		if(dbController.getDeviceID() == -1){
 			Label noDevice = new Label("No device has been chosen.");
@@ -870,6 +882,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 		    MainResultPane.setContent(tree);
 		}
 	}
+	/*
 	public void initTimelineView(){
 		LinkTabPane center=new LinkTabPane();
 		TimelineView timeline=new TimelineView(model);
@@ -961,7 +974,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
 
 	    map.addMarker(marker);
 	}
-	
+
 	public void addContactHistoryView(){
 		NumberAxis xAxis = new NumberAxis(1, 31, 1);
         NumberAxis yAxis = new NumberAxis();
@@ -1001,7 +1014,7 @@ public class WorkBenchControllerFinal implements MapComponentInitializedListener
         ac.setTitle("Contact History");
 	    MainResultPane.setContent(ac);
 	}
-	
+	*/
 	
 	/*
 	 * Methods of workbench

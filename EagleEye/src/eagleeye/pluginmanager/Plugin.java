@@ -3,20 +3,23 @@ package eagleeye.pluginmanager;
 import java.util.List;
 
 public interface Plugin {
+	public enum Type{
+		GUI_VIEW,
+		GUI_FILTER,
+		ANALYZER,
+		EXTRACTOR,
+	}
 	
-	public String pluginName();
+	public String getName();
 	
-	public String pluginFunction();
+	public Type getType();
 	
 	//for host application to pass parameters to plugin
-	public int passParam (List param);
+	public int setParameter (List param);
 	
-	//For host application to retrieve plugin work result
+	//execute plugin and get result
 	public Object getResult();
-	
-	//execute plugin
-	//public void run();
-	
+
 	//Signals that previous call to the plugin was not successful
 	//check before calling plugin
 	public boolean hasError();
