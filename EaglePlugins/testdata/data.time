@@ -1,0 +1,31 @@
+#TIMEFLOW	format version	1
+#TIMEFLOW	source	EagleEye Developers
+#TIMEFLOW	description	"This is experimental data format for Forensic Suite timeline.
+"
+#TIMEFLOW	field	Title	Text
+#TIMEFLOW	field	Types	List
+#TIMEFLOW	field	Start	Date/Time
+#TIMEFLOW	field	End	Date/Time
+#TIMEFLOW	field	Description	Text
+#TIMEFLOW	end-metadata
+#TIMEFLOW	alias	TIMEFLOW_LABEL	Title
+#TIMEFLOW	alias	TIMEFLOW_TRACK	Types
+#TIMEFLOW	alias	TIMEFLOW_START	Start
+#TIMEFLOW	alias	TIMEFLOW_END	End
+#TIMEFLOW	====== End of Header. Data below is in tab-delimited format. =====
+Title	Types	Start	End	Description
+Facebook Launched	Apps	1/1/2010 11:00:00		Facebook Launched
+To John	Calls	1/1/2010 12:00:00	1/1/2010 12:20:00	John 81212111
+To John	Calls	1/2/2010 12:00:00	1/2/2010 12:20:00	John 81212111
+From John	Messages	2/5/2010 19:00:00		"Meet tmr 7pm at kent ridge mrt"
+To John	Messages	2/5/2010 19:00:00		"OK"
+From John	Messages	2/6/2010 19:00:00		"Where are u?"
+Whatsapp Launched	Apps	2/5/2010 17:00:00		Whatsapp Launched
+To John	Messages	2/5/2010 19:00:00		"might be 10 min late, traffic jam"
+From John	Calls	1/3/2011 12:00:00	1/3/2011 12:20:00	John 81212111
+From George	Calls	1/5/2011 18:30:00	1/5/2011 18:05:00	George 91231123
+To Bill	Calls	1/5/2011 19:00:00	1/5/2011 20:05:00	Bill 91222113
+From Bill (Missed)	Calls	11/11/2011 19:00:00		Bill 91222113
+To John	Messages	2/5/2011 19:00:00		"where are u?"
+From Bill (Missed)	Calls	11/11/2011 19:01:00		Bill 91222113
+Facebook Launched	Apps	1/1/2012 17:00:00		Facebook Launched
