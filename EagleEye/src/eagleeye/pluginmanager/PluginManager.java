@@ -40,37 +40,21 @@ public class PluginManager {
 		}
 		return null;
 	}
-	public void getPlugins() {
-		File dir = new File(System.getProperty("user.dir") + File.separator + pluginsDir);
-		ClassLoader cl = new PluginClassLoader(dir,Plugin.class.getPackage().getName());
-		if (dir.exists() && dir.isDirectory()) {
-			// we'll only load classes directly in this directory -
-			// no subdirectories, and no classes in packages are recognized
-			String[] files = dir.list();
-			for (int i=0; i<files.length; i++) {
-				try {
-					// only consider files ending in ".class"
-					//TODO: load .jar file?
-					if (! files[i].endsWith(".class"))
-						continue;
-					System.out.println("find Class in \""+dir.getName()+"\": "+files[i]);
-					Class c = cl.loadClass(files[i].substring(0, files[i].indexOf(".")));
-					Class[] intf = c.getInterfaces();
-					for (int j=0; j<intf.length; j++) {
-						if (intf[j].getName().equals(Plugin.class.getName())) {
-							// the following line assumes that PluginFunction has a no-argument constructor
-							Plugin pf = (Plugin) c.newInstance();
-							plugins.add(pf);	
-							continue;
-						}
-					}
-				} catch (Exception ex) {
-					System.err.println(ex);
-					System.err.println("File " + files[i] + " does not contain a valid Plugin class.");
-				}
+	public List getPlugins(){
+		return plugins;
+	}
+	public List<String> getGUIPluginNames(){
+		List<String> ls = new ArrayList<String>();
+		for(Object o: plugins){
+			Plugin pl = (Plugin) o;
+			if(pl.getType()==Plugin.Type.GUI_VIEW){
+				System.out.println(pl.getName());
+				ls.add(pl.getName());
 			}
 		}
+		return ls;
 	}
+
 	public void loadJar(String pathToJar) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException{
 		JarFile jarFile = new JarFile(pathToJar);
 		Enumeration e = jarFile.entries();
@@ -95,7 +79,7 @@ public class PluginManager {
 					// the following line assumes that PluginFunction has a no-argument constructor
 					Plugin pf = (Plugin) c.newInstance();
 					plugins.add(pf);
-					System.out.println("added plugin: "+pf.getName());
+					System.out.println("added to plugin list: "+pf.getName());
 				}
 			}
 		}
@@ -119,33 +103,7 @@ public class PluginManager {
 			}
 		}
 	}
-	public int loadView(){
-		System.out.println("==============================");
-		System.out.println("running GUI plugin....");
-		
-		for(Object o: plugins){
-			Plugin pl = (Plugin) o;
-			if(pl.getType()==Plugin.Type.GUI_VIEW){
-				System.out.println(pl.getName());
-				pl.getResult();
-			}
-		}
-		
-		System.out.println("finished");
-		System.out.println("==============================");
-		return 0;
-	}
-	public List<String> getGUIPluginNames(){
-		List<String> ls = new ArrayList<String>();
-		for(Object o: plugins){
-			Plugin pl = (Plugin) o;
-			if(pl.getType()==Plugin.Type.GUI_VIEW){
-				System.out.println(pl.getName());
-				ls.add(pl.getName());
-			}
-		}
-		return ls;
-	}
+	/*
 	public int extractFiles(String diskimgPath, String outputPath){
 		ArrayList<EagleFile> result = new ArrayList<EagleFile>();
 		
@@ -211,5 +169,5 @@ public class PluginManager {
 		System.out.println("==============================");
 		
 		return 0;
-	}
+	}*/
 }

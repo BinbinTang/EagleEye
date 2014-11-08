@@ -23,7 +23,7 @@ public class HostProgram {
 		PluginManager demo = new PluginManager(pluginFolder);
 		demo.searchPlugins();
 		//demo.extractFiles(diskimgPath,outputPath);
-		demo.loadView();
+		//demo.loadView();
 	}
 
 }

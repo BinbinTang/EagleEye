@@ -6,19 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JFileChooser;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-/*
-import com.lynden.gmapsfx.GoogleMapView;
-import com.lynden.gmapsfx.MapComponentInitializedListener;
-import com.lynden.gmapsfx.javascript.object.GoogleMap;
-import com.lynden.gmapsfx.javascript.object.LatLong;
-import com.lynden.gmapsfx.javascript.object.MapOptions;
-import com.lynden.gmapsfx.javascript.object.MapTypeIdEnum;
-import com.lynden.gmapsfx.javascript.object.Marker;
-import com.lynden.gmapsfx.javascript.object.MarkerOptions;*/
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,7 +14,6 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Worker.State;
 import javafx.concurrent.WorkerStateEvent;
-import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -35,10 +21,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CheckMenuItem;
@@ -68,8 +50,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import eagleeye.analysis.LocationAnalyzer;
-import eagleeye.api.entities.EagleLocation;
 import eagleeye.controller.MainAppFinal;
 import eagleeye.datacarving.unpack.service.FileSystemFormatDescriptorService;
 import eagleeye.datacarving.unpack.service.UnpackDirectoryService;
@@ -85,22 +65,7 @@ import eagleeye.model.UIRequestHandler;
 import eagleeye.pluginmanager.*;
 
 public class WorkBenchControllerFinal {
-	//timeline view attributes
-	/*public TFModel model=new TFModel();
-	public JFileChooser fileChooser;
-	private  SwingNode timelineNode;
-	AboutWindow splash;
-	String[][] examples;
-	String[] templates;
 
-	AppState state=new AppState();
-	public JMenu filterMenu;
-	JMenuItem save=new JMenuItem("Save");
-	
-	//map view attributes
-	GoogleMapView mapView;
-	GoogleMap map;
-	*/
 	// DataBase
 	private DBQueryController dbController;
 	
@@ -235,7 +200,7 @@ public class WorkBenchControllerFinal {
 	 * The constructor.
 	 */
 	public WorkBenchControllerFinal() {
-		functionList = new ArrayList(Arrays.asList("Folder Structure"));
+		functionList = new ArrayList(Arrays.asList("Tree View"));
 		pm = new PluginManager("PluginBinaries");
 		selectedCategory = EMPTY_STRING;
 		resultListView = new ListView();
@@ -253,7 +218,6 @@ public class WorkBenchControllerFinal {
 		for(String s : plnames){
 			System.out.println("PLUG: "+ s);
 			functionList.add(s);
-			
 		}
 		
 		
@@ -282,31 +246,13 @@ public class WorkBenchControllerFinal {
 			functionHBox.getChildren().add(newBtn);
 			
 			//System.out.println(functionName);
-			if(functionName.equals("Folder Structure")){
+			if(functionName.equals("Tree View")){
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent event) {addDirectoryView();}
 				});
 			}
-			/*else if(functionName.equals("Time Line")){
-				initTimelineView();
-				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
-					@Override
-					public void handle(MouseEvent event) {SwitchToTimelineView();}
-				});
-			}
-			else if(functionName.equals("Location History")){
-				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
-					@Override
-					public void handle(MouseEvent event) {addGeoView();}
-				});
-			}
-			else if(functionName.equals("Contact History")){
-				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
-					@Override
-					public void handle(MouseEvent event) {addContactHistoryView();}
-				});
-			}*/
+
 			else{
 				Plugin pl = pm.getPluginWithName(functionName);
 				if(pl!=null){
@@ -882,139 +828,7 @@ public class WorkBenchControllerFinal {
 		    MainResultPane.setContent(tree);
 		}
 	}
-	/*
-	public void initTimelineView(){
-		LinkTabPane center=new LinkTabPane();
-		TimelineView timeline=new TimelineView(model);
-		AbstractView[] views={
-				timeline,
-				new CalendarView(model),
-				new timeflow.views.ListView(model),
-				new TableView(model),
-				new BarGraphView(model),
-				new DescriptionView(model),
-				new SummaryView(model),
-		};
-		for (int i=0; i<views.length; i++)
-		{
-			center.addTab(views[i], views[i].getName(), i<5);
-		}	
-		timelineNode = new SwingNode();
-		timelineNode.setContent(center);
-	}
-	
-	public void SwitchToTimelineView(){
-		String testFile="testdata/data.time";
-		load(testFile, FileExtensionCatalog.get(testFile), false);
-		MainResultPane.setContent(timelineNode);
-	}
-	
-	void load(final String fileName, final Import importer, boolean readOnly)
-	{
-		try
-		{
-			final File f=new File(fileName);
-			ActDB db=importer.importFile(f);	
-			model.setDB(db, fileName, readOnly, this);
-			if (!readOnly)
-				noteFileUse(fileName);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace(System.out);
-			//showUserError("Couldn't read file.");
-			model.noteError(this);
-		}
-	}
-	public void noteFileUse(String file)
-	{
-		state.setCurrentFile(new File(file));
-		state.save();
-	}
-	
-	public void addGeoView(){
-		mapView = new GoogleMapView();
-	    mapView.addMapInializedListener(this);
-	    MainResultPane.setContent(mapView);
-	}
-	
-	@Override
-	public void mapInitialized() {
-		//Set the initial properties of the map.
-	    MapOptions mapOptions = new MapOptions();
 
-	    mapOptions.center(new LatLong(1.352083, 103.819836))
-	            .mapType(MapTypeIdEnum.ROADMAP)
-	            .overviewMapControl(false)
-	            .panControl(false)
-	            .rotateControl(false)
-	            .scaleControl(false)
-	            .streetViewControl(false)
-	            .zoomControl(false)
-	            .zoom(12);
-
-	    map = mapView.createMap(mapOptions);
-	  //Add markers to the map
-	    LocationAnalyzer gla = new LocationAnalyzer();
-	    List<EagleLocation> locs = gla.getLocations();
-	    for(int i=0; i<locs.size();i++){
-	    	//System.out.println(locs.get(i).getLatitude()+","+locs.get(i).getLongitude());
-	    	markLocations(locs.get(i).getLatitude(),locs.get(i).getLongitude(),locs.get(i).getDescription());
-	    }
-		
-	}
-	public void markLocations(double lat, double longit, String description){
-		MarkerOptions markerOptions = new MarkerOptions();
-		
-	    markerOptions.position( new LatLong(lat, longit) )
-	                .visible(Boolean.TRUE)
-	                .title(description);
-
-	    Marker marker = new Marker( markerOptions );
-
-	    map.addMarker(marker);
-	}
-
-	public void addContactHistoryView(){
-		NumberAxis xAxis = new NumberAxis(1, 31, 1);
-        NumberAxis yAxis = new NumberAxis();
-		AreaChart<Number,Number> ac = 
-            new AreaChart<Number,Number>(xAxis,yAxis);
-        ac.setTitle("Temperature Monitoring (in Degrees C)");
- 
-        XYChart.Series seriesApril= new XYChart.Series();
-        seriesApril.setName("April");
-        seriesApril.getData().add(new XYChart.Data(1, 4));
-        seriesApril.getData().add(new XYChart.Data(3, 10));
-        seriesApril.getData().add(new XYChart.Data(6, 15));
-        seriesApril.getData().add(new XYChart.Data(9, 8));
-        seriesApril.getData().add(new XYChart.Data(12, 5));
-        seriesApril.getData().add(new XYChart.Data(15, 18));
-        seriesApril.getData().add(new XYChart.Data(18, 15));
-        seriesApril.getData().add(new XYChart.Data(21, 13));
-        seriesApril.getData().add(new XYChart.Data(24, 19));
-        seriesApril.getData().add(new XYChart.Data(27, 21));
-        seriesApril.getData().add(new XYChart.Data(30, 21));
-        
-        XYChart.Series seriesMay = new XYChart.Series();
-        seriesMay.setName("May");
-        seriesMay.getData().add(new XYChart.Data(1, 20));
-        seriesMay.getData().add(new XYChart.Data(3, 15));
-        seriesMay.getData().add(new XYChart.Data(6, 13));
-        seriesMay.getData().add(new XYChart.Data(9, 12));
-        seriesMay.getData().add(new XYChart.Data(12, 14));
-        seriesMay.getData().add(new XYChart.Data(15, 18));
-        seriesMay.getData().add(new XYChart.Data(18, 25));
-        seriesMay.getData().add(new XYChart.Data(21, 25));
-        seriesMay.getData().add(new XYChart.Data(24, 23));
-        seriesMay.getData().add(new XYChart.Data(27, 26));
-        seriesMay.getData().add(new XYChart.Data(31, 26));
-        
-        ac.getData().addAll(seriesApril, seriesMay);
-        ac.setTitle("Contact History");
-	    MainResultPane.setContent(ac);
-	}
-	*/
 	
 	/*
 	 * Methods of workbench
