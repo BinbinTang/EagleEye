@@ -92,7 +92,7 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	public void start(Stage stage) throws Exception {
 		Node view = (Node)getResult();
 		BorderPane bp = new BorderPane();
-		bp.setCenter(view);;
+		bp.setCenter(view);
 		stage.setTitle(this.getName());
 	    stage.setScene(new Scene(bp)); 
 	    stage.show();	
