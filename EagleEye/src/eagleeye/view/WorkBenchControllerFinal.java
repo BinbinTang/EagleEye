@@ -740,7 +740,6 @@ public class WorkBenchControllerFinal {
 		for (String category : categoryList){
 			Button btn = new Button(category);
 			btn.setPrefHeight(30);
-			//btn.setPrefWidth(80);
 			btn.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
