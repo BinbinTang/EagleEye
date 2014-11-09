@@ -1,6 +1,8 @@
 package eagleeye.view;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,8 +89,8 @@ public class WorkBenchControllerFinal {
 			.getResourceAsStream("Icons/treeViewRootFolderIcon.png")));
 	private final Image fileIcon = new Image(getClass().getResourceAsStream(
 			"Icons/fileIcon.jpg"));
-	TreeItem<String> rootNode;
-	TreeItem<String> rootNodeC;
+	MyTreeItem<String> rootNode;
+	MyTreeItem<String> rootNodeC;
 	ArrayList<String> categoryList = new ArrayList(Arrays.asList("All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
 
 	@FXML
@@ -756,7 +758,7 @@ public class WorkBenchControllerFinal {
 		
 		if (TreeStructure.size() != 0) {
 			// TreeView
-			rootNode = new TreeItem<String>(TreeStructure.get(0)
+			rootNode = new MyTreeItem<String>(TreeStructure.get(0)
 					.getDirectoryName(), rootIcon);
 			ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
 					TreeStructure);
@@ -772,7 +774,7 @@ public class WorkBenchControllerFinal {
 			while (CopyTreeStructure.size() > 0) {
 				int startSize = CopyTreeStructure.size();
 				for (Directory dir : CopyTreeStructure) {
-					TreeItem<String> targetParent = null;
+					MyTreeItem<String> targetParent = null;
 					//System.out.println("Current remaining Size: "
 					//		+ CopyTreeStructure.size());
 					// check if it is root
@@ -784,7 +786,7 @@ public class WorkBenchControllerFinal {
 						break;
 					}
 
-					TreeItem<String> newItem = new TreeItem<String>(
+					MyTreeItem<String> newItem = new MyTreeItem<String>(
 							dir.getDirectoryName());
 
 					Directory parent = findDir(TreeStructure,dir.getParentDirectory());
@@ -819,15 +821,15 @@ public class WorkBenchControllerFinal {
 				}
 			}
 
-			/*
 			tree.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent mouseEvent) {
 
-					TreeItem<String> item = tree.getSelectionModel().getSelectedItem();
+					MyTreeItem<String> item = (MyTreeItem<String>) tree.getSelectionModel().getSelectedItem();
 					System.out.println("Selected Text : " + item.getValue());
 					
 					// Change Result pane view if a folder
+					/*
 					if (!item.isLeaf()){
 						listItems.clear();
 						for(TreeItem<String> subFile : item.getChildren()){
@@ -840,34 +842,23 @@ public class WorkBenchControllerFinal {
 
 						displayResult(listItems, "tree");
 					}
+					*/
 					
 					if (mouseEvent.getClickCount() == 2) {
-						// Check if it is a file, and open
-						
+						// Check if it is a file, and open						
 						if (item.isLeaf()) {
-							String filePath = item.getValue();
-							item = item.getParent();
-							while (item instanceof TreeItem) {
-								filePath = item.getValue() + "/" + filePath;
-								item = item.getParent();
-							}
-							System.out.println("Selected File : " + filePath);
-							String location = Paths.get(".").toAbsolutePath()
-									.normalize().toString();
-							File currentFile = new File(location + filePath);
+							String filePath = item.getFileEntity().getFilePath() + "\\" + item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
+							File currentFile = new File(filePath);
 							try {
 								Desktop.getDesktop().open(currentFile);
 							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								System.out.println("Cannot Open: "+ filePath);
 							}
 						}
 						
 					}
 				}
 			});
-			*/
-			//treeViewPane.getChildren().add(tree);
 		    MainResultPane.setContent(tree);
 		}
 	}
@@ -960,14 +951,14 @@ public class WorkBenchControllerFinal {
 	}
 
 	// Find whether a target is inside the tree of root, by recursion
-	public TreeItem<String> findItem(TreeItem<String> root, String target) {
-		TreeItem<String> result = null;
+	public MyTreeItem<String> findItem(MyTreeItem<String> root, String target) {
+		MyTreeItem<String> result = null;
 
 		if (root.getValue() == target) {
 			return root;
 		} else if (root.getChildren().size() != 0) {
 			for (TreeItem<String> sub : root.getChildren()) {
-				TreeItem<String> subResult = findItem(sub, target);
+				MyTreeItem<String> subResult = findItem((MyTreeItem)sub, target);
 				if (subResult != null) {
 					return subResult;
 				}
@@ -988,10 +979,31 @@ public class WorkBenchControllerFinal {
 	}
 
 	// Add files into directory
-	public void addFiles(Directory dir, TreeItem<String> node) {
+	public void addFiles(Directory dir, MyTreeItem<String> node) {
 		for (eagleeye.entities.FileEntity file : dir.getFiles()) {
-			TreeItem<String> newItem = new TreeItem<String>(file.getFileName()
-					+ "." + file.getFileExt(), new ImageView(fileIcon));
+			MyTreeItem<String> newItem = new MyTreeItem<String>(file.getFileName() + "." + file.getFileExt(), new ImageView(fileIcon));
+			newItem.setFileEntity(file);
+			/*
+			newItem.setOnMouseClicked(new EventHandler<MouseEvent>()
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					if (mouseEvent.getClickCount() == 2) {
+						// Check if it is a file, and open						
+						if (newItem.isLeaf()) {
+							String filePath = file.getFileName();
+							newItem = newItem.getParent();
+							File currentFile = new File(filePath);
+							try {
+								Desktop.getDesktop().open(currentFile);
+							} catch (IOException e) {
+								System.out.println("Cannot open filePath:" + filePath);
+							}
+						}
+						
+					}
+				}
+			});
+			*/
 			node.getChildren().add(newItem);
 		}
 
@@ -1207,6 +1219,29 @@ public class WorkBenchControllerFinal {
 		return true;
 	}
 	
-	
+	public class MyTreeItem<T> extends TreeItem<T>{
+		
+		private FileEntity file;
+		
+		public void setFileEntity(FileEntity file){
+			this.file = file;
+		}
+		
+		public FileEntity getFileEntity(){
+			return file;
+		}		
+		
+		MyTreeItem(){
+			super();
+		}
+		MyTreeItem(T value){
+			super(value);
+		}
+		MyTreeItem(T value, Node graphic){
+			super(value,graphic);
+		}
+	}
+
 	
 }
+
