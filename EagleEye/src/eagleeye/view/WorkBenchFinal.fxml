@@ -71,7 +71,7 @@
 		                              </ScrollPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane>
+                        <AnchorPane fx:id="treeFilterPane">
                            <children>
                               <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="478.0" prefWidth="323.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <content>
@@ -81,7 +81,7 @@
                                           <content>
                                             <AnchorPane>
                                                    <children>
-                                                      <VBox prefHeight="387.0" prefWidth="374.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <VBox fx:id="filterPane" prefHeight="387.0" prefWidth="374.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
                                                             <Label text="DateTime Range:">
                                                                <font>
@@ -280,6 +280,19 @@
                                                                   <Insets left="20.0" top="10.0" />
                                                                </padding>
                                                             </AnchorPane>
+                                                            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                               <children>
+                                                                  <Label text="Categories:">
+                                                                     <font>
+                                                                        <Font name="Segoe UI" size="12.0" />
+                                                                     </font>
+                                                                     <padding>
+                                                                        <Insets top="10.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <VBox fx:id="categoryViewPane" />
+                                                               </children>
+                                                            </AnchorPane>
                                                             <AnchorPane>
                                                                <children>
                                     										<Button fx:id="searchButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleFilter" onMouseClicked="#handleFilter" prefHeight="30.0" prefWidth="120.0" text="Search" textAlignment="CENTER">
@@ -300,11 +313,7 @@
                                                 </AnchorPane>
                                           </content>
                                         </TitledPane>
-                                          <TitledPane animated="false" text="Category">
-                                             <content>
-                                                <VBox fx:id="categoryViewPane" />
-                                             </content>
-                                          </TitledPane>
+                                          <TitledPane animated="false" text="Category" />
                                       </panes>
                                     </Accordion>
                                  </content>

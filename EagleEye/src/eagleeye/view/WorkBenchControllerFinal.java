@@ -89,10 +89,16 @@ public class WorkBenchControllerFinal {
 			"Icons/fileIcon.jpg"));
 	TreeItem<String> rootNode;
 	TreeItem<String> rootNodeC;
-	ArrayList<String> categoryList = new ArrayList(Arrays.asList("Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
+	ArrayList<String> categoryList = new ArrayList(Arrays.asList("All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
 
 	@FXML
+	private AnchorPane treeFilterPane;
+	
+	
+	@FXML
 	private VBox categoryViewPane;
+	@FXML
+	private VBox filterPane;
 	
 	// result pane view
 	private Filter filter = new Filter();
@@ -200,7 +206,7 @@ public class WorkBenchControllerFinal {
 	 * The constructor.
 	 */
 	public WorkBenchControllerFinal() {
-		functionList = new ArrayList(Arrays.asList("Tree View"));
+		functionList = new ArrayList(Arrays.asList("Folder Structure"));
 		pm = new PluginManager("PluginBinaries");
 		selectedCategory = EMPTY_STRING;
 		resultListView = new ListView();
@@ -216,6 +222,9 @@ public class WorkBenchControllerFinal {
 		List<String> plnames=pm.getGUIPluginNames();
 		System.out.println(plnames.size());
 		for(String s : plnames){
+			if(s.equals("Folder Structure")){
+				continue;
+			}
 			System.out.println("PLUG: "+ s);
 			functionList.add(s);
 		}
@@ -240,16 +249,18 @@ public class WorkBenchControllerFinal {
 			// create function button
 			Button newBtn = new Button(functionName);
 			newBtn.setTooltip(new Tooltip(functionName));
-			newBtn.setPrefWidth(80);
+			//newBtn.setPrefWidth(80);
 			newBtn.setPrefHeight(30);
 			
 			functionHBox.getChildren().add(newBtn);
 			
 			//System.out.println(functionName);
-			if(functionName.equals("Tree View")){
+			if(functionName.equals("Folder Structure")){
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
-					public void handle(MouseEvent event) {addDirectoryView();}
+					public void handle(MouseEvent event) {
+						addDirectoryView();
+						treeFilterPane.setVisible(true);}
 				});
 			}
 
@@ -258,7 +269,9 @@ public class WorkBenchControllerFinal {
 				if(pl!=null){
 					newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 						@Override
-						public void handle(MouseEvent event) {addPluginView(pl);}	
+						public void handle(MouseEvent event) {
+							addPluginView(pl);
+							treeFilterPane.setVisible(false);}	
 					});
 				}
 			}
