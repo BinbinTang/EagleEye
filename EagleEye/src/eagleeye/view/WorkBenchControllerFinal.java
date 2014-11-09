@@ -983,27 +983,6 @@ public class WorkBenchControllerFinal {
 		for (eagleeye.entities.FileEntity file : dir.getFiles()) {
 			MyTreeItem<String> newItem = new MyTreeItem<String>(file.getFileName() + "." + file.getFileExt(), new ImageView(fileIcon));
 			newItem.setFileEntity(file);
-			/*
-			newItem.setOnMouseClicked(new EventHandler<MouseEvent>()
-				@Override
-				public void handle(MouseEvent mouseEvent) {
-					if (mouseEvent.getClickCount() == 2) {
-						// Check if it is a file, and open						
-						if (newItem.isLeaf()) {
-							String filePath = file.getFileName();
-							newItem = newItem.getParent();
-							File currentFile = new File(filePath);
-							try {
-								Desktop.getDesktop().open(currentFile);
-							} catch (IOException e) {
-								System.out.println("Cannot open filePath:" + filePath);
-							}
-						}
-						
-					}
-				}
-			});
-			*/
 			node.getChildren().add(newItem);
 		}
 
