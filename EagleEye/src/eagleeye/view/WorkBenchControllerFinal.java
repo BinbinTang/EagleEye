@@ -218,6 +218,9 @@ public class WorkBenchControllerFinal {
 
 	@FXML
 	private void initialize() {
+		// Hide the filter of folder structure
+		treeFilterPane.setVisible(false);
+		
 		//add pluginsnames to functionList
 		List<String> plnames=pm.getGUIPluginNames();
 		System.out.println(plnames.size());
@@ -259,8 +262,14 @@ public class WorkBenchControllerFinal {
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent event) {
-						addDirectoryView();
-						treeFilterPane.setVisible(true);}
+						if(dbController.getDeviceID() != -1){
+							treeFilterPane.setVisible(true);
+							addDirectoryView();
+						}else{
+							Label noDevice = new Label("No device has been chosen.");
+							MainResultPane.setContent(noDevice);
+						}
+					}
 				});
 			}
 
@@ -270,8 +279,14 @@ public class WorkBenchControllerFinal {
 					newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 						@Override
 						public void handle(MouseEvent event) {
-							addPluginView(pl);
-							treeFilterPane.setVisible(false);}	
+							if(dbController.getDeviceID() != -1){
+								addPluginView(pl);
+								treeFilterPane.setVisible(false);
+							}else{
+								Label noDevice = new Label("No device has been chosen.");
+								MainResultPane.setContent(noDevice);
+							}
+						}	
 					});
 				}
 			}
@@ -713,17 +728,33 @@ public class WorkBenchControllerFinal {
 		MainResultPane.setContent((Node)plview);
 	}
 	
-	public void addDirectoryView(){
-		if(dbController.getDeviceID() == -1){
-			Label noDevice = new Label("No device has been chosen.");
-			MainResultPane.setContent(noDevice);
-		}
-		
+	public void addDirectoryView(){		
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
 		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
 
-		// Check if DB empty
+		// Category View
+		categoryViewPane.setSpacing(5);
+		categoryViewPane.setPadding(new Insets(5,5,5,5));
+		categoryViewPane.getChildren().clear();
+		for (String category : categoryList){
+			Button btn = new Button(category);
+			btn.setPrefHeight(30);
+			//btn.setPrefWidth(80);
+			btn.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	                listItems.clear();
+	                filter.modifyCategoryName(category);
+	                displayResult(listItems, "category");
+	                
+	                selectedCategory = category;
+	                
+	            }
+	        });
+			categoryViewPane.getChildren().add(btn);
+		}
+		
 		if (TreeStructure.size() != 0) {
 			// TreeView
 			rootNode = new TreeItem<String>(TreeStructure.get(0)
@@ -871,32 +902,6 @@ public class WorkBenchControllerFinal {
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
 		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
-
-		// Check if DB empty
-		if (TreeStructure.size() != 0) {
-			// Category View
-			categoryViewPane.setSpacing(5);
-			categoryViewPane.setPadding(new Insets(5,5,5,5));
-			categoryViewPane.getChildren().clear();
-			for (String category : categoryList){
-				Button btn = new Button(category);
-				btn.setPrefHeight(40);
-				btn.setPrefWidth(130);
-				btn.setOnAction(new EventHandler<ActionEvent>() {
-		            @Override
-		            public void handle(ActionEvent event) {
-		                listItems.clear();
-		                filter.modifyCategoryName(category);
-		                displayResult(listItems, "category");
-		                
-		                selectedCategory = category;
-		                
-		            }
-		        });
-				categoryViewPane.getChildren().add(btn);
-			}
-			
-		}
 		
 		if(functionHBox.getChildren().size() != 0){
 			Label noDevice = new Label("No function has been chosen.");

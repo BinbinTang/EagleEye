@@ -56,7 +56,7 @@
             </AnchorPane>
 				<AnchorPane GridPane.rowIndex="2">
 					<children>
-						<SplitPane blendMode="EXCLUSION" dividerPositions="0.7731829573934837" prefHeight="481.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+						<SplitPane fx:id="mainSplitPane" blendMode="EXCLUSION" dividerPositions="0.7731829573934837" prefHeight="481.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<items>
                         <AnchorPane prefWidth="400.0">
                            <children>
@@ -282,15 +282,11 @@
                                                             </AnchorPane>
                                                             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                                                <children>
-                                                                  <Label text="Categories:">
-                                                                     <font>
-                                                                        <Font name="Segoe UI" size="12.0" />
-                                                                     </font>
-                                                                     <padding>
-                                                                        <Insets top="10.0" />
-                                                                     </padding>
-                                                                  </Label>
-                                                                  <VBox fx:id="categoryViewPane" />
+                                                                  <TitledPane animated="false" expanded="false" prefHeight="51.0" prefWidth="375.0" text="Category" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <content>
+                                                                        <VBox fx:id="categoryViewPane" />
+                                                                     </content>
+                                                                  </TitledPane>
                                                                </children>
                                                             </AnchorPane>
                                                             <AnchorPane>
@@ -313,7 +309,6 @@
                                                 </AnchorPane>
                                           </content>
                                         </TitledPane>
-                                          <TitledPane animated="false" text="Category" />
                                       </panes>
                                     </Accordion>
                                  </content>
