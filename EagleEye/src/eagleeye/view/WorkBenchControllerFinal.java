@@ -847,7 +847,7 @@ public class WorkBenchControllerFinal {
 					if (mouseEvent.getClickCount() == 2) {
 						// Check if it is a file, and open						
 						if (item.isLeaf()) {
-							String filePath = item.getFileEntity().getFilePath() + "\\" + item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
+							String filePath = item.getFileEntity().getFilePath() + file.separator + item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
 							File currentFile = new File(filePath);
 							try {
 								Desktop.getDesktop().open(currentFile);
