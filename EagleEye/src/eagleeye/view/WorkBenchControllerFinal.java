@@ -898,7 +898,7 @@ public class WorkBenchControllerFinal {
 			MainResultPane.setContent(noDevice);
 		}
 		//refreshDevice();
-		//refreshDeviceList();
+		refreshDeviceList();
 	}
 	
 	// Refresh Device in Menu List
