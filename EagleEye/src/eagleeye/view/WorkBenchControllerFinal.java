@@ -734,7 +734,7 @@ public class WorkBenchControllerFinal {
 		ArrayList<Directory> TreeStructure = dbController
 				.getAllDirectoriesAndFiles();
 		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
-
+		
 		// Category View
 		categoryViewPane.setSpacing(5);
 		categoryViewPane.setPadding(new Insets(5,5,5,5));

@@ -77,7 +77,7 @@
                                  <content>
                                     <Accordion>
                                       <panes>
-                                        <TitledPane animated="false" text="Filters">
+                                        <TitledPane expanded="false" text="Filters">
                                           <content>
                                             <AnchorPane>
                                                    <children>
@@ -282,7 +282,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                                                <children>
-                                                                  <TitledPane animated="false" expanded="false" prefHeight="51.0" prefWidth="375.0" text="Category" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <TitledPane expanded="false" prefHeight="51.0" prefWidth="375.0" text="Category" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <content>
                                                                         <VBox fx:id="categoryViewPane" />
                                                                      </content>
