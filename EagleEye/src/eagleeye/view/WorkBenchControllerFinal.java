@@ -1174,6 +1174,7 @@ public class WorkBenchControllerFinal {
 		filter.modifyIsModified(isModifiedCheckBox.isSelected());
 		filter.modifyIsRecovered(isDeletedCheckBox.isSelected());
 		filter.modifiyIsOriginal(isOriginalCheckBox.isSelected());
+		filter.modifyCategoryName(selectedCategory);
 		
 		displayResult(listItems,"category");
 	}
@@ -1190,7 +1191,10 @@ public class WorkBenchControllerFinal {
 		startMinuteDailyTf.setText("00");
 		endHourDailyTf.setText("23");
 		endMinuteDailyTf.setText("59");
+		keywordsTf.setText("");
+		selectedCategory = "All";
 		handleFilter();
+		
 	}
 	
 	public boolean validationOfFilters () {

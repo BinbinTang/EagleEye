@@ -316,8 +316,9 @@ public class DBQueryController {
 	private boolean isCategoryPresent(String categoryName) {
 		
 		String emptyString = "";
+		String allCategory = "All";
 		
-		if (categoryName.equals(emptyString))
+		if (categoryName.equals(emptyString)||categoryName.equals(allCategory))
 			return false;
 		else
 			return true;
