@@ -84,6 +84,7 @@ public class WorkBenchControllerFinal {
 	// Path to identify current case
 	private String casePath = "";
 	private int currentCaseID = -1;
+	private int currentDirID = 0;
 	private String currentDir = "";
 	ArrayList<eagleeye.entities.FileEntity> folderStructure;
 	ArrayList<Directory> TreeStructure;
@@ -248,6 +249,25 @@ public class WorkBenchControllerFinal {
 		if(dbController.getDeviceID() == -1){
 			Label noDevice = new Label("No device has been chosen.");
 			MainResultPane.setContent(noDevice);
+		}
+		
+
+		// Category View
+		categoryViewPane.setSpacing(5);
+		categoryViewPane.setPadding(new Insets(5,5,5,5));
+		categoryViewPane.getChildren().clear();
+		for (String category : categoryList){
+			CheckBox ckb = new CheckBox(category);
+			ckb.setPrefHeight(30);
+			ckb.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	            	// Avan, this is the category checkbox
+	                filter.modifyCategoryName(category);
+	                selectedCategory = category;	                
+	            }
+	        });
+			categoryViewPane.getChildren().add(ckb);
 		}
 		
 		// Add bonding to functions checked dynamically and functions visible
@@ -744,24 +764,6 @@ public class WorkBenchControllerFinal {
 			allFiles = dbController.getFilteredFiles(filter);
 		}
 		
-		// Category View
-		categoryViewPane.setSpacing(5);
-		categoryViewPane.setPadding(new Insets(5,5,5,5));
-		categoryViewPane.getChildren().clear();
-		for (String category : categoryList){
-			Button btn = new Button(category);
-			btn.setPrefHeight(30);
-			btn.setOnAction(new EventHandler<ActionEvent>() {
-	            @Override
-	            public void handle(ActionEvent event) {
-	                listItems.clear();
-	                filter.modifyCategoryName(category);
-	                //displayResult(listItems, "category");
-	                selectedCategory = category;	                
-	            }
-	        });
-			categoryViewPane.getChildren().add(btn);
-		}
 		buildTree();
 	}
 
@@ -788,6 +790,7 @@ public class WorkBenchControllerFinal {
 			// TreeView
 			rootNode = new MyTreeItem<Label>(new Label(TreeStructure.get(0)
 					.getDirectoryName()), rootIcon);
+			rootNode.setDirectoryEntity(TreeStructure.get(0));
 			ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
 					TreeStructure);
 			TreeView<Label> tree = new TreeView<Label>(rootNode);
@@ -816,6 +819,7 @@ public class WorkBenchControllerFinal {
 
 					MyTreeItem<Label> newItem = new MyTreeItem<Label>(
 							new Label(dir.getDirectoryName()));
+					newItem.setDirectoryEntity(dir);
 
 					Directory parent = findDir(TreeStructure,dir.getParentDirectory());
 
@@ -828,6 +832,16 @@ public class WorkBenchControllerFinal {
 					if (targetParent != null) {
 						// System.out.println("parent found");
 						targetParent.getChildren().add(newItem);
+
+						// Record current expanded path, such that it wont refresh after filter
+						if(currentDirID == newItem.getDirectory().getDirectoryID()){
+							MyTreeItem<Label> temp = newItem;
+							while(temp.getParent() != null){
+								temp.setExpanded(true);
+								temp = (MyTreeItem<Label>) temp.getParent();
+							}
+							temp.setExpanded(true);
+						}
 						this.addFiles(dir, newItem);
 						CopyTreeStructure.remove(dir);
 						break;
@@ -854,6 +868,9 @@ public class WorkBenchControllerFinal {
 				public void handle(MouseEvent mouseEvent) {
 
 					MyTreeItem<Label> item = (MyTreeItem<Label>) tree.getSelectionModel().getSelectedItem();
+					if(!item.isLeaf()){
+						currentDirID = item.getDirectory().getDirectoryID();
+					}
 					System.out.println("Selected Text : " + item.getValue().getText());
 					
 					// Change Result pane view if a folder
@@ -997,7 +1014,7 @@ public class WorkBenchControllerFinal {
 				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName, new ImageView(fileIcon));
 				// Avan, this is where problem lies, I have commented the three lines
 				//if(newItem.getFileEntity().getIsRecovered()){		
-				//	newItem.getValue().setTextFill(isRecoveredColor);
+					//newItem.getValue().setTextFill(isRecoveredColor);
 				//}
 				
 				newItem.setFileEntity(file);
@@ -1225,14 +1242,23 @@ public class WorkBenchControllerFinal {
 	public class MyTreeItem<T> extends TreeItem<T>{
 		
 		private FileEntity file;
+		private Directory dir;
 		
 		public void setFileEntity(FileEntity file){
 			this.file = file;
 		}
 		
+		public void setDirectoryEntity(Directory dir){
+			this.dir = dir;
+		}
+		
 		public FileEntity getFileEntity(){
 			return file;
-		}		
+		}
+		
+		public Directory getDirectory(){
+			return dir;
+		}
 		
 		MyTreeItem(){
 			super();

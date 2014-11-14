@@ -282,7 +282,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                                                <children>
-                                                                  <TitledPane expanded="false" prefHeight="51.0" prefWidth="375.0" text="Category" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <TitledPane prefHeight="51.0" prefWidth="375.0" text="Category" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <content>
                                                                         <VBox fx:id="categoryViewPane" />
                                                                      </content>
