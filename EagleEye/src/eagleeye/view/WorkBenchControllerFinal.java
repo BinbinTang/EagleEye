@@ -62,6 +62,7 @@ import eagleeye.entities.Device;
 import eagleeye.entities.Directory;
 import eagleeye.entities.FileEntity;
 import eagleeye.entities.Filter;
+import eagleeye.fileReader.fileReader;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
@@ -896,6 +897,9 @@ public class WorkBenchControllerFinal {
 							File currentFile = new File(filePath);
 							try {
 								Desktop.getDesktop().open(currentFile);
+								//fileReader rd = new fileReader();
+								//rd.readFile(filePath);
+								System.out.println("Try Open: "+ filePath);
 							} catch (IOException e) {
 								System.out.println("Cannot Open: "+ filePath);
 							}
