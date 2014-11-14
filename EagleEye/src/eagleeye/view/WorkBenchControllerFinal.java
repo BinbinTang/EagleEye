@@ -93,6 +93,8 @@ public class WorkBenchControllerFinal {
 	MyTreeItem<String> rootNodeC;
 	ArrayList<String> categoryList = new ArrayList(Arrays.asList("All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
 
+	ArrayList<FileEntity> allFiles;
+	
 	@FXML
 	private AnchorPane treeFilterPane;
 	
@@ -266,7 +268,7 @@ public class WorkBenchControllerFinal {
 					public void handle(MouseEvent event) {
 						if(dbController.getDeviceID() != -1){
 							treeFilterPane.setVisible(true);
-							addDirectoryView();
+							addDirectoryView(null);
 						}else{
 							Label noDevice = new Label("No device has been chosen.");
 							MainResultPane.setContent(noDevice);
@@ -730,10 +732,13 @@ public class WorkBenchControllerFinal {
 		MainResultPane.setContent((Node)plview);
 	}
 	
-	public void addDirectoryView(){		
-		ArrayList<Directory> TreeStructure = dbController
-				.getAllDirectoriesAndFiles();
-		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
+	public void addDirectoryView(Filter filter){
+		TreeStructure = dbController.getAllDirectoriesAndFiles();
+		if(filter == null){
+			allFiles = dbController.getAllFiles();
+		}else{
+			allFiles = dbController.getFilteredFiles(filter);
+		}
 		
 		// Category View
 		categoryViewPane.setSpacing(5);
@@ -747,15 +752,34 @@ public class WorkBenchControllerFinal {
 	            public void handle(ActionEvent event) {
 	                listItems.clear();
 	                filter.modifyCategoryName(category);
-	                displayResult(listItems, "category");
-	                
-	                selectedCategory = category;
-	                
+	                //displayResult(listItems, "category");
+	                selectedCategory = category;	                
 	            }
 	        });
 			categoryViewPane.getChildren().add(btn);
 		}
+		buildTree();
+	}
+
+	
+	/*
+	 * Methods of workbench
+	 */
+	//retrieve device list from db through RequestHandler
+	public ArrayList<Device> getExisitingDevices(){
+		ArrayList<Device> DeviceList;
+		RequestHandler rh= new UIRequestHandler();
+		DeviceList = rh.getExistingDevices();
+		return DeviceList;
 		
+	}
+	
+	public void loadExistingDevice(int deviceID){
+		refreshCase(deviceID);
+	}
+	
+	// Build treeView
+	private void buildTree(){
 		if (TreeStructure.size() != 0) {
 			// TreeView
 			rootNode = new MyTreeItem<String>(TreeStructure.get(0)
@@ -861,23 +885,7 @@ public class WorkBenchControllerFinal {
 			});
 		    MainResultPane.setContent(tree);
 		}
-	}
-
-	
-	/*
-	 * Methods of workbench
-	 */
-	//retrieve device list from db through RequestHandler
-	public ArrayList<Device> getExisitingDevices(){
-		ArrayList<Device> DeviceList;
-		RequestHandler rh= new UIRequestHandler();
-		DeviceList = rh.getExistingDevices();
-		return DeviceList;
-		
-	}
-	
-	public void loadExistingDevice(int deviceID){
-		refreshCase(deviceID);
+		    return;
 	}
 	
 	// Refresh Case that Loaded in View
@@ -889,9 +897,8 @@ public class WorkBenchControllerFinal {
 		}
 		dbController.setDeviceID(deviceID);
 		System.out.println("new device: " +deviceID);
-		ArrayList<Directory> TreeStructure = dbController
-				.getAllDirectoriesAndFiles();
-		ArrayList<FileEntity> allFiles = dbController.getAllFiles();
+		TreeStructure = dbController.getAllDirectoriesAndFiles();
+		allFiles = dbController.getAllFiles();
 		
 		if(functionHBox.getChildren().size() != 0){
 			Label noDevice = new Label("No function has been chosen.");
@@ -979,11 +986,13 @@ public class WorkBenchControllerFinal {
 	}
 
 	// Add files into directory
-	public void addFiles(Directory dir, MyTreeItem<String> node) {
-		for (eagleeye.entities.FileEntity file : dir.getFiles()) {
-			MyTreeItem<String> newItem = new MyTreeItem<String>(file.getFileName() + "." + file.getFileExt(), new ImageView(fileIcon));
-			newItem.setFileEntity(file);
-			node.getChildren().add(newItem);
+	private void addFiles(Directory dir, MyTreeItem<String> node) {
+		for (eagleeye.entities.FileEntity file : allFiles) {
+			if(file.getDirectoryID() == dir.getDirectoryID()){
+				MyTreeItem<String> newItem = new MyTreeItem<String>(file.getFileName() + "." + file.getFileExt(), new ImageView(fileIcon));
+				newItem.setFileEntity(file);
+				node.getChildren().add(newItem);
+			}
 		}
 
 	}
@@ -1176,7 +1185,8 @@ public class WorkBenchControllerFinal {
 		filter.modifiyIsOriginal(isOriginalCheckBox.isSelected());
 		filter.modifyCategoryName(selectedCategory);
 		
-		displayResult(listItems,"category");
+		//displayResult(listItems,"category");
+		addDirectoryView(filter);
 	}
 	
 	@FXML 
