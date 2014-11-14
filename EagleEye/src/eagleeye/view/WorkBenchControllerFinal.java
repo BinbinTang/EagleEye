@@ -868,7 +868,7 @@ public class WorkBenchControllerFinal {
 				public void handle(MouseEvent mouseEvent) {
 
 					MyTreeItem<Label> item = (MyTreeItem<Label>) tree.getSelectionModel().getSelectedItem();
-					if(!item.isLeaf()){
+					if(item.getDirectory() != null){
 						currentDirID = item.getDirectory().getDirectoryID();
 					}
 					System.out.println("Selected Text : " + item.getValue().getText());
