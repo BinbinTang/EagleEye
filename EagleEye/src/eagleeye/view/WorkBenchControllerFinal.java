@@ -46,6 +46,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -67,6 +68,9 @@ import eagleeye.model.UIRequestHandler;
 import eagleeye.pluginmanager.*;
 
 public class WorkBenchControllerFinal {
+	
+	// Predfined fixed numbers
+	private Color isRecoveredColor = Color.web("#23ff23");
 
 	// DataBase
 	private DBQueryController dbController;
@@ -89,7 +93,7 @@ public class WorkBenchControllerFinal {
 			.getResourceAsStream("Icons/treeViewRootFolderIcon.png")));
 	private final Image fileIcon = new Image(getClass().getResourceAsStream(
 			"Icons/fileIcon.jpg"));
-	MyTreeItem<String> rootNode;
+	MyTreeItem<Label> rootNode;
 	MyTreeItem<String> rootNodeC;
 	ArrayList<String> categoryList = new ArrayList(Arrays.asList("All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
 
@@ -782,11 +786,11 @@ public class WorkBenchControllerFinal {
 	private void buildTree(){
 		if (TreeStructure.size() != 0) {
 			// TreeView
-			rootNode = new MyTreeItem<String>(TreeStructure.get(0)
-					.getDirectoryName(), rootIcon);
+			rootNode = new MyTreeItem<Label>(new Label(TreeStructure.get(0)
+					.getDirectoryName()), rootIcon);
 			ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
 					TreeStructure);
-			TreeView<String> tree = new TreeView<String>(rootNode);
+			TreeView<Label> tree = new TreeView<Label>(rootNode);
 
 			// Force root node ID to be 0
 			//TreeStructure.get(0).modifyDirectoryID(0);
@@ -798,7 +802,7 @@ public class WorkBenchControllerFinal {
 			while (CopyTreeStructure.size() > 0) {
 				int startSize = CopyTreeStructure.size();
 				for (Directory dir : CopyTreeStructure) {
-					MyTreeItem<String> targetParent = null;
+					MyTreeItem<Label> targetParent = null;
 					//System.out.println("Current remaining Size: "
 					//		+ CopyTreeStructure.size());
 					// check if it is root
@@ -810,8 +814,8 @@ public class WorkBenchControllerFinal {
 						break;
 					}
 
-					MyTreeItem<String> newItem = new MyTreeItem<String>(
-							dir.getDirectoryName());
+					MyTreeItem<Label> newItem = new MyTreeItem<Label>(
+							new Label(dir.getDirectoryName()));
 
 					Directory parent = findDir(TreeStructure,dir.getParentDirectory());
 
@@ -849,8 +853,8 @@ public class WorkBenchControllerFinal {
 				@Override
 				public void handle(MouseEvent mouseEvent) {
 
-					MyTreeItem<String> item = (MyTreeItem<String>) tree.getSelectionModel().getSelectedItem();
-					System.out.println("Selected Text : " + item.getValue());
+					MyTreeItem<Label> item = (MyTreeItem<Label>) tree.getSelectionModel().getSelectedItem();
+					System.out.println("Selected Text : " + item.getValue().getText());
 					
 					// Change Result pane view if a folder
 					/*
@@ -958,14 +962,14 @@ public class WorkBenchControllerFinal {
 	}
 
 	// Find whether a target is inside the tree of root, by recursion
-	public MyTreeItem<String> findItem(MyTreeItem<String> root, String target) {
-		MyTreeItem<String> result = null;
+	public MyTreeItem<Label> findItem(MyTreeItem<Label> root, String target) {
+		MyTreeItem<Label> result = null;
 
-		if (root.getValue() == target) {
+		if (root.getValue().getText() == target) {
 			return root;
 		} else if (root.getChildren().size() != 0) {
-			for (TreeItem<String> sub : root.getChildren()) {
-				MyTreeItem<String> subResult = findItem((MyTreeItem)sub, target);
+			for (TreeItem<Label> sub : root.getChildren()) {
+				MyTreeItem<Label> subResult = findItem((MyTreeItem)sub, target);
 				if (subResult != null) {
 					return subResult;
 				}
@@ -986,10 +990,16 @@ public class WorkBenchControllerFinal {
 	}
 
 	// Add files into directory
-	private void addFiles(Directory dir, MyTreeItem<String> node) {
+	private void addFiles(Directory dir, MyTreeItem<Label> node) {
 		for (eagleeye.entities.FileEntity file : allFiles) {
 			if(file.getDirectoryID() == dir.getDirectoryID()){
-				MyTreeItem<String> newItem = new MyTreeItem<String>(file.getFileName() + "." + file.getFileExt(), new ImageView(fileIcon));
+				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt());
+				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName, new ImageView(fileIcon));
+				// Avan, this is where problem lies, I have commented the three lines
+				//if(newItem.getFileEntity().getIsRecovered()){		
+				//	newItem.getValue().setTextFill(isRecoveredColor);
+				//}
+				
 				newItem.setFileEntity(file);
 				node.getChildren().add(newItem);
 			}

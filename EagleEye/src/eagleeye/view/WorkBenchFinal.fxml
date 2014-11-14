@@ -251,7 +251,7 @@
                                                                               <Insets top="5.0" />
                                                                            </padding>
                                           																</CheckBox>
-                                          																<CheckBox fx:id="isDeletedCheckBox" mnemonicParsing="false" selected="true" text="Deleted ">
+                                          																<CheckBox fx:id="isDeletedCheckBox" mnemonicParsing="false" selected="true" text="Deleted " textFill="#23ff23">
                                           																	<tooltip>
                                           																		<Tooltip text="Include recovered deleted files." />
                                           																	</tooltip>
