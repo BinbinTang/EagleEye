@@ -94,9 +94,21 @@ public class WorkBenchControllerFinal {
 
 	// TreeView & CategoryVuew
 	private final Node rootIcon = new ImageView(new Image(getClass()
-			.getResourceAsStream("Icons/treeViewRootFolderIcon.png")));
+			.getResourceAsStream("Icons/folder.png"), 16, 16, false, false));
 	private final Image fileIcon = new Image(getClass().getResourceAsStream(
-			"Icons/fileIcon.jpg"));
+			"Icons/file.png"), 16, 16, false, false);
+	private final Image docIcon = new Image(getClass().getResourceAsStream(
+			"Icons/doc.png"), 16, 16, false, false);
+	private final Image imageIcon = new Image(getClass().getResourceAsStream(
+			"Icons/photo icon.png"), 16, 16, false, false);
+	private final Image videoIcon = new Image(getClass().getResourceAsStream(
+			"Icons/video icon.png"), 16, 16, false, false);
+	private final Image audioIcon = new Image(getClass().getResourceAsStream(
+			"Icons/audio icon.png"), 16, 16, false, false);
+	private final Image othersIcon = new Image(getClass().getResourceAsStream(
+			"Icons/unknown.png"), 16, 16, false, false);
+	private final Image dbIcon = new Image(getClass().getResourceAsStream(
+			"Icons/DB.png"), 16, 16, false, false);
 	MyTreeItem<Label> rootNode;
 	MyTreeItem<String> rootNodeC;
 	ArrayList<String> categoryList = new ArrayList(Arrays.asList("All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
@@ -1032,8 +1044,36 @@ public class WorkBenchControllerFinal {
 		for (eagleeye.entities.FileEntity file : allFiles) {
 			if(file.getDirectoryID() == dir.getDirectoryID()){
 				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt());
-				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName, new ImageView(fileIcon));
+				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName);
 				newItem.setFileEntity(file);
+				//"All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"
+				switch(file.getCategory()){
+					case("Image"): 
+						newItem.setGraphic(new ImageView(imageIcon));
+					break;
+					case("Video"): 
+						newItem.setGraphic(new ImageView(videoIcon));
+					break;
+					case("Audio"): 
+						newItem.setGraphic(new ImageView(audioIcon));
+					break;
+					case("Document"): 
+						newItem.setGraphic(new ImageView(docIcon));
+					break;
+					case("Database"): 
+						newItem.setGraphic(new ImageView(dbIcon));
+					break;
+					case("Compressed Folder"): 
+					break;
+					case("Others"): 
+						newItem.setGraphic(new ImageView(othersIcon));
+					break;
+					
+					default:
+						newItem.setGraphic(new ImageView(fileIcon));
+					break;
+					
+				}
 				
 				if(newItem.getFileEntity().getIsRecovered()){		
 					newItem.getValue().setTextFill(isRecoveredColor);
