@@ -73,6 +73,7 @@ public class WorkBenchControllerFinal {
 	
 	// Predfined fixed numbers
 	private Color isRecoveredColor = Color.web("#23ff23");
+	private Color isModifiedColor = Color.web("#f42929");
 
 	// DataBase
 	private DBQueryController dbController;
@@ -276,7 +277,17 @@ public class WorkBenchControllerFinal {
 	            			cb.setSelected(true);
 	            		}
 	            	
-	            	}		 		            	       		                
+	            	}
+	            	
+	            	if(category.equals("All") && !ckb.isSelected())
+	            	{
+	            		for(Node N : categoryViewPane.getChildren())
+	            		{
+	            			CheckBox cb = (CheckBox) N;
+	            			cb.setSelected(false);
+	            		}
+	            	
+	            	}
 	            }
 	        });
 			categoryViewPane.getChildren().add(ckb);
@@ -1022,14 +1033,12 @@ public class WorkBenchControllerFinal {
 			if(file.getDirectoryID() == dir.getDirectoryID()){
 				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt());
 				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName, new ImageView(fileIcon));
-				// Avan, this is where problem lies, I have commented the three lines
-				//if(newItem.getFileEntity().getIsRecovered()){		
-					//newItem.getValue().setTextFill(isRecoveredColor);
-				//}
 				newItem.setFileEntity(file);
 				
 				if(newItem.getFileEntity().getIsRecovered()){		
 					newItem.getValue().setTextFill(isRecoveredColor);
+				}else if(newItem.getFileEntity().getIsModified()){
+					newItem.getValue().setTextFill(isModifiedColor);
 				}
 			
 				node.getChildren().add(newItem);

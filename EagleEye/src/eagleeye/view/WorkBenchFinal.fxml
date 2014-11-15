@@ -262,7 +262,7 @@
                                                                               <Insets top="5.0" />
                                                                            </padding>
                                           																</CheckBox>
-                                          																<CheckBox fx:id="isModifiedCheckBox" mnemonicParsing="false" selected="true" text="Modified">
+                                          																<CheckBox fx:id="isModifiedCheckBox" mnemonicParsing="false" selected="true" text="Modified" textFill="#f42929">
                                           																	<tooltip>
                                           																		<Tooltip text="Include recognized type modified files." />
                                           																	</tooltip>
