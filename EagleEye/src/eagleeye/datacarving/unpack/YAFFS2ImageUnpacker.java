@@ -435,28 +435,31 @@ public class YAFFS2ImageUnpacker implements IDiskImageUnpacker
 				genericFile.modifyDateModified(dateFormat.format(new Date(header.getModifiedTime() * 1000L)));
 				genericFile.modifyDirectoryID(header.getParentObjectId());
 				genericFile.modifyFileID(yaffs2Object.getId());
-				
-				if(header.getName().indexOf('.') > -1)
+
+				if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
 				{
-					if(header.getName().lastIndexOf('.') + 1 < header.getName().length())
-					{
-						genericFile.modifyFileExt(header.getName().substring(header.getName().lastIndexOf('.') + 1));
-					}
-					
-					genericFile.modifyFileName(header.getName().substring(0, header.getName().lastIndexOf('.')));
+					genericFile.modifyIsDirectory(true);
+					genericFile.modifyFileName(header.getName());
 				}
 				else
 				{
-					genericFile.modifyFileName(header.getName());
+					if(header.getName().indexOf('.') > -1)
+					{
+						if(header.getName().lastIndexOf('.') + 1 < header.getName().length())
+						{
+							genericFile.modifyFileExt(header.getName().substring(header.getName().lastIndexOf('.') + 1));
+						}
+						
+						genericFile.modifyFileName(header.getName().substring(0, header.getName().lastIndexOf('.')));
+					}
+					else
+					{
+						genericFile.modifyFileName(header.getName());
+					}
 				}
 				
 				genericFile.modifyFilePath(filePath);
 				
-				if(header.getType() == YAFFSObjectType.YAFFS_OBJECT_TYPE_DIRECTORY)
-				{
-					genericFile.modifyIsDirectory(true);
-				}
-		
 				files.add(genericFile);
 			//}
 		}
