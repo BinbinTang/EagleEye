@@ -1,13 +1,12 @@
 package eagleeye.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.TimeZone;
 
 public class Filter {
 
 	private String keyword;
-	private String categoryName;
-	private int categoryID;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private String startTime;
@@ -17,14 +16,12 @@ public class Filter {
 	private int isModified;
 	private int isRecovered;
 	private int isOriginal;
-	
+	private ArrayList<String> categoryFilter;
 	
 	
 	public Filter() {
 		
 		keyword = "";
-		categoryName = "";
-		categoryID = -1;
 		startDate = LocalDate.of(1970, 1, 1);
 		endDate = LocalDate.now();
 		startTime = "00:00:00";
@@ -34,6 +31,7 @@ public class Filter {
 		isModified = 1;
 		isRecovered = 1;
 		isOriginal = 1;
+		categoryFilter = new ArrayList<String>();
 	}
 	
 	public String getStartTimeDaily() {
@@ -64,37 +62,6 @@ public class Filter {
 	public void modifyKeyword(String keyword) {
 		
 		this.keyword = "%" + keyword + "%";
-	}
-
-	public String getCategoryName() {
-		
-		return categoryName;
-	}
-
-	public void modifyCategoryName(String categoryName) {
-		
-		this.categoryName = categoryName;
-		
-		if(categoryName.equals("Image"))
-			this.categoryID = 1;
-		if(categoryName.equals("Video"))
-			this.categoryID = 2;
-		if(categoryName.equals("Audio"))
-			this.categoryID = 3;
-		if(categoryName.equals("Document"))
-			this.categoryID = 4;
-		if(categoryName.equals("Database"))
-			this.categoryID = 5;
-		if(categoryName.equals("Compressed Folder"))
-			this.categoryID = 6;
-		if(categoryName.equals("Others"))
-			this.categoryID = 7;
-		
-	}
-
-	public int getCategoryID() {
-		
-		return categoryID;
 	}
 
 	public LocalDate getStartDate() {
@@ -193,7 +160,15 @@ public class Filter {
 		return combination;
 	}
 	
+	public ArrayList<String> getCategoryFilter () {
+		
+		return categoryFilter;
+	}
 	
+	public void setCategoryFilter(ArrayList<String> categoryFilter) {
+		
+		this.categoryFilter = categoryFilter;
+	}
 }
 
 

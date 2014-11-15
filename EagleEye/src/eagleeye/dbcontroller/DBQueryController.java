@@ -171,7 +171,6 @@ public class DBQueryController {
 	public ArrayList<FileEntity> getFilteredFiles(Filter filter) {
 		
 		boolean isKeywordPresent = isKeywordPresent(filter.getKeyword());
-		boolean isCategoryPresent = isCategoryPresent(filter.getCategoryName());
 		ArrayList<FileEntity> listOfFiles = new ArrayList<FileEntity>();
 		
 		System.out.println("StartDateTime = " + filter.getStartDateTimeAsString());
@@ -179,15 +178,13 @@ public class DBQueryController {
 		System.out.println("StartTimeDaily = " + filter.getStartTimeDaily());
 		System.out.println("EndTimeDaily = " + filter.getEndTimeDaily());
 		System.out.println("Keyword = " + filter.getKeyword());
-		System.out.println("Category = " + filter.getCategoryID());
-		System.out.println("Category Name = " + filter.getCategoryName());
 		
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
 			
-			PreparedStatement stmt = conn.prepareStatement(queryMaker.getFilteredFiles(isKeywordPresent, isCategoryPresent, filter));
-			stmt = setFieldsForFilter(stmt,isKeywordPresent,isCategoryPresent,filter);
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getFilteredFiles(isKeywordPresent, filter));
+			stmt = setFieldsForFilter(stmt,isKeywordPresent,filter);
 			System.out.println("query is " + stmt.getMetaData());
 			
 			ResultSet rs = stmt.executeQuery();
@@ -256,49 +253,26 @@ public class DBQueryController {
 		return listOfDirectory;
 	}
 	
-	private PreparedStatement setFieldsForFilter(PreparedStatement stmt,boolean isKeywordPresent,boolean isCategoryPresent, Filter filter) throws SQLException {
+	private PreparedStatement setFieldsForFilter(PreparedStatement stmt,boolean isKeywordPresent, Filter filter) throws SQLException {
 		
-		if(isKeywordPresent && isCategoryPresent) {
+		if(isKeywordPresent) {
 			
 			stmt.setInt(1,deviceID);
 			stmt.setString(2, filter.getKeyword());
-			stmt.setInt(3, filter.getCategoryID());
-			stmt.setString(4, filter.getStartDateTimeAsString());
-			stmt.setString(5, filter.getEndDateTimeAsString());
-			stmt.setString(6, filter.getStartTimeDaily());
-			stmt.setString(7, filter.getEndTimeDaily());
-						
-		} else {
-			
-			if(isKeywordPresent) {
-				
-				stmt.setInt(1,deviceID);
-				stmt.setString(2, filter.getKeyword());
-				stmt.setString(3, filter.getStartDateTimeAsString());
-				stmt.setString(4, filter.getEndDateTimeAsString());
-				stmt.setString(5, filter.getStartTimeDaily());
-				stmt.setString(6, filter.getEndTimeDaily());
-			
-			} else if (isCategoryPresent) {
-				
-				stmt.setInt(1,deviceID);
-				stmt.setInt(2, filter.getCategoryID());
-				stmt.setString(3, filter.getStartDateTimeAsString());
-				stmt.setString(4, filter.getEndDateTimeAsString());
-				stmt.setString(5, filter.getStartTimeDaily());
-				stmt.setString(6, filter.getEndTimeDaily());
-			
-			} else {
-				
-				stmt.setInt(1,deviceID);
-				stmt.setString(2, filter.getStartDateTimeAsString());
-				stmt.setString(3, filter.getEndDateTimeAsString());
-				stmt.setString(4, filter.getStartTimeDaily());
-				stmt.setString(5, filter.getEndTimeDaily());
-			}
-			
-		}
+			stmt.setString(3, filter.getStartDateTimeAsString());
+			stmt.setString(4, filter.getEndDateTimeAsString());
+			stmt.setString(5, filter.getStartTimeDaily());
+			stmt.setString(6, filter.getEndTimeDaily());
 		
+		} else {
+				
+			stmt.setInt(1,deviceID);
+			stmt.setString(2, filter.getStartDateTimeAsString());
+			stmt.setString(3, filter.getEndDateTimeAsString());
+			stmt.setString(4, filter.getStartTimeDaily());
+			stmt.setString(5, filter.getEndTimeDaily());
+		}
+			
 		return stmt;
 		
 	}
@@ -313,15 +287,5 @@ public class DBQueryController {
 			return true;
 	}
 	
-	private boolean isCategoryPresent(String categoryName) {
-		
-		String emptyString = "";
-		String allCategory = "All";
-		
-		if (categoryName.equals(emptyString)||categoryName.equals(allCategory))
-			return false;
-		else
-			return true;
-		
-	}
+	
 }

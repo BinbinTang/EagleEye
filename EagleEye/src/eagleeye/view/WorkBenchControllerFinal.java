@@ -62,7 +62,7 @@ import eagleeye.entities.Device;
 import eagleeye.entities.Directory;
 import eagleeye.entities.FileEntity;
 import eagleeye.entities.Filter;
-import eagleeye.fileReader.fileReader;
+//import eagleeye.fileReader.fileReader;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
@@ -202,9 +202,10 @@ public class WorkBenchControllerFinal {
 	private MainAppFinal mainAppFinal;
 
 	// Filter's items
-	private String selectedCategory;
+	ArrayList<String> categoryFilter;
 	private final String EMPTY_STRING = "";
-	private final int CATEGORY_TAB_INDEX = 1;
+	
+	
 	@FXML
 	private TabPane leftTabPane;
 	
@@ -218,7 +219,6 @@ public class WorkBenchControllerFinal {
 	public WorkBenchControllerFinal() {
 		functionList = new ArrayList(Arrays.asList("Folder Structure"));
 		pm = new PluginManager("PluginBinaries");
-		selectedCategory = EMPTY_STRING;
 		resultListView = new ListView();
 	}
 
@@ -257,15 +257,25 @@ public class WorkBenchControllerFinal {
 		categoryViewPane.setSpacing(5);
 		categoryViewPane.setPadding(new Insets(5,5,5,5));
 		categoryViewPane.getChildren().clear();
+		
+		
 		for (String category : categoryList){
 			CheckBox ckb = new CheckBox(category);
 			ckb.setPrefHeight(30);
+			ckb.setSelected(true);
 			ckb.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
-	            	// Avan, this is the category checkbox
-	                filter.modifyCategoryName(category);
-	                selectedCategory = category;	                
+	            	
+	            	if(category.equals("All") && ckb.isSelected())
+	            	{
+	            		for(Node N : categoryViewPane.getChildren())
+	            		{
+	            			CheckBox cb = (CheckBox) N;
+	            			cb.setSelected(true);
+	            		}
+	            	
+	            	}		 		            	       		                
 	            }
 	        });
 			categoryViewPane.getChildren().add(ckb);
@@ -1020,8 +1030,12 @@ public class WorkBenchControllerFinal {
 				//if(newItem.getFileEntity().getIsRecovered()){		
 					//newItem.getValue().setTextFill(isRecoveredColor);
 				//}
-				
 				newItem.setFileEntity(file);
+				
+				if(newItem.getFileEntity().getIsRecovered()){		
+					newItem.getValue().setTextFill(isRecoveredColor);
+				}
+			
 				node.getChildren().add(newItem);
 			}
 		}
@@ -1190,6 +1204,7 @@ public class WorkBenchControllerFinal {
 	public void handleFilter() {
 		
 		this.filter = new Filter();
+		categoryFilter = new ArrayList<String>();
 		
 		if(!startDatePicker.getValue().equals(null))
 			filter.modifyStartDate(startDatePicker.getValue());
@@ -1214,8 +1229,18 @@ public class WorkBenchControllerFinal {
 		filter.modifyIsModified(isModifiedCheckBox.isSelected());
 		filter.modifyIsRecovered(isDeletedCheckBox.isSelected());
 		filter.modifiyIsOriginal(isOriginalCheckBox.isSelected());
-		filter.modifyCategoryName(selectedCategory);
+
+		for(Node N : categoryViewPane.getChildren())
+		{
+			CheckBox cb = (CheckBox) N;
+			if(cb.isSelected())
+				categoryFilter.add(cb.getText());
+		}
 		
+		
+		
+		
+		filter.setCategoryFilter(categoryFilter);
 		//displayResult(listItems,"category");
 		addDirectoryView(filter);
 	}
@@ -1233,7 +1258,17 @@ public class WorkBenchControllerFinal {
 		endHourDailyTf.setText("23");
 		endMinuteDailyTf.setText("59");
 		keywordsTf.setText("");
-		selectedCategory = "All";
+		isDeletedCheckBox.setSelected(true);
+		isModifiedCheckBox.setSelected(true);
+		isOriginalCheckBox.setSelected(true);
+		
+		for (Node N : categoryViewPane.getChildren())
+		{
+			CheckBox cb = (CheckBox) N;
+			cb.setSelected(true);
+		}
+		categoryFilter = new ArrayList<String> ();
+		
 		handleFilter();
 		
 	}

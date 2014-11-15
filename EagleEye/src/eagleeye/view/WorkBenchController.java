@@ -680,7 +680,7 @@ public class WorkBenchController {
 		            @Override
 		            public void handle(ActionEvent event) {
 		                listItems.clear();
-		                filter.modifyCategoryName(category);
+		              //  filter.modifyCategoryName(category);
 		                displayResult(listItems, "category");
 		            }
 		        });
