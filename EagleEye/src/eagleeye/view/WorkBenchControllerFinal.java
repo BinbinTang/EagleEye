@@ -289,14 +289,22 @@ public class WorkBenchControllerFinal {
 	            			cb.setSelected(true);
 	            		}
 	            	
-	            	}
-	            	
-	            	if(category.equals("All") && !ckb.isSelected())
+	            	}else if(category.equals("All") && !ckb.isSelected())
 	            	{
 	            		for(Node N : categoryViewPane.getChildren())
 	            		{
 	            			CheckBox cb = (CheckBox) N;
 	            			cb.setSelected(false);
+	            		}
+	            	
+	            	}else if(!ckb.isSelected())
+	            	{
+	            		for(Node N : categoryViewPane.getChildren())
+	            		{
+	            			CheckBox cb = (CheckBox) N;
+	            			if(cb.getText().equals("All")){
+	            				cb.setSelected(false);
+	            			}
 	            		}
 	            	
 	            	}
@@ -784,14 +792,14 @@ public class WorkBenchControllerFinal {
 	 * 
 	 */
 	
-	public void addPluginView(Plugin pl){
+	private void addPluginView(Plugin pl){
 		Object plview = pl.getResult();
 		//System.out.println(plview.getClass().getName());
 		
 		MainResultPane.setContent((Node)plview);
 	}
 	
-	public void addDirectoryView(Filter filter){
+	private void addDirectoryView(Filter filter){
 		TreeStructure = dbController.getAllDirectoriesAndFiles();
 		if(filter == null){
 			allFiles = dbController.getAllFiles();
@@ -807,7 +815,7 @@ public class WorkBenchControllerFinal {
 	 * Methods of workbench
 	 */
 	//retrieve device list from db through RequestHandler
-	public ArrayList<Device> getExisitingDevices(){
+	private ArrayList<Device> getExisitingDevices(){
 		ArrayList<Device> DeviceList;
 		RequestHandler rh= new UIRequestHandler();
 		DeviceList = rh.getExistingDevices();
@@ -815,7 +823,7 @@ public class WorkBenchControllerFinal {
 		
 	}
 	
-	public void loadExistingDevice(int deviceID){
+	private void loadExistingDevice(int deviceID){
 		refreshCase(deviceID);
 	}
 	
@@ -943,7 +951,7 @@ public class WorkBenchControllerFinal {
 	}
 	
 	// Refresh Case that Loaded in View
-	public void refreshCase(int deviceID){
+	private void refreshCase(int deviceID){
 		//dbController = new DBQueryController();
 		if(functionHBox.getChildren().size() != 0){
 			Label noDevice = new Label("No function has been chosen.");
@@ -963,7 +971,7 @@ public class WorkBenchControllerFinal {
 	}
 	
 	// Refresh Device in Menu List
-	public void refreshDeviceList(){
+	private void refreshDeviceList(){
 		System.out.println("refreshDeviceList");
 		//dbController = new DBQueryController();
 		ArrayList<Device> devices = dbController.getAllDevices();
@@ -982,7 +990,7 @@ public class WorkBenchControllerFinal {
 	}
 	
 	// Method to Decide What to Show in Result Pane View
-	public void displayResult(ObservableList<String> list, String type){
+	private void displayResult(ObservableList<String> list, String type){
 		if(type == "category"){
 			ObservableList<String> resultList = filterResult();
 			resultListView.setItems(resultList);
@@ -994,7 +1002,7 @@ public class WorkBenchControllerFinal {
 	}
 	
 	// Filters 
-	public ObservableList<String> filterResult(){
+	private ObservableList<String> filterResult(){
 
 		ObservableList<String> resultList = FXCollections.observableArrayList(); 
 		
@@ -1012,7 +1020,7 @@ public class WorkBenchControllerFinal {
 	}
 
 	// Find whether a target is inside the tree of root, by recursion
-	public MyTreeItem<Label> findItem(MyTreeItem<Label> root, String target) {
+	private MyTreeItem<Label> findItem(MyTreeItem<Label> root, String target) {
 		MyTreeItem<Label> result = null;
 
 		if (root.getValue().getText() == target) {
@@ -1030,7 +1038,7 @@ public class WorkBenchControllerFinal {
 	}
 
 	// Find Directory according to ID
-	public Directory findDir(ArrayList<Directory> db, int ID) {
+	private Directory findDir(ArrayList<Directory> db, int ID) {
 		for (Directory checkParent : db) {
 			if (checkParent.getDirectoryID() == ID) {
 				return checkParent;
@@ -1085,6 +1093,11 @@ public class WorkBenchControllerFinal {
 			}
 		}
 
+	}
+	
+	// change progressLabel
+	public void updateProgress(String progress){
+		progressLabel.setText(progress);
 	}
 
 	// private void handleStartDateClick
