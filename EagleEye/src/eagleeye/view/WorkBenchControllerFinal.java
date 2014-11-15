@@ -62,6 +62,7 @@ import eagleeye.entities.Device;
 import eagleeye.entities.Directory;
 import eagleeye.entities.FileEntity;
 import eagleeye.entities.Filter;
+import eagleeye.fileReader.fileLoader;
 //import eagleeye.fileReader.fileReader;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
@@ -904,15 +905,10 @@ public class WorkBenchControllerFinal {
 						// Check if it is a file, and open						
 						if (item.isLeaf()) {
 							String filePath = item.getFileEntity().getFilePath() + file.separator + item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
-							File currentFile = new File(filePath);
-							try {
-								Desktop.getDesktop().open(currentFile);
-								//fileReader rd = new fileReader();
-								//rd.readFile(filePath);
-								System.out.println("Try Open: "+ filePath);
-							} catch (IOException e) {
-								System.out.println("Cannot Open: "+ filePath);
-							}
+							//File currentFile = new File(filePath);
+							//Desktop.getDesktop().open(currentFile);
+							fileLoader fd = new fileLoader();
+							fd.start(filePath);
 						}
 						
 					}

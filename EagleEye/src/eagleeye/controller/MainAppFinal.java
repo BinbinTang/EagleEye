@@ -19,6 +19,10 @@ public class MainAppFinal extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
     
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -26,7 +30,7 @@ public class MainAppFinal extends Application {
         
         try {
             // Load the root layout from the fxml file
-            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("../view/WorkBenchRootLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainAppFinal.class.getResource("../view/WorkBenchRootLayout.fxml"));
             rootLayout = (BorderPane) loader.load();
             final double rem = Math.rint(new Text(" ").getLayoutBounds().getHeight());
             Scene scene = new Scene(rootLayout, 50 * rem, 40 * rem);
@@ -97,7 +101,7 @@ public class MainAppFinal extends Application {
     	    e.printStackTrace();
     	    return null;
     	  }
-    	}
+    }
       
       // Method to obtain current case path
       public String getCasePath() {
@@ -106,8 +110,6 @@ public class MainAppFinal extends Application {
           return resultCasePath;
       }
 
-      public static void main(String[] args) {
-          launch(args);
-      }
+
  
   }
