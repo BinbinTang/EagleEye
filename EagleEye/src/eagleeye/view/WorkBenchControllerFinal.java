@@ -1,8 +1,7 @@
 package eagleeye.view;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +17,6 @@ import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -56,8 +54,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import eagleeye.controller.MainAppFinal;
-import eagleeye.datacarving.unpack.service.FileSystemFormatDescriptorService;
-import eagleeye.datacarving.unpack.service.UnpackDirectoryService;
+import eagleeye.datacarving.unpack.FileSystemFormatDescriptorService;
+import eagleeye.datacarving.unpack.UnpackDirectoryService;
 import eagleeye.dbcontroller.DBInsertTransaction;
 import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.Device;
@@ -785,6 +783,7 @@ public class WorkBenchControllerFinal {
 			@Override
 			public void handle(ActionEvent event) {
 				Platform.exit();
+				System.exit(0);
 			}
 		});
 
@@ -1127,7 +1126,7 @@ public class WorkBenchControllerFinal {
 
 		Stage dialog = this.createProgressDialog();
 		
-		Service<?> service = new FileSystemFormatDescriptorService(newDevice.getDeviceImageFolder());
+		Service<?> fsService = new FileSystemFormatDescriptorService(newDevice.getDeviceImageFolder());
 		
 		ChangeListener<State> handleServiceChange = new ChangeListener<State>()
 		{
@@ -1150,7 +1149,7 @@ public class WorkBenchControllerFinal {
 			}
 		};
 
-		service.stateProperty().addListener(handleServiceChange);
+		fsService.stateProperty().addListener(handleServiceChange);
 
 		dialog.setOnHidden(new EventHandler<WindowEvent>()
 		{
@@ -1158,7 +1157,7 @@ public class WorkBenchControllerFinal {
 			public void handle(WindowEvent arg0)
 			{
 				updateProgress("Import of new device has been cancelled.");
-				service.cancel();
+				fsService.cancel();
 			}
 		});
 		
@@ -1167,49 +1166,66 @@ public class WorkBenchControllerFinal {
 			@Override
 			public void handle(WorkerStateEvent e)
 			{
+				importProgressIndicator.progressProperty().unbind();
+				progressLabel.textProperty().unbind();
+				
 				updateProgress("Writing database entries for new device...");
+				
+				importProgressIndicator.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
+				
 				@SuppressWarnings("unchecked")
 				ArrayList<ArrayList<FileEntity>> entityList = (ArrayList<ArrayList<FileEntity>>)(e.getSource().getValue());
 				
-				if(entityList.size() > 0)
+				Task<Void> task = new Task<Void>()
 				{
-					Task<Void> task = new Task<Void>()
+					
+					@Override
+					protected Void call() throws Exception
 					{
-						@Override
-						protected Void call() throws Exception
+						if(entityList.size() > 0)
 						{
 							DBInsertTransaction transaction = new DBInsertTransaction();
 							transaction.insertNewDeviceData(newDevice, entityList);
 							refreshCase(transaction.getDeviceID());
-							return null;
 						}
-					};
-
-					EventHandler<WorkerStateEvent> handleDBFailed = new EventHandler<WorkerStateEvent>()
-					{
-						@Override
-						public void handle(WorkerStateEvent e)
-						{
-							dialog.close();
-							updateProgress("Failed to write database entries! Import of new device failed.");
-						}
-					};
-					
-					EventHandler<WorkerStateEvent> handleDBSucceed = new EventHandler<WorkerStateEvent>()
-					{
-						@Override
-						public void handle(WorkerStateEvent e)
-						{
-							dialog.close();
-							updateProgress("Import of new device complete.");
-						}
-					};
-					
-					task.setOnSucceeded(handleDBSucceed);
-					task.setOnFailed(handleDBFailed);
-					task.run();
-				}
+						
+						return null;
+					}
+				};
 				
+				task.setOnSucceeded(new EventHandler<WorkerStateEvent>()
+				{
+					
+					@Override
+					public void handle(WorkerStateEvent arg0)
+					{
+						dialog.close();
+						WorkBenchControllerFinal.this.updateProgress("Import of new device complete.");
+					}
+				});
+				
+				task.setOnFailed(new EventHandler<WorkerStateEvent>()
+				{
+					@Override
+					public void handle(WorkerStateEvent arg0)
+					{
+						dialog.close();
+						WorkBenchControllerFinal.this.updateProgress("Import of new device failed.");
+					}
+				});
+				
+				task.setOnCancelled(new EventHandler<WorkerStateEvent>()
+				{
+					
+					@Override
+					public void handle(WorkerStateEvent arg0)
+					{
+						dialog.close();
+						WorkBenchControllerFinal.this.updateProgress("Import of new device cancelled.");
+					}
+				});
+				
+				task.run();
 			}
 		};
 
@@ -1249,28 +1265,47 @@ public class WorkBenchControllerFinal {
 				
 				updateProgress("Total disk image size: " + contentSizeString);
 				
-				Service<?> service = new UnpackDirectoryService(formatDescriptions);
-				service.setOnSucceeded(handleUnpackServiceSucceed);
-				service.stateProperty().addListener(handleServiceChange);
+				Service<?> unpackService = new UnpackDirectoryService(formatDescriptions);
+				unpackService.setOnSucceeded(handleUnpackServiceSucceed);
+				unpackService.stateProperty().addListener(handleServiceChange);
 
-				service.start();
 				updateProgress("Unpacking of raw disk images on the device has started...");
+				
+				NumberFormat format = NumberFormat.getPercentInstance();
+				
+				unpackService.progressProperty().addListener
+				(
+					new ChangeListener<Number>()
+					{
+						@Override
+						public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+						{
+							double value = newValue.doubleValue();
+							importProgressIndicator.setProgress(value);
+							updateProgress(unpackService.getMessage().toString() + ".. " + format.format(value));
+						}
+					}
+				);
 
 				dialog.setOnHidden(new EventHandler<WindowEvent>()
 				{
-					@Override
 					public void handle(WindowEvent arg0)
 					{
+						unpackService.cancel();
+						importProgressIndicator.progressProperty().unbind();
+						progressLabel.textProperty().unbind();
 						updateProgress("Import of new device has been cancelled.");
-						service.cancel();
 					}
 				});
+				
+				unpackService.start();
+
 			}
 		};
 
-		service.setOnSucceeded(handleFSServiceSucceed);
+		fsService.setOnSucceeded(handleFSServiceSucceed);
 		updateProgress("Analysing file system on disk images...");
-		service.start();
+		fsService.start();
 		dialog.show();
 	}
 	
