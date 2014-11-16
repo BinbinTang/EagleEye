@@ -982,7 +982,7 @@ public class WorkBenchControllerFinal {
 		openMenu.getItems().clear();
 		for (Device device : devices){
 			int ID = device.getDeviceID();
-			MenuItem newItem = new MenuItem(device.getDeviceName());
+			MenuItem newItem = new MenuItem(device.getDeviceName() + " [" + device.getDeviceOwner() + "]");
 			openMenu.getItems().add(newItem);
 			newItem.setOnAction(new EventHandler<ActionEvent>() {
 				@Override public void handle(ActionEvent e) {
