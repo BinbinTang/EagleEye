@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -1237,6 +1239,13 @@ public class WorkBenchControllerFinal {
 				@SuppressWarnings("unchecked")
 				ArrayList<FormatDescription> formatDescriptions = (ArrayList<FormatDescription>)(e.getSource().getValue());
 				
+				if(formatDescriptions.size() == 0)
+				{
+					dialog.close();
+					JOptionPane.showMessageDialog(null, "No device images were found in the folder provided.", "New device not imported.", JOptionPane.INFORMATION_MESSAGE);
+					updateProgress("Device images were not found in folder provided.");
+				}
+
 				long contentSize = 0;
 				
 				for(FormatDescription formatDescription : formatDescriptions)
