@@ -14,9 +14,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -226,6 +228,7 @@ public class WorkBenchControllerFinal {
 	//plugin manager
 	private PluginManager pm;
 	
+	private ProgressBar importProgressIndicator;
 	
 	/**
 	 * The constructor.
@@ -1121,15 +1124,24 @@ public class WorkBenchControllerFinal {
 		}
 
 		Stage dialog = this.createProgressDialog();
-	
+		
 		Service<?> service = new FileSystemFormatDescriptorService(newDevice.getDeviceImageFolder());
 		
-		ChangeListener<State> handleServiceChange =	new ChangeListener<State>()
+		ChangeListener<State> handleServiceChange = new ChangeListener<State>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue)
 			{
-				if (newValue == State.CANCELLED || newValue == State.FAILED)
+				if (newValue == State.FAILED)
+				{
+					updateProgress("Import of new device has failed.");
+				}
+				else if(newValue == State.CANCELLED)
+				{
+					updateProgress("Import of new device has been cancelled.");
+				}
+				
+				if(newValue == State.FAILED || newValue == State.CANCELLED)
 				{
 					dialog.close();
 				}
@@ -1143,6 +1155,7 @@ public class WorkBenchControllerFinal {
 			@Override
 			public void handle(WindowEvent arg0)
 			{
+				updateProgress("Import of new device has been cancelled.");
 				service.cancel();
 			}
 		});
@@ -1152,16 +1165,49 @@ public class WorkBenchControllerFinal {
 			@Override
 			public void handle(WorkerStateEvent e)
 			{
+				updateProgress("Writing database entries for new device...");
 				@SuppressWarnings("unchecked")
 				ArrayList<ArrayList<FileEntity>> entityList = (ArrayList<ArrayList<FileEntity>>)(e.getSource().getValue());
 				
 				if(entityList.size() > 0)
 				{
-					dialog.close();
-					DBInsertTransaction transaction = new DBInsertTransaction();
-					transaction.insertNewDeviceData(newDevice, entityList);
-					refreshCase(transaction.getDeviceID());
+					Task<Void> task = new Task<Void>()
+					{
+						@Override
+						protected Void call() throws Exception
+						{
+							DBInsertTransaction transaction = new DBInsertTransaction();
+							transaction.insertNewDeviceData(newDevice, entityList);
+							refreshCase(transaction.getDeviceID());
+							return null;
+						}
+					};
+
+					EventHandler<WorkerStateEvent> handleDBFailed = new EventHandler<WorkerStateEvent>()
+					{
+						@Override
+						public void handle(WorkerStateEvent e)
+						{
+							dialog.close();
+							updateProgress("Failed to write database entries! Import of new device failed.");
+						}
+					};
+					
+					EventHandler<WorkerStateEvent> handleDBSucceed = new EventHandler<WorkerStateEvent>()
+					{
+						@Override
+						public void handle(WorkerStateEvent e)
+						{
+							dialog.close();
+							updateProgress("Import of new device complete.");
+						}
+					};
+					
+					task.setOnSucceeded(handleDBSucceed);
+					task.setOnFailed(handleDBFailed);
+					task.run();
 				}
+				
 			}
 		};
 
@@ -1199,16 +1245,21 @@ public class WorkBenchControllerFinal {
 				
 				newDevice.modifyContentSize(contentSizeString);
 				
+				updateProgress("Total disk image size: " + contentSizeString);
+				
 				Service<?> service = new UnpackDirectoryService(formatDescriptions);
 				service.setOnSucceeded(handleUnpackServiceSucceed);
 				service.stateProperty().addListener(handleServiceChange);
+
 				service.start();
+				updateProgress("Unpacking of raw disk images on the device has started...");
 
 				dialog.setOnHidden(new EventHandler<WindowEvent>()
 				{
 					@Override
 					public void handle(WindowEvent arg0)
 					{
+						updateProgress("Import of new device has been cancelled.");
 						service.cancel();
 					}
 				});
@@ -1216,7 +1267,7 @@ public class WorkBenchControllerFinal {
 		};
 
 		service.setOnSucceeded(handleFSServiceSucceed);
-		
+		updateProgress("Analysing file system on disk images...");
 		service.start();
 		dialog.show();
 	}
@@ -1237,9 +1288,8 @@ public class WorkBenchControllerFinal {
 		Scene scene = new Scene(root);
 		dialog.setScene(scene);
 
-		ProgressBar indicator = new ProgressBar();
-
-		root.getChildren().add(indicator);
+		importProgressIndicator = new ProgressBar();
+		root.getChildren().add(importProgressIndicator);
 
 		Button cancel = new Button("Cancel");
 		root.getChildren().add(cancel);
