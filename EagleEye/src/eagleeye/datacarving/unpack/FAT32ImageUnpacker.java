@@ -6,12 +6,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import javafx.concurrent.Task;
+import eagleeye.entities.FileEntity;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.filesystem.fat32.FAT32ObjectBootSector;
 
-public class FAT32ImageUnpacker implements IDiskImageUnpacker{
-	
-	protected FormatDescription formatDescription;
+public class FAT32ImageUnpacker extends DiskImageUnpacker{
 	
 	protected FileInputStream fileInputStream;
 	protected DataInputStream inputStream;
@@ -23,11 +23,8 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	protected int chunkSize; // temporary page size used to find boot sector
 	protected int bootSectorSize;
 	
-
 	protected int headerSize;
 	
-
-	protected boolean cancel = false;
 	
 	public FAT32ImageUnpacker(){
 		this.setHeaderSize(512);
@@ -112,76 +109,79 @@ public class FAT32ImageUnpacker implements IDiskImageUnpacker{
 	}
 	
 	@Override
-	public ArrayList<eagleeye.entities.FileEntity> unpack(FormatDescription formatDescription) throws Exception {
-		this.formatDescription = formatDescription;
-		
-		if(this.formatDescription.getBinaryImageType() != "FAT32")
-		{
-			return null;
-		}
-		
-		java.io.File file = this.formatDescription.getFile();
-		this.fileInputStream = new FileInputStream(file);
-		this.inputStream = new DataInputStream(this.fileInputStream);
-		
-		byte[] inputBytes = new byte[this.headerSize];
-		
-		ByteBuffer byteBuffer;
-		
-		// Split up the data into blocks
-		long totalFileBytes = (long) file.length();
-		long totalBytesRead = 0;
-		
-		boolean isHeaderFound = false;
-
-		while (totalFileBytes > totalBytesRead + this.headerSize)
-		{			
-			inputBytes = new byte[this.headerSize];
-			inputStream.readFully(inputBytes);
-			byteBuffer = ByteBuffer.wrap(inputBytes);
-			byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-
-			totalBytesRead += this.headerSize;
-			
-			// check the bootSector
-			// Case 1: jmpBoot[0] = 0xE9 jmpBoot[1] = 0x?? jmpBoot[2] = 0x??;
-			if (byteBuffer.get() == (byte) 0xE9)
-			{
-				chunk =inputBytes;
-				isHeaderFound = true;
-			}
-			// Case 2:jmpBoot[0] = 0xEB jmpBoot[1] = 0x?? jmpBoot[2] = 0x90;
-			else if (byteBuffer.get()== (byte) 0xEB)
-			{
-				byteBuffer.position(2);
-				if (byteBuffer.get()!= (byte) 0x90){
-					chunk = inputBytes;
-					isHeaderFound = true;
-				}
-			}
-			if (isHeaderFound){
-				break;
-			}
-		}
-		
-		StringBuilder hex = new StringBuilder(chunk.length * 2);
-		
-		for(byte b : chunk)
-		{
-			hex.append(String.format("%02X ", b));
-		}
-		
-		System.out.println(hex.toString());
-		FAT32ObjectBootSector bootSector = readObjectBootSector(chunk);
-		
-		
-		return null;
-	}
-
-	@Override
-	public void cancel()
+	protected Task<ArrayList<FileEntity>> createTask()
 	{
-		this.cancel = true;
+		return new Task<ArrayList<FileEntity>>()
+		{
+			
+			@Override
+			protected ArrayList<FileEntity> call() throws Exception
+			{
+				FAT32ImageUnpacker.this.formatDescription = formatDescription;
+				
+				if(FAT32ImageUnpacker.this.formatDescription.getBinaryImageType() != "FAT32")
+				{
+					return null;
+				}
+				
+				java.io.File file = FAT32ImageUnpacker.this.formatDescription.getFile();
+				FAT32ImageUnpacker.this.fileInputStream = new FileInputStream(file);
+				FAT32ImageUnpacker.this.inputStream = new DataInputStream(FAT32ImageUnpacker.this.fileInputStream);
+				
+				byte[] inputBytes = new byte[FAT32ImageUnpacker.this.headerSize];
+				
+				ByteBuffer byteBuffer;
+				
+				// Split up the data into blocks
+				long totalFileBytes = (long) file.length();
+				long totalBytesRead = 0;
+				
+				boolean isHeaderFound = false;
+
+				while (totalFileBytes > totalBytesRead + FAT32ImageUnpacker.this.headerSize)
+				{			
+					inputBytes = new byte[FAT32ImageUnpacker.this.headerSize];
+					inputStream.readFully(inputBytes);
+					byteBuffer = ByteBuffer.wrap(inputBytes);
+					byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+					totalBytesRead += FAT32ImageUnpacker.this.headerSize;
+					
+					// check the bootSector
+					// Case 1: jmpBoot[0] = 0xE9 jmpBoot[1] = 0x?? jmpBoot[2] = 0x??;
+					if (byteBuffer.get() == (byte) 0xE9)
+					{
+						chunk =inputBytes;
+						isHeaderFound = true;
+					}
+					// Case 2:jmpBoot[0] = 0xEB jmpBoot[1] = 0x?? jmpBoot[2] = 0x90;
+					else if (byteBuffer.get()== (byte) 0xEB)
+					{
+						byteBuffer.position(2);
+						if (byteBuffer.get()!= (byte) 0x90){
+							chunk = inputBytes;
+							isHeaderFound = true;
+						}
+					}
+					if (isHeaderFound){
+						break;
+					}
+				}
+				
+				StringBuilder hex = new StringBuilder(chunk.length * 2);
+				
+				for(byte b : chunk)
+				{
+					hex.append(String.format("%02X ", b));
+				}
+				
+				System.out.println(hex.toString());
+				FAT32ObjectBootSector bootSector = readObjectBootSector(chunk);
+				
+				
+				return null;
+			}
+		};
 	}
 
 }
