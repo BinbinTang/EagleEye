@@ -77,7 +77,7 @@ public class FileSystemFormatDescriptorService extends Service<ArrayList<FormatD
 		// Simulate plug ins
 		formatIdentifierManager.load(new AndroidBootFormatIdentifier());
 		formatIdentifierManager.load(new YAFFS2FormatIdentifier());
-		formatIdentifierManager.load(new FAT32FormatIdentifier());
+		//formatIdentifierManager.load(new FAT32FormatIdentifier());
 		
 		ArrayList<FormatDescription> formatDescriptions = new ArrayList<FormatDescription>();
 		
