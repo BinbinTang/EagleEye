@@ -1087,8 +1087,10 @@ public class WorkBenchControllerFinal {
 				
 				if(newItem.getFileEntity().getIsRecovered()){		
 					newItem.getValue().setTextFill(isRecoveredColor);
+					System.out.println("Recovered: "+ newItem.getValue());
 				}else if(newItem.getFileEntity().getIsModified()){
 					newItem.getValue().setTextFill(isModifiedColor);
+					System.out.println("Modified: "+ newItem.getValue());
 				}
 			
 				node.getChildren().add(newItem);
