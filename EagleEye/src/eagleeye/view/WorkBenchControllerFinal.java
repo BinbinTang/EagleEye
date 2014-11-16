@@ -343,6 +343,7 @@ public class WorkBenchControllerFinal {
 							Label noDevice = new Label("No device has been chosen.");
 							MainResultPane.setContent(noDevice);
 						}
+						updateProgress("Current selected tool: " +functionName );
 					}
 				});
 			}
@@ -360,6 +361,7 @@ public class WorkBenchControllerFinal {
 								Label noDevice = new Label("No device has been chosen.");
 								MainResultPane.setContent(noDevice);
 							}
+							updateProgress("Current selected tool: " +functionName );
 						}	
 					});
 				}
