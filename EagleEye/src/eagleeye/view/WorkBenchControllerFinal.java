@@ -1055,7 +1055,7 @@ public class WorkBenchControllerFinal {
 	private void addFiles(Directory dir, MyTreeItem<Label> node) {
 		for (eagleeye.entities.FileEntity file : allFiles) {
 			if(file.getDirectoryID() == dir.getDirectoryID()){
-				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt());
+				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt() + " [" + file.getDateCreated() + "]");
 				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName);
 				newItem.setFileEntity(file);
 				//"All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"
