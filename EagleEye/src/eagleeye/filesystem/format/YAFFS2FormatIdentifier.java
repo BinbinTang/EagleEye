@@ -37,6 +37,11 @@ public class YAFFS2FormatIdentifier implements IFormatIdentifier
 		// Split up the data into blocks
 		int totalFileBytes = (int) file.length();
 		int totalBytesRead = 0;
+		
+		if(file.length() % totalBlockSize != 0)
+		{
+			return null;
+		}
 
 		byte[] inputBytes = new byte[this.blockSize + this.oobSize];
 		
