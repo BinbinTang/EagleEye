@@ -417,14 +417,6 @@ public class WorkBenchControllerFinal {
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check range
-							if (Integer.parseInt(startHourTf.getText()) > 23) {
-								System.out.println("too large");
-								startHourTf.setText("23");
-							} else if (Integer.parseInt(startHourTf.getText()) < 0) {
-								System.out.println("too small");
-								startHourTf.setText("0");
-							}
 							// Check length
 							if (startHourTf.getText().length() > 2) {
 								System.out.println("too long");
@@ -432,10 +424,19 @@ public class WorkBenchControllerFinal {
 							} else if (startHourTf.getText().length() == 1) {
 								System.out.println("1 degit");
 								startHourTf.setText("0" + startHourTf.getText());
-							} else if (startHourTf.getText().length() == 0) {
+							} else if (startHourTf.getText().length() == 0){
 								System.out.println("no input");
 								startHourTf.setText("00");
 							}
+							// Check range
+							if (Integer.parseInt(startHourTf.getText()) > 23) {
+								System.out.println("too large");
+								startHourTf.setText("23");
+							} else if (Integer.parseInt(startHourTf.getText()) < 0) {
+								System.out.println("too small");
+								startHourTf.setText("0");
+							} 
+							
 							startHour = startHourTf.getText();
 							System.out.println("startHour is " + startHour);
 						}
@@ -463,14 +464,6 @@ public class WorkBenchControllerFinal {
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check range
-							if (Integer.parseInt(startMinuteTf.getText()) > 59) {
-								System.out.println("too large");
-								startMinuteTf.setText("59");
-							} else if (Integer.parseInt(startMinuteTf.getText()) < 0) {
-								System.out.println("too small");
-								startMinuteTf.setText("0");
-							}
 							// Check length
 							if (startMinuteTf.getText().length() > 2) {
 								System.out.println("too long");
@@ -483,6 +476,15 @@ public class WorkBenchControllerFinal {
 								System.out.println("no input");
 								startMinuteTf.setText("00");
 							}
+							// Check range
+							if (Integer.parseInt(startMinuteTf.getText()) > 59) {
+								System.out.println("too large");
+								startMinuteTf.setText("59");
+							} else if (Integer.parseInt(startMinuteTf.getText()) < 0) {
+								System.out.println("too small");
+								startMinuteTf.setText("0");
+							}
+							
 							startMinute = startMinuteTf.getText();
 							System.out.println("startMinute is " + startMinute);
 						}
@@ -508,14 +510,6 @@ public class WorkBenchControllerFinal {
 				if (newPropertyValue) {
 					System.out.println("Textfield on focus");
 				} else {
-					// Check range
-					if (Integer.parseInt(endHourTf.getText()) > 23) {
-						System.out.println("too large");
-						endHourTf.setText("23");
-					} else if (Integer.parseInt(endHourTf.getText()) < 0) {
-						System.out.println("too small");
-						endHourTf.setText("0");
-					}
 					// Check length
 					if (endHourTf.getText().length() > 2) {
 						System.out.println("too long");
@@ -526,6 +520,14 @@ public class WorkBenchControllerFinal {
 					} else if (endHourTf.getText().length() == 0) {
 						System.out.println("no input");
 						endHourTf.setText("00");
+					}
+					// Check range
+					if (Integer.parseInt(endHourTf.getText()) > 23) {
+						System.out.println("too large");
+						endHourTf.setText("23");
+					} else if (Integer.parseInt(endHourTf.getText()) < 0) {
+						System.out.println("too small");
+						endHourTf.setText("0");
 					}
 					endHour = endHourTf.getText();
 					System.out.println("endHour is " + endHour);
@@ -553,14 +555,6 @@ public class WorkBenchControllerFinal {
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check range
-							if (Integer.parseInt(endMinuteTf.getText()) > 59) {
-								System.out.println("too large");
-								endMinuteTf.setText("59");
-							} else if (Integer.parseInt(endMinuteTf.getText()) < 0) {
-								System.out.println("too small");
-								endMinuteTf.setText("0");
-							}
 							// Check length
 							if (endMinuteTf.getText().length() > 2) {
 								System.out.println("too long");
@@ -571,6 +565,14 @@ public class WorkBenchControllerFinal {
 							} else if (endMinuteTf.getText().length() == 0) {
 								System.out.println("no input");
 								endMinuteTf.setText("00");
+							}
+							// Check range
+							if (Integer.parseInt(endMinuteTf.getText()) > 59) {
+								System.out.println("too large");
+								endMinuteTf.setText("59");
+							} else if (Integer.parseInt(endMinuteTf.getText()) < 0) {
+								System.out.println("too small");
+								endMinuteTf.setText("0");
 							}
 							endMinute = endMinuteTf.getText();
 							System.out.println("endMinute is " + endMinute);
@@ -600,14 +602,6 @@ public class WorkBenchControllerFinal {
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check range
-							if (Integer.parseInt(startHourDailyTf.getText()) > 23) {
-								System.out.println("too large");
-								startHourDailyTf.setText("23");
-							} else if (Integer.parseInt(startHourDailyTf.getText()) < 0) {
-								System.out.println("too small");
-								startHourDailyTf.setText("0");
-							}
 							// Check length
 							if (startHourDailyTf.getText().length() > 2) {
 								System.out.println("too long");
@@ -618,6 +612,14 @@ public class WorkBenchControllerFinal {
 							} else if (startHourDailyTf.getText().length() == 0) {
 								System.out.println("no input");
 								startHourDailyTf.setText("00");
+							}
+							// Check range
+							if (Integer.parseInt(startHourDailyTf.getText()) > 23) {
+								System.out.println("too large");
+								startHourDailyTf.setText("23");
+							} else if (Integer.parseInt(startHourDailyTf.getText()) < 0) {
+								System.out.println("too small");
+								startHourDailyTf.setText("0");
 							}
 							startHourDaily = startHourDailyTf.getText();
 							System.out.println("startHourDaily is " + startHourDaily);
@@ -646,14 +648,6 @@ public class WorkBenchControllerFinal {
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check range
-							if (Integer.parseInt(startMinuteDailyTf.getText()) > 59) {
-								System.out.println("too large");
-								startMinuteDailyTf.setText("59");
-							} else if (Integer.parseInt(startMinuteDailyTf.getText()) < 0) {
-								System.out.println("too small");
-								startMinuteDailyTf.setText("0");
-							}
 							// Check length
 							if (startMinuteDailyTf.getText().length() > 2) {
 								System.out.println("too long");
@@ -665,6 +659,14 @@ public class WorkBenchControllerFinal {
 							} else if (startMinuteDailyTf.getText().length() == 0) {
 								System.out.println("no input");
 								startMinuteDailyTf.setText("00");
+							}
+							// Check range
+							if (Integer.parseInt(startMinuteDailyTf.getText()) > 59) {
+								System.out.println("too large");
+								startMinuteDailyTf.setText("59");
+							} else if (Integer.parseInt(startMinuteDailyTf.getText()) < 0) {
+								System.out.println("too small");
+								startMinuteDailyTf.setText("0");
 							}
 							startMinuteDaily = startMinuteDailyTf.getText();
 							System.out.println("startMinuteDaily is " + startMinuteDaily);
@@ -691,14 +693,6 @@ public class WorkBenchControllerFinal {
 				if (newPropertyValue) {
 					System.out.println("Textfield on focus");
 				} else {
-					// Check range
-					if (Integer.parseInt(endHourDailyTf.getText()) > 23) {
-						System.out.println("too large");
-						endHourDailyTf.setText("23");
-					} else if (Integer.parseInt(endHourDailyTf.getText()) < 0) {
-						System.out.println("too small");
-						endHourDailyTf.setText("0");
-					}
 					// Check length
 					if (endHourDailyTf.getText().length() > 2) {
 						System.out.println("too long");
@@ -709,6 +703,14 @@ public class WorkBenchControllerFinal {
 					} else if (endHourDailyTf.getText().length() == 0) {
 						System.out.println("no input");
 						endHourDailyTf.setText("00");
+					}
+					// Check range
+					if (Integer.parseInt(endHourDailyTf.getText()) > 23) {
+						System.out.println("too large");
+						endHourDailyTf.setText("23");
+					} else if (Integer.parseInt(endHourDailyTf.getText()) < 0) {
+						System.out.println("too small");
+						endHourDailyTf.setText("0");
 					}
 					endHourDaily = endHourDailyTf.getText();
 					System.out.println("endHourDaily is " + endHourDaily);
@@ -736,14 +738,6 @@ public class WorkBenchControllerFinal {
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check range
-							if (Integer.parseInt(endMinuteDailyTf.getText()) > 59) {
-								System.out.println("too large");
-								endMinuteDailyTf.setText("59");
-							} else if (Integer.parseInt(endMinuteDailyTf.getText()) < 0) {
-								System.out.println("too small");
-								endMinuteDailyTf.setText("0");
-							}
 							// Check length
 							if (endMinuteDailyTf.getText().length() > 2) {
 								System.out.println("too long");
@@ -754,6 +748,14 @@ public class WorkBenchControllerFinal {
 							} else if (endMinuteDailyTf.getText().length() == 0) {
 								System.out.println("no input");
 								endMinuteDailyTf.setText("00");
+							}
+							// Check range
+							if (Integer.parseInt(endMinuteDailyTf.getText()) > 59) {
+								System.out.println("too large");
+								endMinuteDailyTf.setText("59");
+							} else if (Integer.parseInt(endMinuteDailyTf.getText()) < 0) {
+								System.out.println("too small");
+								endMinuteDailyTf.setText("0");
 							}
 							endMinuteDaily = endMinuteDailyTf.getText();
 							System.out.println("endMinuteDaily is " + endMinuteDaily);
