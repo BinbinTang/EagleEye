@@ -72,10 +72,20 @@ public class fileLoader
 			BufferedImage bimg = ImageIO.read(new File(filePath));
 			int width = bimg.getWidth();
 			int height = bimg.getHeight();
+	//		paintingPanel.setWidth(width);
+			
+			if(width<=150){
+			 paintingPanel.setWidth(width);  
+			 paintingPanel.setHeight(height*(150/width));
+			}
+			
+			else{
 			paintingPanel.setWidth(width);
 			paintingPanel.setHeight(height);
-	//		System.out.println("width is "+width);
-	//		System.out.println("height is "+height);
+			}
+			
+			System.out.println("width is "+width);
+			System.out.println("height is "+height);
 			frame.add(paintingPanel, BorderLayout.CENTER);
 			frame.pack();
 			frame.setLocationByPlatform(true);
@@ -166,11 +176,9 @@ class CustomPanel extends JPanel
 
 	public void setWidth(int x){
 		width=x;
-		System.out.println("width: "+ x);
 	}
 	public void setHeight(int x){
 		height=x;
-		System.out.println("height: "+ x);
 	}
 	public void setShowPhoto(boolean x){
 		showPhoto=x;
@@ -186,6 +194,7 @@ class CustomPanel extends JPanel
 	public Dimension getPreferredSize()
 	{		
 		if(showPhoto){
+			System.out.println("showing photo dimension "+width+" "+height);
 			return (new Dimension(width, height));
 		}
 		if(showText){
