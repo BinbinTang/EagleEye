@@ -126,7 +126,7 @@ public class fileLoader
 				listOfFormat.add("jpeg");
 				listOfFormat.add("png");
 				if(checkFormat(filePath)==false){
-					JOptionPane.showMessageDialog(null,"Current doc format is not supported","Error",JOptionPane.INFORMATION_MESSAGE);   
+					JOptionPane.showMessageDialog(null,"Current file format is not supported by viewer","Format not suppported",JOptionPane.INFORMATION_MESSAGE);   
 				}
 				else{
 					try {
