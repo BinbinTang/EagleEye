@@ -70,6 +70,7 @@ import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
 import eagleeye.pluginmanager.*;
+import eagleeye.view.WorkBenchControllerFinal.MyTreeItem;
 
 public class WorkBenchControllerFinal {
 	
@@ -1098,6 +1099,12 @@ public class WorkBenchControllerFinal {
 				}
 			
 				node.getChildren().add(newItem);
+				TreeItem<Label> temp = node;
+				do{
+					temp.setExpanded(true);
+					temp = temp.getParent();
+				}while(temp!= null);
+				
 			}
 		}
 

@@ -166,9 +166,11 @@ class CustomPanel extends JPanel
 
 	public void setWidth(int x){
 		width=x;
+		System.out.println("width: "+ x);
 	}
 	public void setHeight(int x){
 		height=x;
+		System.out.println("height: "+ x);
 	}
 	public void setShowPhoto(boolean x){
 		showPhoto=x;
