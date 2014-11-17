@@ -30,6 +30,7 @@ public class MainAppFinal extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("EagleEye");
+        this.primaryStage.setFullScreen(true);
         
         try {
             // Load the root layout from the fxml file
