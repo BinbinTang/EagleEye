@@ -75,6 +75,7 @@ import eagleeye.view.WorkBenchControllerFinal.MyTreeItem;
 public class WorkBenchControllerFinal {
 	
 	// Predfined fixed numbers
+	private Color originalColor = Color.web("#2e00ff");
 	private Color isRecoveredColor = Color.web("#23ff23");
 	private Color isModifiedColor = Color.web("#f42929");
 
@@ -1092,10 +1093,10 @@ public class WorkBenchControllerFinal {
 				
 				if(newItem.getFileEntity().getIsRecovered()){		
 					newItem.getValue().setTextFill(isRecoveredColor);
-					System.out.println("Recovered: "+ newItem.getValue());
 				}else if(newItem.getFileEntity().getIsModified()){
 					newItem.getValue().setTextFill(isModifiedColor);
-					System.out.println("Modified: "+ newItem.getValue());
+				}else{
+					newItem.getValue().setTextFill(originalColor);
 				}
 			
 				node.getChildren().add(newItem);
