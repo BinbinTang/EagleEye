@@ -16,24 +16,24 @@
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="150.0" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
 				<AnchorPane blendMode="EXCLUSION">
 					<children>
-								<MenuBar prefHeight="40.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+								<MenuBar prefHeight="50.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 									<menus>
-										<Menu mnemonicParsing="false" text="Device">
+										<Menu mnemonicParsing="false" style="-fx-font-size: 18;" text="Device">
 											<items>
 												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New Device Folder" />
                               <Menu fx:id="openMenu" mnemonicParsing="false" text="Open Device" />
 												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Exit" />
 											</items>
 										</Menu>
-										<Menu fx:id="analysisMenu" mnemonicParsing="false" text="Tools" />
+										<Menu fx:id="analysisMenu" mnemonicParsing="false" style="-fx-font-size: 18;" text="Tools" />
 										<Menu mnemonicParsing="false" text="Help" visible="false">
 											<items>
 												<MenuItem mnemonicParsing="false" text="About" />
@@ -75,7 +75,7 @@
                            <children>
                               <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="478.0" prefWidth="323.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <content>
-                                    <Accordion>
+                                    <Accordion style="-fx-font-size: 18;">
                                       <panes>
                                         <TitledPane expanded="false" text="Filters">
                                           <content>
@@ -85,7 +85,7 @@
                                                          <children>
                                                             <Label text="DateTime Range:">
                                                                <font>
-                                                                  <Font name="Segoe UI" size="12.0" />
+                                                                  <Font name="Segoe UI" size="18.0" />
                                                                </font>
                                                                <padding>
                                                                   <Insets top="10.0" />
@@ -97,11 +97,11 @@
                                                                      <children>
                                                                         <GridPane>
                                                                           <columnConstraints>
-                                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="130.0" />
-                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" />
+                                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
                                                                               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
                                                                           </columnConstraints>
                                                                           <rowConstraints>
                                                                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
@@ -110,56 +110,62 @@
                                                                            <children>
                                                                               <Label text="Start DateTime:">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI Light" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                                  <tooltip>
                                                                                     <Tooltip text="Choose the start date and time." />
                                                                                  </tooltip>
                                                                               </Label>
-                                                										<DatePicker id="startDatePicker" fx:id="startDatePicker" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
+                                                										<DatePicker id="startDatePicker" fx:id="startDatePicker" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" style="-fx-font-size: 16;" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
                                                                               <Label text="End DateTime:" GridPane.rowIndex="1">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI Light" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                                  <tooltip>
                                                                                     <Tooltip text="Choose the end date and time." />
                                                                                  </tooltip>
                                                                               </Label>
-                                                                              <TextField fx:id="startHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="30.0" text="00" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+                                                                              <TextField fx:id="startHourTf" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="30.0" text="00" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                               </TextField>
                                                                               <TextField fx:id="startMinuteTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="00" GridPane.columnIndex="4">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                               </TextField>
-                                                                              <Label text=":" GridPane.columnIndex="3" />
-                                                                              <DatePicker id="startDatePicker" fx:id="endDatePicker" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                              <TextField fx:id="endHourTf" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="30.0" text="23" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                                                              <Label text=":" GridPane.columnIndex="3">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
+                                                                                 </font></Label>
+                                                                              <DatePicker id="startDatePicker" fx:id="endDatePicker" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" style="-fx-font-size: 16;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                              <TextField fx:id="endHourTf" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="30.0" text="23" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                                                                 <font>
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                               </TextField>
-                                                                              <Label text=":" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                              <Label text=":" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                                                                 <font>
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
+                                                                                 </font></Label>
                                                                               <TextField fx:id="endMinuteTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="59" GridPane.columnIndex="4" GridPane.rowIndex="1">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                               </TextField>
                                                                            </children>
                                                                         </GridPane>
                                                 								<GridPane>
                                                 									<columnConstraints>
-                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
-                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="130.0" />
+                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
                                                 										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
                                                 										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
-                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
                                                 										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                                                										<ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
                                                 									</columnConstraints>
                                                 									<rowConstraints>
                                                 										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -167,33 +173,42 @@
                                                 									<children>
                                                 										<TextField fx:id="startHourDailyTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="00" GridPane.columnIndex="1">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                               </TextField>
                                                 										<TextField fx:id="startMinuteDailyTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="00" GridPane.columnIndex="3">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                               </TextField>
                                                 										<TextField fx:id="endHourDailyTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="23" GridPane.columnIndex="5">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                               </TextField>
                                                 										<TextField fx:id="endMinuteDailyTf" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="59" GridPane.columnIndex="7">
                                                                                  <font>
-                                                                                    <Font name="Segoe UI" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                                               </TextField>
-                                                										<Label text=":" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                                										<Label text=":" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                                										<Label text="~" GridPane.columnIndex="4" GridPane.halignment="CENTER" />
+                                                										<Label text=":" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                                                 <font>
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
+                                                                                 </font></Label>
+                                                										<Label text=":" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                                                 <font>
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
+                                                                                 </font></Label>
+                                                										<Label text="~" GridPane.columnIndex="4" GridPane.halignment="CENTER">
+                                                                                 <font>
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
+                                                                                 </font></Label>
                                                 										<Label text="Daily Time Range:">
                                                 											<tooltip>
                                                 												<Tooltip text="Specify the time range to be included of everyday." />
                                                 											</tooltip>
                                                                                  <font>
-                                                                                    <Font name="Segoe UI Light" size="12.0" />
+                                                                                    <Font name="Segoe UI Light" size="16.0" />
                                                                                  </font>
                                                 										</Label>
                                                 									</children>
@@ -210,7 +225,7 @@
                                                             </AnchorPane>
                                                             <Label text="KeyWords:">
                                                                <font>
-                                                                  <Font name="Segoe UI" size="12.0" />
+                                                                  <Font name="Segoe UI" size="18.0" />
                                                                </font>
                                                                <padding>
                                                                   <Insets top="10.0" />
@@ -220,7 +235,7 @@
                                                                <children>
                                     										<TextField fx:id="keywordsTf" layoutX="14.0" layoutY="11.0" prefHeight="30.0" prefWidth="321.0">
                                                                      <font>
-                                                                        <Font name="Segoe UI Light" size="12.0" />
+                                                                        <Font name="Segoe UI Light" size="16.0" />
                                                                      </font>
                                                                   </TextField>
                                                                </children>
@@ -230,7 +245,7 @@
                                                             </AnchorPane>
                                                             <Label text="Data Types:">
                                                                <font>
-                                                                  <Font name="Segoe UI" size="12.0" />
+                                                                  <Font name="Segoe UI" size="18.0" />
                                                                </font>
                                                                <padding>
                                                                   <Insets top="10.0" />
@@ -245,18 +260,18 @@
                                           																		<Tooltip text="Include unchanged original deleted files." />
                                           																	</tooltip>
                                                                            <font>
-                                                                              <Font name="Segoe UI Light" size="12.0" />
+                                                                              <Font name="Segoe UI Light" size="16.0" />
                                                                            </font>
                                                                            <padding>
                                                                               <Insets top="5.0" />
                                                                            </padding>
                                           																</CheckBox>
-                                          																<CheckBox fx:id="isDeletedCheckBox" mnemonicParsing="false" selected="true" text="Rocovered Deleted Files" textFill="#23ff23">
+                                          																<CheckBox fx:id="isDeletedCheckBox" mnemonicParsing="false" selected="true" text="Rocovered Deleted Files" textFill="#025013">
                                           																	<tooltip>
                                           																		<Tooltip text="Include recovered deleted files." />
                                           																	</tooltip>
                                                                            <font>
-                                                                              <Font name="Segoe UI Light" size="12.0" />
+                                                                              <Font name="Segoe UI Light" size="16.0" />
                                                                            </font>
                                                                            <padding>
                                                                               <Insets top="5.0" />
@@ -267,7 +282,7 @@
                                           																		<Tooltip text="Include recognized type modified files." />
                                           																	</tooltip>
                                                                            <font>
-                                                                              <Font name="Segoe UI Light" size="12.0" />
+                                                                              <Font name="Segoe UI Light" size="14.0" />
                                                                            </font>
                                                                            <padding>
                                                                               <Insets top="5.0" />
@@ -284,7 +299,7 @@
                                                                <children>
                                                                   <TitledPane prefHeight="51.0" prefWidth="375.0" text="Category" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <content>
-                                                                        <VBox fx:id="categoryViewPane" />
+                                                                        <VBox fx:id="categoryViewPane" style="-fx-font-size: 14;" />
                                                                      </content>
                                                                   </TitledPane>
                                                                </children>
@@ -293,12 +308,12 @@
                                                                <children>
                                     										<Button fx:id="searchButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleFilter" onMouseClicked="#handleFilter" prefHeight="30.0" prefWidth="120.0" text="Search" textAlignment="CENTER">
                                                                      <font>
-                                                                        <Font name="Segoe UI Light" size="12.0" />
+                                                                        <Font name="Segoe UI Light" size="18.0" />
                                                                      </font>
                                                                   </Button>
                                                                   <Button fx:id="resetSearchBtn" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="149.0" layoutY="15.0" mnemonicParsing="false" onAction="#resetFilter" onMouseClicked="#handleFilter" prefHeight="30.0" prefWidth="120.0" text="Reset" textAlignment="CENTER">
                                                                      <font>
-                                                                        <Font name="Segoe UI Light" size="12.0" />
+                                                                        <Font name="Segoe UI Light" size="18.0" />
                                                                      </font>
                                                                   </Button>
                                                                </children>
@@ -308,6 +323,9 @@
                                                    </children>
                                                 </AnchorPane>
                                           </content>
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
                                         </TitledPane>
                                       </panes>
                                     </Accordion>
@@ -324,7 +342,7 @@
                   <MenuBar prefHeight="20.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <Label fx:id="progressLabel" prefHeight="20.0" prefWidth="800.0" style="-fx-text-fill: black;" text="Welcome to EagleEye." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
-                        <Font name="Segoe UI" size="12.0" />
+                        <Font name="Segoe UI" size="14.0" />
                      </font>
                      <opaqueInsets>
                         <Insets />

@@ -1,5 +1,6 @@
 package eagleeye.view;
 
+import java.awt.Font;
 import java.io.File;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -76,7 +77,7 @@ public class WorkBenchControllerFinal {
 	
 	// Predfined fixed numbers
 	private Color originalColor = Color.web("#2e00ff");
-	private Color isRecoveredColor = Color.web("#23ff23");
+	private Color isRecoveredColor = Color.web("#025013");
 	private Color isModifiedColor = Color.web("#f42929");
 
 	// DataBase
@@ -282,6 +283,7 @@ public class WorkBenchControllerFinal {
 			CheckBox ckb = new CheckBox(category);
 			ckb.setPrefHeight(30);
 			ckb.setSelected(true);
+			ckb.setStyle("-fx-font-size: 14;");
 			ckb.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
@@ -329,7 +331,8 @@ public class WorkBenchControllerFinal {
 			Button newBtn = new Button(functionName);
 			newBtn.setTooltip(new Tooltip(functionName));
 			//newBtn.setPrefWidth(80);
-			newBtn.setPrefHeight(30);
+			newBtn.setPrefHeight(40);
+			newBtn.setStyle("-fx-font-size: 16;");
 			
 			functionHBox.getChildren().add(newBtn);
 			
