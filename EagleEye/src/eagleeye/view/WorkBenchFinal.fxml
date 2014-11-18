@@ -240,7 +240,7 @@
                                                                <children>
                                                                   <VBox layoutX="61.0" layoutY="-9.0" prefHeight="66.0" prefWidth="355.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <children>
-                                          																<CheckBox fx:id="isOriginalCheckBox" mnemonicParsing="false" selected="true" text="Original" textFill="#2e00ff">
+                                          																<CheckBox fx:id="isOriginalCheckBox" mnemonicParsing="false" selected="true" text="Original Existing Files" textFill="#2e00ff">
                                           																	<tooltip>
                                           																		<Tooltip text="Include unchanged original deleted files." />
                                           																	</tooltip>
@@ -251,7 +251,7 @@
                                                                               <Insets top="5.0" />
                                                                            </padding>
                                           																</CheckBox>
-                                          																<CheckBox fx:id="isDeletedCheckBox" mnemonicParsing="false" selected="true" text="Deleted " textFill="#23ff23">
+                                          																<CheckBox fx:id="isDeletedCheckBox" mnemonicParsing="false" selected="true" text="Rocovered Deleted Files" textFill="#23ff23">
                                           																	<tooltip>
                                           																		<Tooltip text="Include recovered deleted files." />
                                           																	</tooltip>
@@ -262,7 +262,7 @@
                                                                               <Insets top="5.0" />
                                                                            </padding>
                                           																</CheckBox>
-                                          																<CheckBox fx:id="isModifiedCheckBox" mnemonicParsing="false" selected="true" text="Modified" textFill="#f42929">
+                                          																<CheckBox fx:id="isModifiedCheckBox" mnemonicParsing="false" selected="true" text="Incorrect Content Files" textFill="#f42929">
                                           																	<tooltip>
                                           																		<Tooltip text="Include recognized type modified files." />
                                           																	</tooltip>
