@@ -43,6 +43,17 @@ public class TimelineView extends AbstractView {
 		scroller=new ScrollingTimeline();
 		setLayout(new BorderLayout());
 		add(scroller, BorderLayout.CENTER);	
+		addMouseWheelListener(new MouseWheelListener(){
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent ev) {
+				int pos = scroller.bar.getValue();
+				pos+=ev.getWheelRotation()*scroller.stepSize;
+				if(pos<0) pos = 0;
+				if(pos+scroller.bar.getVisibleAmount()>scroller.bar.getMaximum()) pos = scroller.bar.getMaximum()-scroller.bar.getVisibleAmount();
+				scroller.bar.setValue(pos);
+				//dispatchEvent(ev);
+			}
+		});
 		
 		JPanel bottom=new JPanel();
 		bottom.setLayout(new BorderLayout());
@@ -123,6 +134,7 @@ public class TimelineView extends AbstractView {
 		layoutGroup.add(graph);
 		
 		controls.add(layoutPanel, BorderLayout.CENTER);
+		
 	}
 	
 	class LayoutSetter implements ActionListener
@@ -224,18 +236,36 @@ public class TimelineView extends AbstractView {
 	class ScrollingTimeline extends JPanel
 	{
 		JScrollBar bar;
+		int stepSize;
+
 		public ScrollingTimeline()
 		{
 			setLayout(new BorderLayout());
 			add(timelinePanel, BorderLayout.CENTER);
 			bar=new JScrollBar(JScrollBar.VERTICAL);
 			add(bar, BorderLayout.EAST);
+			
+			stepSize = 50;
+
+			
 			bar.addAdjustmentListener(new AdjustmentListener() {			
 				@Override
 				public void adjustmentValueChanged(AdjustmentEvent e) {
 					timeline.setDY(bar.getValue());
 					timelinePanel.drawVisualization();
 					timelinePanel.repaint();
+				}
+			});
+			bar.addMouseWheelListener(new MouseWheelListener(){
+				@Override
+				public void mouseWheelMoved(MouseWheelEvent ev) {
+					int pos = bar.getValue();
+					pos+=ev.getWheelRotation()*stepSize;
+					if(pos<0) pos = 0;
+					if(pos+bar.getVisibleAmount()>bar.getMaximum()) pos = bar.getMaximum()-bar.getVisibleAmount();
+					//System.out.println(ev.getWheelRotation()*stepSize+" "+pos+" "+bar.getVisibleAmount()+" "+bar.getMaximum());
+					bar.setValue(pos);
+					
 				}
 			});
 		}

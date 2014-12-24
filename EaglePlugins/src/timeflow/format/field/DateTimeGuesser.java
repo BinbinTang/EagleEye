@@ -45,6 +45,7 @@ public class DateTimeGuesser {
 	static
 	{
 		parsers.add(new DateTimeParser("yyyy-MM-ddzzzzzzzzzz", TimeUnit.DAY));
+		parsers.add(new DateTimeParser("yyyy-MM-dd HH:mm:ss", TimeUnit.SECOND));
 		parsers.add(new DateTimeParser("MMM dd yyyy HH:mm", TimeUnit.SECOND));
 		parsers.add(new DateTimeParser("MMM/dd/yyyy HH:mm", TimeUnit.SECOND));
 		parsers.add(new DateTimeParser("MM/dd/yy HH:mm", TimeUnit.SECOND));

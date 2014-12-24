@@ -1,23 +1,70 @@
 package view.timeline;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
+
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import timeflow.app.actions.AddFieldAction;
+import timeflow.app.actions.AddRecordAction;
+import timeflow.app.actions.CopySchemaAction;
+import timeflow.app.actions.DateFieldAction;
+import timeflow.app.actions.DeleteFieldAction;
+import timeflow.app.actions.DeleteSelectedAction;
+import timeflow.app.actions.DeleteUnselectedAction;
+import timeflow.app.actions.EditSourceAction;
+import timeflow.app.actions.ImportFromPasteAction;
+import timeflow.app.actions.NewDataAction;
+import timeflow.app.actions.QuitAction;
+import timeflow.app.actions.RenameFieldAction;
+import timeflow.app.actions.ReorderFieldsAction;
+import timeflow.app.actions.WebDocAction;
+import timeflow.app.ui.ColorLegendPanel;
+import timeflow.app.ui.GlobalDisplayPanel;
 import timeflow.app.ui.LinkTabPane;
+import timeflow.app.ui.SizeLegendPanel;
+import timeflow.app.ui.filter.FilterControlPanel;
 import timeflow.data.db.ActDB;
 import timeflow.format.file.FileExtensionCatalog;
 import timeflow.format.file.Import;
+import timeflow.format.file.TimeflowFormat;
+import timeflow.model.Display;
+import timeflow.model.TFEvent;
+import timeflow.model.TFListener;
 import timeflow.model.TFModel;
+import timeflow.util.Pad;
 import timeflow.views.AbstractView;
 import timeflow.views.BarGraphView;
 import timeflow.views.CalendarView;
 import timeflow.views.DescriptionView;
+import timeflow.views.IntroView;
+import timeflow.views.ListView;
 import timeflow.views.SummaryView;
 import timeflow.views.TableView;
 import timeflow.views.TimelineView;
@@ -27,7 +74,7 @@ public class TimelinePlugin extends Application implements Plugin{
 	//timeline view attributes
 	public TFModel model;
 	private  SwingNode timelineNode;
-	
+	private String dataFilePath;
 	public TimelinePlugin(){
 		model = new TFModel();
 		timelineNode = new SwingNode();
@@ -35,15 +82,86 @@ public class TimelinePlugin extends Application implements Plugin{
 	}
 	
 	public void initTimelineView(){
+		JRootPane jf = new JRootPane();
+
+		// left tab area, with vertical gray divider.
+		jf.setLayout(new BorderLayout());	
+		
+		JPanel rightHolder=new JPanel();
+		jf.add(rightHolder, BorderLayout.EAST);
+		
+		rightHolder.setLayout(new BorderLayout());
+		JPanel pad=new Pad(3,3);
+		pad.setBackground(Color.gray);
+		rightHolder.add(pad, BorderLayout.WEST);
+		
+		LinkTabPane rightPanel=new LinkTabPane();//JTabbedPane();
+		rightHolder.add(rightPanel, BorderLayout.CENTER);
+		
+		JPanel configPanel=new JPanel();
+		configPanel.setLayout(new BorderLayout());		
+		JMenu filterMenu=new JMenu("Filters");
+		FilterControlPanel filterControlPanel=new FilterControlPanel(model, filterMenu);
+		final GlobalDisplayPanel displayPanel=new GlobalDisplayPanel(model, filterControlPanel);
+		configPanel.add(displayPanel, BorderLayout.NORTH);
+		
+		JPanel legend=new JPanel();
+		legend.setLayout(new BorderLayout());
+		configPanel.add(legend, BorderLayout.CENTER);	
+		legend.add(new SizeLegendPanel(model), BorderLayout.NORTH);
+		legend.add(new ColorLegendPanel(model), BorderLayout.CENTER);		
+		rightPanel.addTab(configPanel, "Display", true);
+
+		rightPanel.addTab(filterControlPanel, "Filter", true);
+		
+		//Timeline view
+		LinkTabPane center=new LinkTabPane();
+		jf.add(center, BorderLayout.CENTER);
+		
+		TimelineView timeline=new TimelineView(model);
+		//create tab list
+		AbstractView[] views={
+				timeline,
+				new CalendarView(model),
+				//new timeflow.views.ListView(model),
+				new TableView(model),
+				new BarGraphView(model),
+				//new DescriptionView(model),
+				new SummaryView(model),
+		};
+		for (int i=0; i<views.length; i++)
+		{
+			//add tabs
+			center.addTab(views[i], views[i].getName(), i<5);
+			//add local controls
+			displayPanel.addLocalControl(views[i].getName(), views[i].getControls());
+		}
+		//show local controls listener
+		center.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				displayPanel.showLocalControl(center.getCurrentName());
+			}
+		});	
+		
+		//displayPanel.showLocalControl(timeline.getName());
+		timelineNode.setContent(jf);
+	}
+	
+	//No Right Panel version
+	/*
+	public void initTimelineView(){
+
+		//Timeline view
 		LinkTabPane center=new LinkTabPane();
 		TimelineView timeline=new TimelineView(model);
 		AbstractView[] views={
 				timeline,
 				new CalendarView(model),
-				new timeflow.views.ListView(model),
+				//new timeflow.views.ListView(model),
 				new TableView(model),
 				new BarGraphView(model),
-				new DescriptionView(model),
+				//new DescriptionView(model),
 				new SummaryView(model),
 		};
 		for (int i=0; i<views.length; i++)
@@ -52,9 +170,9 @@ public class TimelinePlugin extends Application implements Plugin{
 		}	
 		timelineNode.setContent(center);
 	}
+	*/
 	public void loadData(String data){
-		data="testdata/data.time";
-		load(data, FileExtensionCatalog.get(data), false);
+		load(data, FileExtensionCatalog.get(data), false); //set read only
 	}
 	
 	void load(final String fileName, final Import importer, boolean readOnly)
@@ -81,7 +199,7 @@ public class TimelinePlugin extends Application implements Plugin{
 
 	@Override
 	public Object getResult() {
-		loadData("");
+		loadData((dataFilePath==null)?"testdata/data.time":dataFilePath);
 		return timelineNode;
 	}
 
@@ -97,8 +215,8 @@ public class TimelinePlugin extends Application implements Plugin{
 	}
 
 	@Override
-	public int setParameter(List arg0) {
-		// TODO Auto-generated method stub
+	public int setParameter(List argList) {
+		dataFilePath = (String) argList.get(0);
 		return 0;
 	}
 	
@@ -108,12 +226,14 @@ public class TimelinePlugin extends Application implements Plugin{
 	public void start(Stage stage) throws Exception {
 		TimelinePlugin tp = new TimelinePlugin();
 		Node view = (Node)tp.getResult();
-		ScrollPane sp = new ScrollPane();
-		sp.setContent(view);
+		StackPane sp = new  StackPane();
+		sp.getChildren().add(view);
+		//ScrollPane sp = new ScrollPane();
+		//sp.setContent(view);
 		stage.setTitle(this.getName());
 	    stage.setScene(new Scene(sp)); 
-	    stage.setWidth(610);
-        stage.setHeight(480);
+	    stage.setWidth(1200);
+        stage.setHeight(900);
 	    stage.show();
 		
 	}

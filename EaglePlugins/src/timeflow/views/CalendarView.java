@@ -9,11 +9,14 @@ import timeflow.vis.*;
 import timeflow.vis.calendar.*;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +42,17 @@ public class CalendarView extends AbstractView {
 		scroller=new ScrollingCalendar();
 		setLayout(new GridLayout(1,1));
 		add(scroller);
+		addMouseWheelListener(new MouseWheelListener(){
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent ev) {
+				int pos = scroller.bar.getValue();
+				pos+=ev.getWheelRotation()*scroller.stepSize;
+				if(pos<0) pos = 0;
+				if(pos+scroller.bar.getVisibleAmount()>scroller.bar.getMaximum()) pos = scroller.bar.getMaximum()-scroller.bar.getVisibleAmount();
+				//System.out.println(ev.getWheelRotation()*stepSize+" "+pos+" "+bar.getVisibleAmount()+" "+bar.getMaximum());
+				scroller.bar.setValue(pos);		
+			}
+		});
 		
 		controls=new JPanel();
 		controls.setLayout(new BorderLayout());
@@ -215,12 +229,14 @@ public class CalendarView extends AbstractView {
 	class ScrollingCalendar extends JPanel
 	{
 		JScrollBar bar;
+		int stepSize;
 		public ScrollingCalendar()
 		{
 			setLayout(new BorderLayout());
 			add(calendarPanel, BorderLayout.CENTER);
 			bar=new JScrollBar(JScrollBar.VERTICAL);
 			add(bar, BorderLayout.EAST);
+			stepSize = 50;
 			bar.addAdjustmentListener(new AdjustmentListener() {			
 				@Override
 				public void adjustmentValueChanged(AdjustmentEvent e) {
@@ -236,6 +252,18 @@ public class CalendarView extends AbstractView {
 					
 					calendarPanel.drawVisualization();
 					calendarPanel.repaint();
+				}
+			});
+			bar.addMouseWheelListener(new MouseWheelListener(){
+				@Override
+				public void mouseWheelMoved(MouseWheelEvent ev) {
+					int pos = bar.getValue();
+					pos+=ev.getWheelRotation()*stepSize;
+					if(pos<0) pos = 0;
+					if(pos+bar.getVisibleAmount()>bar.getMaximum()) pos = bar.getMaximum()-bar.getVisibleAmount();
+					//System.out.println(ev.getWheelRotation()*stepSize+" "+pos+" "+bar.getVisibleAmount()+" "+bar.getMaximum());
+					bar.setValue(pos);
+					
 				}
 			});
 		}
