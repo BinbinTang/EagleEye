@@ -5,9 +5,11 @@ import java.util.List;
 public interface Plugin {
 	public enum Type{
 		GUI_VIEW,
+		GUI_POPUP,
 		GUI_FILTER,
+		READER,
 		ANALYZER,
-		EXTRACTOR,
+		EXTRACTOR
 	}
 	
 	public String getName();

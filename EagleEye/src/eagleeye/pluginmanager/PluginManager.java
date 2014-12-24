@@ -43,11 +43,22 @@ public class PluginManager {
 	public List getPlugins(){
 		return plugins;
 	}
-	public List<String> getGUIPluginNames(){
+	public List<String> getGUIViewPluginNames(){
 		List<String> ls = new ArrayList<String>();
 		for(Object o: plugins){
 			Plugin pl = (Plugin) o;
 			if(pl.getType()==Plugin.Type.GUI_VIEW){
+				System.out.println(pl.getName());
+				ls.add(pl.getName());
+			}
+		}
+		return ls;
+	}
+	public List<String> getGUIPopupPluginNames(){
+		List<String> ls = new ArrayList<String>();
+		for(Object o: plugins){
+			Plugin pl = (Plugin) o;
+			if(pl.getType()==Plugin.Type.GUI_POPUP){
 				System.out.println(pl.getName());
 				ls.add(pl.getName());
 			}

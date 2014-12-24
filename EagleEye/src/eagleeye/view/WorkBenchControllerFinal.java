@@ -53,8 +53,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import eagleeye.controller.MainAppFinal;
 import eagleeye.datacarving.unpack.FileSystemFormatDescriptorService;
@@ -71,6 +74,7 @@ import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
 import eagleeye.pluginmanager.*;
+import eagleeye.utils.FileFormatIdentifier;
 import eagleeye.view.WorkBenchControllerFinal.MyTreeItem;
 
 public class WorkBenchControllerFinal {
@@ -252,7 +256,7 @@ public class WorkBenchControllerFinal {
 		treeFilterPane.setVisible(false);
 		
 		//add pluginsnames to functionList
-		List<String> plnames=pm.getGUIPluginNames();
+		List<String> plnames=pm.getGUIViewPluginNames();
 		System.out.println(plnames.size());
 		for(String s : plnames){
 			if(s.equals("Folder Structure")){
@@ -951,10 +955,57 @@ public class WorkBenchControllerFinal {
 							String filePath = item.getFileEntity().getFilePath() + file.separator + item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
 							//File currentFile = new File(filePath);
 							//Desktop.getDesktop().open(currentFile);
+							/*
 							fileLoader fd = new fileLoader();
 							fd.start(filePath);
-						}
-						
+							*/
+							Stage stage = new Stage();
+							double WindowWidth = 600;
+							double WindowHeight = 400;
+							double hBorder = 600-584.0;
+							double vBorder = 400-362.0;	//TODO: automate to be platform-independent
+							stage.setWidth(WindowWidth);
+						    stage.setHeight(WindowHeight);
+						    
+							FileFormatIdentifier fi = new FileFormatIdentifier();
+							if(fi.checkFormat(filePath)==FileFormatIdentifier.Format.IMAGE){
+								Plugin pl = pm.getPluginWithName("Image View");
+								
+								//set plugin input params
+								List params = new ArrayList();
+								params.add(filePath);
+								params.add(WindowWidth-hBorder);
+								params.add(WindowHeight-vBorder);
+								pl.setParameter (params);
+								
+								//get display content
+								Node pc = (Node)pl.getResult();
+								
+								//put content in new window
+								StackPane sp = new StackPane();
+								sp.getChildren().add(pc);
+								stage.setScene(new Scene(sp));
+							    stage.setTitle(new File(filePath).getName());
+							    stage.show();						
+							}else if(fi.checkFormat(filePath)==FileFormatIdentifier.Format.TEXT){
+								Plugin pl = pm.getPluginWithName("Text View");
+								System.out.println(pl.getName());
+								//set plugin input params
+								List params = new ArrayList();
+								params.add(filePath);
+								pl.setParameter (params);
+								
+								//get display content
+								Node pc = (Node)pl.getResult();
+								
+								//put content in new window
+								ScrollPane sp = new ScrollPane();
+								sp.setContent(pc);
+								stage.setScene(new Scene(sp));
+							    stage.setTitle(new File(filePath).getName());
+							    stage.show();						
+							}	
+						}	
 					}
 				}
 			});
