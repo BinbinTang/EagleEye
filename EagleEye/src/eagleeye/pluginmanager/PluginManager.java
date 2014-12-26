@@ -18,7 +18,7 @@ import eagleeye.entities.Device;
 
 public class PluginManager {
 	protected String pluginsDir;
-	protected List plugins;
+	protected List<Plugin> plugins;
 	
 	public PluginManager (String _pluginsDir) {
 		if (_pluginsDir!=null)
@@ -26,27 +26,25 @@ public class PluginManager {
 		else
 			pluginsDir = "PluginBinaries";
 
-		plugins = new ArrayList();
+		plugins = new ArrayList<Plugin>();
 		searchPlugins();
 
 		//System.setSecurityManager(new PluginSecurityManager(pluginsDir));
 	}
 	public Plugin getPluginWithName(String name){
-		for(Object o : plugins){
-			Plugin pl = (Plugin)o;
+		for(Plugin pl : plugins){
 			if(pl.getName().equals(name)){
 				return pl;
 			}
 		}
 		return null;
 	}
-	public List getPlugins(){
+	public List<Plugin> getPlugins(){
 		return plugins;
 	}
 	public List<String> getGUIViewPluginNames(){
 		List<String> ls = new ArrayList<String>();
-		for(Object o: plugins){
-			Plugin pl = (Plugin) o;
+		for(Plugin pl: plugins){
 			if(pl.getType()==Plugin.Type.GUI_VIEW){
 				System.out.println(pl.getName());
 				ls.add(pl.getName());
@@ -56,9 +54,18 @@ public class PluginManager {
 	}
 	public List<String> getGUIPopupPluginNames(){
 		List<String> ls = new ArrayList<String>();
-		for(Object o: plugins){
-			Plugin pl = (Plugin) o;
+		for(Plugin pl: plugins){
 			if(pl.getType()==Plugin.Type.GUI_POPUP){
+				System.out.println(pl.getName());
+				ls.add(pl.getName());
+			}
+		}
+		return ls;
+	}
+	public List<String> getAnalyzerPluginNames(){
+		List<String> ls = new ArrayList<String>();
+		for(Plugin pl: plugins){
+			if(pl.getType()==Plugin.Type.ANALYZER){
 				System.out.println(pl.getName());
 				ls.add(pl.getName());
 			}
@@ -113,72 +120,13 @@ public class PluginManager {
 				}
 			}
 		}
+		broadCastAvailablePlugins();
 	}
-	/*
-	public int extractFiles(String diskimgPath, String outputPath){
-		ArrayList<EagleFile> result = new ArrayList<EagleFile>();
-		
-		System.out.println("==============================");
-		System.out.println("running dataextraction plugin....");
-		Iterator iter = plugins.iterator();
-		while (iter.hasNext()) {
-			Plugin pf = (Plugin) iter.next();
-			try {
-				
-				//only try execute image unpacker class
-				if(pf.getType()==Plugin.Type.EXTRACTOR){	
-					System.out.println(pf.getName());
-					
-					//pass parameters to plugin
-					List params = new ArrayList();
-					params.add(diskimgPath);
-					params.add(outputPath);
-					pf.setParameter(params);
-					
-					if (pf.hasError()) {
-						System.out.println("there was an error during plugin initialization");
-						continue;
-					}
-					result = (ArrayList<EagleFile>) pf.getResult();
-					if (pf.hasError())
-						System.out.println("there was an error during plugin execution");
-					else
-						System.out.println("successfully extracted "+result.size()+"files");
-					
-					ArrayList<eagleeye.entities.FileEntity> fs = new ArrayList<eagleeye.entities.FileEntity>();
-					for(EagleFile f: result){
-						eagleeye.entities.FileEntity ef = new eagleeye.entities.FileEntity();
-						ef.modifyDeviceID(f.getDeviceID());
-						ef.modifyDirectoryID(f.getDirectoryID());
-						ef.modifyFileID(f.getFileID());
-						ef.modifyIsDirectory(f.getIsDirectory());
-						ef.modifyFileName(f.getFileName());
-						ef.modifyFilePath(f.getFilePath());
-						ef.modifyFileExt(f.getFileExt());
-						ef.modifyFileExtID(f.getFileExtID());
-						ef.modifyIsRecovered(f.getIsRecovered());
-						ef.modifyIsModified(f.getIsModified());
-						ef.modifyContentType(f.getContentType());
-						ef.modifyDateCreated(f.getDateCreated());
-						ef.modifyDateAccessed(f.getDateAccessed());
-						ef.modifyDateModified(f.getDateModified());
-						ef.modifyCategory(f.getCategory());
-						fs.add(ef);
-					}
-					
-					DBInsertTransaction transaction = new DBInsertTransaction();
-					//transaction.insertNewDeviceData(new Device("Test Device2", "100GB", "Li"), fs);
-					
-					break;
-				}
-
-			} catch (SecurityException secEx) {
-				System.err.println("plugin '"+pf.getClass().getName()+"' tried to do something illegal");
-			}
+	
+	public void broadCastAvailablePlugins(){
+		for(Plugin pl: plugins){
+			pl.setAvailablePlugins(plugins);
 		}
-		System.out.println("finished");
-		System.out.println("==============================");
-		
-		return 0;
-	}*/
+	}
+
 }

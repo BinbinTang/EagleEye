@@ -364,8 +364,16 @@ public class WorkBenchControllerFinal {
 						@Override
 						public void handle(MouseEvent event) {
 							if(dbController.getDeviceID() != -1){
+								//set Timeline View params
+								if(functionName.equals("Time Line")){
+									List params = new ArrayList();
+									params.add(".."+File.separator+".."+File.separator+".."+File.separator+"device_ios");
+									params.add("analysis");
+									pl.setParameter(params);
+								}
 								addPluginView(pl);
 								treeFilterPane.setVisible(false);
+								
 							}else{
 								Label noDevice = new Label("No device has been chosen.");
 								MainResultPane.setContent(noDevice);

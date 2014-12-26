@@ -16,6 +16,9 @@ public interface Plugin {
 	
 	public Type getType();
 	
+	//for plugin manager to pass available plugins
+	public int setAvailablePlugins(List<Plugin> plugins);
+	
 	//for host application to pass parameters to plugin
 	public int setParameter (List param);
 	
