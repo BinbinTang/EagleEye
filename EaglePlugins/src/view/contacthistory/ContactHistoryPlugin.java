@@ -97,4 +97,10 @@ public class ContactHistoryPlugin extends Application implements Plugin{
 	public static void main(String[] args) { 
 		launch(args); 
 	}
+
+	@Override
+	public int setAvailablePlugins(List<Plugin> arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

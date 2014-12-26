@@ -77,15 +77,14 @@ public class TimelinePlugin extends Application implements Plugin{
 	//timeline view attributes
 	public TFModel model;
 	private  SwingNode timelineNode;
-	//private String deviceRootPath;
-	//private String analyzerOutputPath;
 	private List<Plugin> analyzers;
+
 	public TimelinePlugin(){
 		model = new TFModel();
 		timelineNode = new SwingNode();
 		analyzers = new ArrayList<Plugin>();
-		getAnalyzerPlugins();
-		initTimelineView();
+		//getAnalyzerPlugins();
+		//initTimelineView();
 	}
 	public void getAnalyzerPlugins(){
 		//TODO: get this from plugin manager instead
@@ -261,12 +260,29 @@ public class TimelinePlugin extends Application implements Plugin{
 	public int setParameter(List argList) {
 		String deviceRootPath = (String) argList.get(0);
 		String analyzerOutputPath = (String) argList.get(1);
+		
+		for(int i=2; i<argList.size();i++){
+			analyzers.add((Plugin)argList.get(i));
+		}
+		
 		for(Plugin p:analyzers){
 			List params = new ArrayList();
 			params.add(deviceRootPath);
 			params.add(analyzerOutputPath);
 			p.setParameter(params);
 		}
+		return 0;
+	}
+	
+	@Override
+	public int setAvailablePlugins(List<Plugin> pls) {
+		for(Plugin pl: pls){
+			if(pl.getType().equals(Plugin.Type.ANALYZER)){
+				analyzers.add(pl);
+				System.out.println(getName()+": Find "+pl.getName());
+			}
+		}
+		initTimelineView();
 		return 0;
 	}
 	
@@ -291,4 +307,5 @@ public class TimelinePlugin extends Application implements Plugin{
 	public static void main(String[] args){
 		launch(args); 
 	}
+	
 }

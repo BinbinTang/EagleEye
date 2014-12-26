@@ -130,4 +130,10 @@ public class SQLiteReaderPlugin implements Plugin{
 		sp.getResult();
 	}
 
+	@Override
+	public int setAvailablePlugins(List<Plugin> pls) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

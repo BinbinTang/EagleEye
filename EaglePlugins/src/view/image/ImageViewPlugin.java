@@ -229,4 +229,10 @@ public class ImageViewPlugin extends Application implements Plugin{
 		launch(args); 
 	}
 	/*************************************************/
+
+	@Override
+	public int setAvailablePlugins(List<Plugin> arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

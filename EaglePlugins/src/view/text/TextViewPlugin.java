@@ -109,4 +109,10 @@ public class TextViewPlugin extends Application implements Plugin{
 		launch(args); 
 	}
 	/******************End Test**********************/
+
+	@Override
+	public int setAvailablePlugins(List<Plugin> arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

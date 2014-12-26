@@ -63,10 +63,10 @@ public class TestAnalyzerPlugin implements Plugin{
 	private String deviceRoot;
 	private String WAChatHistoryPath;
 	private String outputPath;
-	private SQLiteReaderPlugin sqlreader;
+	private Plugin sqlreader;
 	private List<Chat> chats;
 	public TestAnalyzerPlugin(){
-		sqlreader = new SQLiteReaderPlugin();
+		
 	}
 	public void getAllChats(){
 		//read DB & get tables
@@ -250,13 +250,27 @@ public class TestAnalyzerPlugin implements Plugin{
 		return 0;
 	}
 	
+	@Override
+	public int setAvailablePlugins(List<Plugin> pls) {
+		// TODO Auto-generated method stub
+		for(Plugin pl: pls){
+			if(pl.getName().equals("SQLite Reader")){
+				sqlreader= pl;
+			}
+		}
+		return 0;
+	} 
+	
 	public static void main(String[] args) { 
 		
 		TestAnalyzerPlugin sp = new TestAnalyzerPlugin();
+		List<Plugin> pls = new ArrayList<Plugin>();
+		pls.add(new SQLiteReaderPlugin());
+		sp.setAvailablePlugins(pls);
 		List paths = new ArrayList();
 		String root = ".."+File.separator+".."+File.separator+".."+File.separator+"device_ios";
-		paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Applications"+File.separator+"00CAE5F5-CA3E-45D2-91F2-33E3F2FB12E1");
-		String out = "D:/MyFolder/y4/CS3283_MediaTech_Project/CodeX/EagleEye/EagleEye/testdata";
+		paths.add(root);
+		String out = "analysis";
 		paths.add(out);
 		sp.setParameter(paths);
 		sp.getResult();
@@ -281,6 +295,7 @@ public class TestAnalyzerPlugin implements Plugin{
         }else{
         	System.out.println(times - time/1000);
         }*/
-	} 
+	}
+	
 
 }

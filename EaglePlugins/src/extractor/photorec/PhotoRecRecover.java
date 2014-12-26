@@ -157,4 +157,10 @@ public class PhotoRecRecover implements Plugin{
 	public Type getType() {
 		return Type.EXTRACTOR;
 	}
+
+	@Override
+	public int setAvailablePlugins(List<Plugin> arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
