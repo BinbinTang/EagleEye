@@ -12,6 +12,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -24,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 
+import analyzer.*;
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.Node;
@@ -60,6 +62,7 @@ import timeflow.model.TFListener;
 import timeflow.model.TFModel;
 import timeflow.util.Pad;
 import timeflow.views.AbstractView;
+import timeflow.views.AnalyzerView;
 import timeflow.views.BarGraphView;
 import timeflow.views.CalendarView;
 import timeflow.views.DescriptionView;
@@ -74,13 +77,25 @@ public class TimelinePlugin extends Application implements Plugin{
 	//timeline view attributes
 	public TFModel model;
 	private  SwingNode timelineNode;
-	private String dataFilePath;
+	//private String deviceRootPath;
+	//private String analyzerOutputPath;
+	private List<Plugin> analyzers;
 	public TimelinePlugin(){
 		model = new TFModel();
 		timelineNode = new SwingNode();
+		analyzers = new ArrayList<Plugin>();
+		getAnalyzerPlugins();
 		initTimelineView();
 	}
-	
+	public void getAnalyzerPlugins(){
+		//TODO: get this from plugin manager instead
+		Plugin whatsAppAnalyzer = new WhatsAppAnalyzerPlugin();
+		analyzers.add(whatsAppAnalyzer);
+		for(int i=0; i<19; i++){
+			Plugin testAnalyzer = new TestAnalyzerPlugin();
+			analyzers.add(testAnalyzer);
+		}
+	}
 	public void initTimelineView(){
 		JRootPane jf = new JRootPane();
 
@@ -119,8 +134,11 @@ public class TimelinePlugin extends Application implements Plugin{
 		jf.add(center, BorderLayout.CENTER);
 		
 		TimelineView timeline=new TimelineView(model);
-		//create tab list
+		AnalyzerView startView = new AnalyzerView(model, analyzers);
+		
+		//create tab list	
 		AbstractView[] views={
+				startView,
 				timeline,
 				new CalendarView(model),
 				//new timeflow.views.ListView(model),
@@ -132,7 +150,7 @@ public class TimelinePlugin extends Application implements Plugin{
 		for (int i=0; i<views.length; i++)
 		{
 			//add tabs
-			center.addTab(views[i], views[i].getName(), i<5);
+			center.addTab(views[i], views[i].getName(), i<6);
 			//add local controls
 			displayPanel.addLocalControl(views[i].getName(), views[i].getControls());
 		}
@@ -143,6 +161,25 @@ public class TimelinePlugin extends Application implements Plugin{
 				displayPanel.showLocalControl(center.getCurrentName());
 			}
 		});	
+		
+		// start off with startView
+		center.setCurrentName(startView.getName());
+		displayPanel.showLocalControl(startView.getName());
+				
+		// but then, once data is loaded, switch directly to the timeline view.
+		model.addListener(new TFListener() {
+			@Override
+			public void note(TFEvent e) {
+				if (e.type==e.type.DATABASE_CHANGE)
+				{
+					if (center.getCurrentName().equals(startView.getName()))
+					{
+						center.setCurrentName(timeline.getName());
+						displayPanel.showLocalControl(timeline.getName());
+					}
+				}
+			}
+		});
 		
 		//displayPanel.showLocalControl(timeline.getName());
 		timelineNode.setContent(jf);
@@ -171,6 +208,10 @@ public class TimelinePlugin extends Application implements Plugin{
 		timelineNode.setContent(center);
 	}
 	*/
+	
+	/*
+	 * For Data loading. Now moved to AnalyzerView instead.
+	 * 
 	public void loadData(String data){
 		load(data, FileExtensionCatalog.get(data), false); //set read only
 	}
@@ -191,6 +232,8 @@ public class TimelinePlugin extends Application implements Plugin{
 			model.noteError(this);
 		}
 	}
+	*/
+	
 
 	@Override
 	public String getName() {
@@ -199,7 +242,7 @@ public class TimelinePlugin extends Application implements Plugin{
 
 	@Override
 	public Object getResult() {
-		loadData((dataFilePath==null)?"testdata/data.time":dataFilePath);
+		//loadData((dataFilePath==null)?"testdata/data.time":dataFilePath);
 		return timelineNode;
 	}
 
@@ -216,20 +259,28 @@ public class TimelinePlugin extends Application implements Plugin{
 
 	@Override
 	public int setParameter(List argList) {
-		dataFilePath = (String) argList.get(0);
+		String deviceRootPath = (String) argList.get(0);
+		String analyzerOutputPath = (String) argList.get(1);
+		for(Plugin p:analyzers){
+			List params = new ArrayList();
+			params.add(deviceRootPath);
+			params.add(analyzerOutputPath);
+			p.setParameter(params);
+		}
 		return 0;
 	}
 	
-	
-
 	@Override
 	public void start(Stage stage) throws Exception {
 		TimelinePlugin tp = new TimelinePlugin();
+		List params = new ArrayList();
+		params.add(".."+File.separator+".."+File.separator+".."+File.separator+"device_ios");
+		params.add("analysis");
+		tp.setParameter(params);
+		
 		Node view = (Node)tp.getResult();
 		StackPane sp = new  StackPane();
 		sp.getChildren().add(view);
-		//ScrollPane sp = new ScrollPane();
-		//sp.setContent(view);
 		stage.setTitle(this.getName());
 	    stage.setScene(new Scene(sp)); 
 	    stage.setWidth(1200);

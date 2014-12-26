@@ -13,7 +13,7 @@ import java.util.Map;
 import reader.SQLiteReaderPlugin;
 import eagleeye.pluginmanager.Plugin;
 
-public class WhatsAppAnalyzerPlugin implements Plugin{
+public class TestAnalyzerPlugin implements Plugin{
 	private class WAMessage{
 		private boolean isFrom;
 		private String timestamp;
@@ -65,7 +65,7 @@ public class WhatsAppAnalyzerPlugin implements Plugin{
 	private String outputPath;
 	private SQLiteReaderPlugin sqlreader;
 	private List<Chat> chats;
-	public WhatsAppAnalyzerPlugin(){
+	public TestAnalyzerPlugin(){
 		sqlreader = new SQLiteReaderPlugin();
 	}
 	public void getAllChats(){
@@ -176,7 +176,7 @@ public class WhatsAppAnalyzerPlugin implements Plugin{
 		}
 	}
 	public String writeResultToFile(){
-		String fPath = outputPath+File.separator+"whatsapp.time";
+		String fPath = outputPath+File.separator+"test.time";
 		try{
 			FileWriter fw = new FileWriter(fPath,true);
 			StringBuilder sb = new StringBuilder();
@@ -216,12 +216,12 @@ public class WhatsAppAnalyzerPlugin implements Plugin{
 	}
 	@Override
 	public String getName() {
-		return "WhatsApp Analyzer";
+		return "Test Analyzer";
 	}
 
 	@Override
 	public Object getResult() {
-		String fPath = outputPath+File.separator+"whatsapp.time";
+		String fPath = outputPath+File.separator+"test.time";
 		File f = new File(fPath); 
 		if(f.exists()) return fPath;
 		
@@ -252,7 +252,7 @@ public class WhatsAppAnalyzerPlugin implements Plugin{
 	
 	public static void main(String[] args) { 
 		
-		WhatsAppAnalyzerPlugin sp = new WhatsAppAnalyzerPlugin();
+		TestAnalyzerPlugin sp = new TestAnalyzerPlugin();
 		List paths = new ArrayList();
 		String root = ".."+File.separator+".."+File.separator+".."+File.separator+"device_ios";
 		paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Applications"+File.separator+"00CAE5F5-CA3E-45D2-91F2-33E3F2FB12E1");
