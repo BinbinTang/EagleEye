@@ -33,6 +33,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import reader.SQLiteReaderPlugin;
 import timeflow.app.actions.AddFieldAction;
 import timeflow.app.actions.AddRecordAction;
 import timeflow.app.actions.CopySchemaAction;
@@ -289,6 +290,17 @@ public class TimelinePlugin extends Application implements Plugin{
 	@Override
 	public void start(Stage stage) throws Exception {
 		TimelinePlugin tp = new TimelinePlugin();
+		List<Plugin> pls = new ArrayList<Plugin>();
+		pls.add(tp);
+		pls.add(new WhatsAppAnalyzerPlugin());
+		pls.add(new TestAnalyzerPlugin());
+		pls.add(new SQLiteReaderPlugin());
+		pls.add(new IOSCalendarAnalyzerPlugin());
+		for(Plugin pl: pls){
+			pl.setAvailablePlugins(pls);
+		}
+		
+		
 		List params = new ArrayList();
 		params.add(".."+File.separator+".."+File.separator+".."+File.separator+"device_ios");
 		params.add("analysis");

@@ -125,7 +125,10 @@ public class SQLiteReaderPlugin implements Plugin{
 		SQLiteReaderPlugin sp = new SQLiteReaderPlugin();
 		List paths = new ArrayList();
 		String root = ".."+File.separator+".."+File.separator+".."+File.separator+"device_ios";
-		paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Applications"+File.separator+"00CAE5F5-CA3E-45D2-91F2-33E3F2FB12E1"+File.separator+"Documents"+File.separator+"ChatStorage.sqlite");
+		//paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Library"+File.separator+"Calendar"+File.separator+"Extras.db");
+		paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Library"+File.separator+"Calendar"+File.separator+"Calendar.sqlitedb");
+		//paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Library"+File.separator+"AddressBook"+File.separator+"AddressBook.sqlitedb");
+		//paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Applications"+File.separator+"00CAE5F5-CA3E-45D2-91F2-33E3F2FB12E1"+File.separator+"Documents"+File.separator+"ChatStorage.sqlite");
 		sp.setParameter(paths);
 		sp.getResult();
 	}
