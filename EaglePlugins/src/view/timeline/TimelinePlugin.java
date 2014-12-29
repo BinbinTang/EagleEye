@@ -296,6 +296,7 @@ public class TimelinePlugin extends Application implements Plugin{
 		pls.add(new TestAnalyzerPlugin());
 		pls.add(new SQLiteReaderPlugin());
 		pls.add(new IOSCalendarAnalyzerPlugin());
+		pls.add(new AndroidCalendarAnalyzerPlugin());
 		for(Plugin pl: pls){
 			pl.setAvailablePlugins(pls);
 		}

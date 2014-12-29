@@ -13,30 +13,29 @@ import java.util.Map;
 import reader.SQLiteReaderPlugin;
 import eagleeye.pluginmanager.Plugin;
 
-public class IOSCalendarAnalyzerPlugin implements Plugin{
+public class AndroidCalendarAnalyzerPlugin implements Plugin{
 	private class Event{
 		private String summary;
 		private String location;
 		private String description;
-		//private boolean isAllDay;
+		private String timezone;
 		private String startDate;
 		private String endDate;
-		private Event(String _summary, String _location, String _description, String _startDate, String _endDate){
+		private Event(String _summary, String _location, String _description, String _timezone, String _startDate, String _endDate){
 			summary =_summary;
 			location=_location;
 			description=_description;
-			//isAllDay=_isAllDay;
+			timezone = _timezone;
 			startDate=_startDate;
 			endDate=_endDate;
 		}
 		public String timestampToDate(String timestamp){
 			if(timestamp.equals("")) return timestamp;
 			SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-			String[] tmp =timestamp.split("\\.");
-			timestamp = tmp[0];
+			timestamp = timestamp.substring(0, 10);
 			
 			Long time=new Long(Integer.parseInt(timestamp));
-			time += new Long(978307200);
+			//time += new Long(978307200);
 			time = time*1000;
 			return format.format(time);
 		}
@@ -51,7 +50,7 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 	private String outputPath;
 	private Plugin sqlreader;
 	private List<Event> events;
-	public IOSCalendarAnalyzerPlugin(){
+	public AndroidCalendarAnalyzerPlugin(){
 		
 	}
 	public void getAllEvents(){
@@ -61,7 +60,7 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 		sqlreader.setParameter(paths);
 		Map<String, List<List<String>>> calendar = (Map<String, List<List<String>>>) sqlreader.getResult();
 		
-		
+		/*
 		//get location
 		List<List<String>> locations = calendar.get("Location");
 		System.out.println(locations.size());
@@ -71,44 +70,44 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 		Map<String,String> idxToLocation = new HashMap<String,String>();
 		for(List<String> i: locations){
 			idxToLocation.put(i.get(indexRowID),i.get(indexLocation));
-		}
+		}*/
 		
 		//get events
-		List<List<String>> calendaritem = calendar.get("CalendarItem");
+		List<List<String>> calendaritem = calendar.get("Events");
 		System.out.println(calendaritem.size());
-		colNames = calendaritem.get(0);
-		int indexSummary = colNames.indexOf("summary");
-		int indexLocationId = colNames.indexOf("location_id");
+		List<String> colNames = calendaritem.get(0);
+		int indexTitle = colNames.indexOf("title");
+		int indexEventLocation = colNames.indexOf("eventLocation");
 		int indexDescription = colNames.indexOf("description");
-		//int indexIsAllDay = colNames.indexOf("all_day");
-		int indexStartTimestamp	= colNames.indexOf("start_date");
-		int indexEndTimestamp	= colNames.indexOf("end_date");		
+		int indexEventTimeZone = colNames.indexOf("eventTimezone");	//TODO: for future
+		int indexStartTimestamp	= colNames.indexOf("dtstart");
+		int indexEndTimestamp	= colNames.indexOf("dtend");		
 		events = new ArrayList<Event>();
 		for(List<String> i: calendaritem ){
-			if(i.get(indexSummary).equals("summary")) continue;
-			String summary=i.get(indexSummary);
+			if(i.get(indexTitle).equals("title")) continue;
+			String summary=i.get(indexTitle);
 			if(summary==null) summary="";
-			String location = idxToLocation.get(i.get(indexLocationId));
+			String location = i.get(indexEventLocation);
 			if(location==null) location="";
 			String description = i.get(indexDescription);
 			if(description==null) description="";
-			//boolean isAllDay=(i.get(indexIsAllDay).equals("1"))?true:false;
+			String timezone= i.get(indexEventTimeZone);
 			String startTimestamp=i.get(indexStartTimestamp);
 			if(startTimestamp==null) startTimestamp="";
 			String endTimestamp=i.get(indexEndTimestamp);
 			if(endTimestamp==null) endTimestamp="";
 			
-			events.add(new Event(summary,location,description,startTimestamp,endTimestamp));
+			events.add(new Event(summary,location,description,timezone,startTimestamp,endTimestamp));
 
 		}
 
 		/*for(Event i : events){
 			System.out.print(i);
-		}
-		*/
+		}*/
+		
 	}
 	public String writeResultToFile(){
-		String fPath = outputPath+File.separator+"calendar.time";
+		String fPath = outputPath+File.separator+"android_calendar.time";
 		try{
 			FileWriter fw = new FileWriter(fPath,true);
 			StringBuilder sb = new StringBuilder();
@@ -146,12 +145,12 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 	}
 	@Override
 	public String getName() {
-		return "Calendar Analyzer";
+		return "Android Calendar Analyzer";
 	}
 
 	@Override
 	public Object getResult() {
-		String fPath = outputPath+File.separator+"calendar.time";
+		String fPath = outputPath+File.separator+"android_calendar.time";
 		File f = new File(fPath); 
 		if(f.exists()) return fPath;
 		
@@ -174,7 +173,7 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 	@Override
 	public int setParameter(List argList) {
 		deviceRoot = (String) argList.get(0);
-		calendarPath = deviceRoot+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Library"+File.separator+"Calendar"+File.separator+"Calendar.sqlitedb";
+		calendarPath = deviceRoot+File.separator+"data"+File.separator+"com.android.providers.calendar"+File.separator+"databases"+File.separator+"calendar.db";
 		outputPath = (String) argList.get(1);
 		return 0;
 	}
@@ -192,19 +191,20 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 	
 	public static void main(String[] args) { 
 		
-		IOSCalendarAnalyzerPlugin cp = new IOSCalendarAnalyzerPlugin();
+		AndroidCalendarAnalyzerPlugin cp = new AndroidCalendarAnalyzerPlugin();
 		List<Plugin> pls = new ArrayList<Plugin>();
 		pls.add(new SQLiteReaderPlugin());
 		cp.setAvailablePlugins(pls);
 		List paths = new ArrayList();
-		String root = ".."+File.separator+".."+File.separator+".."+File.separator+"device_ios";
+		String root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
 		paths.add(root);
 		String out = "analysis";
 		paths.add(out);
 		cp.setParameter(paths);
 		cp.getResult();
-		/*SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-		String timestamp = "978307200";
+		/*
+		SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+		String timestamp = "1304596800";
 		String date = timestamp;
 
 		Long time=new Long(Integer.parseInt(timestamp));
@@ -215,7 +215,7 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 
 		long times = 0;
         try {  
-            times = (int) ((Timestamp.valueOf("2014-12-07 11:40:23").getTime())/1000);  
+            times = (int) ((Timestamp.valueOf("2011-05-05 20:00:00").getTime())/1000);  
         } catch (Exception e) {  
             e.printStackTrace();  
         }
