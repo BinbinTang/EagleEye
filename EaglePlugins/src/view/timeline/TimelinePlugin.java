@@ -292,18 +292,20 @@ public class TimelinePlugin extends Application implements Plugin{
 		TimelinePlugin tp = new TimelinePlugin();
 		List<Plugin> pls = new ArrayList<Plugin>();
 		pls.add(tp);
-		pls.add(new WhatsAppAnalyzerPlugin());
-		pls.add(new TestAnalyzerPlugin());
-		pls.add(new SQLiteReaderPlugin());
-		pls.add(new IOSCalendarAnalyzerPlugin());
+		//pls.add(new WhatsAppAnalyzerPlugin());
+		//pls.add(new TestAnalyzerPlugin());
+		//pls.add(new SQLiteReaderPlugin());
+		//pls.add(new IOSCalendarAnalyzerPlugin());
 		pls.add(new AndroidCalendarAnalyzerPlugin());
+		pls.add(new AndroidGmailAnalyzerPlugin());
 		for(Plugin pl: pls){
 			pl.setAvailablePlugins(pls);
 		}
 		
 		
 		List params = new ArrayList();
-		params.add(".."+File.separator+".."+File.separator+".."+File.separator+"device_ios");
+		params.add(".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");
+		//params.add(".."+File.separator+".."+File.separator+".."+File.separator+"device_ios");
 		params.add("analysis");
 		tp.setParameter(params);
 		

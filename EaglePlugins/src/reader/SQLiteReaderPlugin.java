@@ -133,7 +133,8 @@ public class SQLiteReaderPlugin implements Plugin{
 		//paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Applications"+File.separator+"00CAE5F5-CA3E-45D2-91F2-33E3F2FB12E1"+File.separator+"Documents"+File.separator+"ChatStorage.sqlite");
 		
 		root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
-		paths.add(root+File.separator+"data"+File.separator+"com.android.providers.calendar"+File.separator+"databases"+File.separator+"calendar.db");
+		//paths.add(root+File.separator+"data"+File.separator+"com.android.providers.calendar"+File.separator+"databases"+File.separator+"calendar.db");
+		paths.add(root+File.separator+"data"+File.separator+"com.google.android.providers.gmail"+File.separator+"databases"+File.separator+"mailstore.yobtaog@gmail.com.db");
 		sp.setParameter(paths);
 		sp.getResult();
 	}
