@@ -367,7 +367,8 @@ public class WorkBenchControllerFinal {
 								//set Timeline View params
 								if(functionName.equals("Time Line")){
 									List params = new ArrayList();
-									params.add(".."+File.separator+".."+File.separator+".."+File.separator+"device_ios");
+									//TODO: add local disk device root path here
+									params.add("output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");
 									params.add("analysis");
 									pl.setParameter(params);
 								}
