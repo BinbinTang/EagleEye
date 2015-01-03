@@ -372,6 +372,12 @@ public class WorkBenchControllerFinal {
 									params.add("analysis");
 									pl.setParameter(params);
 								}
+								if(functionName.equals("Location History")){
+									List params = new ArrayList();
+									params.add("output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");	//TODO: add local disk device root path here
+									params.add("android");	//TODO: add device type here
+									pl.setParameter(params);
+								}
 								addPluginView(pl);
 								treeFilterPane.setVisible(false);
 								
