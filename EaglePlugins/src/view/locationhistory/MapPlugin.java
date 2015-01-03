@@ -1,6 +1,13 @@
 package view.locationhistory;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+
+import reader.SQLiteReaderPlugin;
+import analyzer.AndroidCalendarAnalyzerPlugin;
+import analyzer.AndroidGmailAnalyzerPlugin;
+import analyzer.AndroidLocationAnalyzerPlugin;
 
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
@@ -22,10 +29,11 @@ import eagleeye.pluginmanager.Plugin;
 public class MapPlugin extends Application implements Plugin,MapComponentInitializedListener{
 	private GoogleMapView mapView;
 	private GoogleMap map;
-	
+	private List<Plugin> analyzers;
+	private String deviceType;
+	List<List<String>> geoPoints;
 	public MapPlugin(){
-		mapView = new GoogleMapView();
-	    mapView.addMapInializedListener(this);
+		
 	}
 
 	@Override
@@ -35,6 +43,23 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 
 	@Override
 	public Object getResult() {
+		geoPoints= new ArrayList<List<String>>();
+		for(Plugin i: analyzers){
+			if(i.getName().equalsIgnoreCase("Android Location Analyzer")){
+				geoPoints  = (List<List<String>>) i.getResult();
+			}
+		}
+		/*
+		for(List<String> pt: geoPoints){
+		    	System.out.println(Double.parseDouble(pt.get(1))+","+Double.parseDouble(pt.get(2))+","+pt.get(3));
+		    	//markLocations(Double.parseDouble(geoPoints.get(0).get(1)),Double.parseDouble(geoPoints.get(0).get(2)),geoPoints.get(0).get(3));
+		}*/
+		if(geoPoints.size()==0){
+			System.out.println("no data");
+		}
+		
+		mapView = new GoogleMapView();
+	    mapView.addMapInializedListener(this);
 		return mapView;
 	}
 
@@ -49,17 +74,15 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 		return false;
 	}
 
-	@Override
-	public int setParameter(List arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
 	@Override
 	public void mapInitialized() {
+		if(geoPoints.size()==0) return;
+		
 		//Set the initial properties of the map.
 	    MapOptions mapOptions = new MapOptions();
-
-	    mapOptions.center(new LatLong(1.352083, 103.819836))
+	    
+	    mapOptions.center(new LatLong(Double.parseDouble(geoPoints.get(0).get(1)), Double.parseDouble(geoPoints.get(0).get(2))))
 	            .mapType(MapTypeIdEnum.ROADMAP)
 	            .overviewMapControl(false)
 	            .panControl(false)
@@ -71,11 +94,10 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 
 	    map = mapView.createMap(mapOptions);
 	    //Add markers to the map
-	    LocationAnalyzer gla = new LocationAnalyzer();
-	    List<EagleLocation> locs = gla.getLocations();
-	    for(int i=0; i<locs.size();i++){
-	    	//System.out.println(locs.get(i).getLatitude()+","+locs.get(i).getLongitude());
-	    	markLocations(locs.get(i).getLatitude(),locs.get(i).getLongitude(),locs.get(i).getDescription());
+
+	    for(List<String> pt: geoPoints){
+	    	System.out.println(Double.parseDouble(pt.get(1))+","+Double.parseDouble(pt.get(2))+","+pt.get(3));
+	    	markLocations(Double.parseDouble(pt.get(1)),Double.parseDouble(pt.get(2)),pt.get(3));
 	    }
 	}
 	public void markLocations(double lat, double longit, String description){
@@ -89,8 +111,55 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	    map.addMarker(marker);
 	}
 	@Override
+	public int setParameter(List params) {
+		String deviceRoot = (String)params.get(0);
+		deviceType = (String) params.get(1);
+		if(deviceType.equalsIgnoreCase("android")){
+			for(Plugin i:analyzers){
+				if(i.getName().equalsIgnoreCase("Android Location Analyzer")){
+					List<String> params2 = new ArrayList<String>();
+					params2.add(deviceRoot);
+					i.setParameter(params);
+				}
+			}
+		}
+		
+		return 0;
+	}
+	@Override
+	public int setAvailablePlugins(List<Plugin> pls) {
+		analyzers = new ArrayList<Plugin>();
+		for(Plugin pl: pls){
+			if(pl.getName().endsWith("Location Analyzer")){
+				System.out.println(this.getName()+": "+pl.getName()+" added");
+				analyzers.add(pl);
+			}
+		}
+		return 0;
+	}
+	
+	@Override
 	public void start(Stage stage) throws Exception {
-		Node view = (Node)getResult();
+		MapPlugin tp = new MapPlugin();
+		
+		List<Plugin> pls = new ArrayList<Plugin>();
+		pls.add(tp);
+		pls.add(new AndroidLocationAnalyzerPlugin());
+		pls.add(new AndroidCalendarAnalyzerPlugin());
+		pls.add(new AndroidGmailAnalyzerPlugin());
+		pls.add(new SQLiteReaderPlugin());
+		for(Plugin pl: pls){
+			pl.setAvailablePlugins(pls);
+		}
+
+	
+		List params = new ArrayList();
+		params.add(".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");
+		//params.add(".."+File.separator+".."+File.separator+".."+File.separator+"device_ios");
+		params.add("android");
+		tp.setParameter(params);
+		
+		Node view = (Node)tp.getResult();
 		BorderPane bp = new BorderPane();
 		bp.setCenter(view);
 		stage.setTitle(this.getName());
@@ -100,13 +169,4 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	public static void main(String[] args){
 		launch(args);
 	}
-
-	@Override
-	public int setAvailablePlugins(List<Plugin> arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	
-
 }
