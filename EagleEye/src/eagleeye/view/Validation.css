@@ -1,0 +1,7 @@
+.custom-label {
+
+	-fx-font-size: 12px;
+	-fx-font-family: "Segoe UI";
+	-fx-text-fill: red;
+	-fx-opacity: 1.0;
+}

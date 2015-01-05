@@ -11,6 +11,7 @@ public class Device {
 	protected String dateCreated;
 	protected String deviceOwner;
 	protected File deviceImageFolder;
+	protected String deviceFolderPath;
 	
 	public Device() {
 		
@@ -22,6 +23,16 @@ public class Device {
 		this.deviceName = deviceName;
 		this.contentSize = contentSize;
 		this.deviceOwner = deviceOwner;
+	}
+	
+	public String getDeviceFolderPath() {
+		
+		return deviceFolderPath;
+	}
+	
+	public void modifyDeviceFolderPath(String deviceFolderPath) {
+		
+		this.deviceFolderPath = deviceFolderPath;
 	}
 	
 	public File getDeviceImageFolder() {

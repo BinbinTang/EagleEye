@@ -1207,7 +1207,7 @@ public class WorkBenchControllerFinal {
 
 		Stage dialog = this.createProgressDialog();
 		
-		Service<?> fsService = new FileSystemFormatDescriptorService(newDevice.getDeviceImageFolder());
+		Service<?> fsService = new FileSystemFormatDescriptorService(newDevice.getDeviceImageFolder(),newDevice.getDeviceName());
 		
 		ChangeListener<State> handleServiceChange = new ChangeListener<State>()
 		{

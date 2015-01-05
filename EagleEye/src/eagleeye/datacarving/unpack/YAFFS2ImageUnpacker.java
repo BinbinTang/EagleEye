@@ -464,8 +464,9 @@ public class YAFFS2ImageUnpacker extends DiskImageUnpacker
 				}
 
 				ArrayList<FileEntity> files = new ArrayList<FileEntity>();
+				String deviceName = YAFFS2ImageUnpacker.this.formatDescription.getDeviceName();
 				
-				String rootFilePath = "." + File.separator + "output" + File.separator + file.getName();
+				String rootFilePath = "." + File.separator + "output" + File.separator + deviceName + File.separator + file.getName();
 				HashMap<Integer, String> parentPaths = new HashMap<Integer, String>();
 				
 				for (Entry<Integer, YAFFS2ObjectHeader> entry : yaffs2ParentObjects.entrySet())

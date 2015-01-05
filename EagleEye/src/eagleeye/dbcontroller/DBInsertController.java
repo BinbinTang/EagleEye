@@ -1,5 +1,6 @@
 package eagleeye.dbcontroller;
 
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -23,6 +24,7 @@ public class DBInsertController {
 		stmt.setString(1, newDevice.getDeviceName());
 		stmt.setString(2, newDevice.getDeviceOwner());
 		stmt.setString(3, newDevice.getContentSize());
+		stmt.setString(4, "."+ File.separator + "output" + File.separator + newDevice.getDeviceName());
 		
 		stmt.execute();
 

@@ -15,11 +15,23 @@ import eagleeye.filesystem.format.YAFFS2FormatIdentifier;
 public class FileSystemFormatDescriptorService extends Service<ArrayList<FormatDescription>>
 {
 	private File directory;
+	private String deviceName;
 	private FormatIdentifierManager formatIdentifierManager = new FormatIdentifierManager();
 	
-	public FileSystemFormatDescriptorService(File directory)
+	public FileSystemFormatDescriptorService(File directory, String deviceName)
 	{
 		setDirectory(directory);
+		setDeviceName(deviceName);
+	}
+	
+	private void setDeviceName(String deviceName) {
+		
+		this.deviceName = deviceName;
+	}
+	
+	public String getDeviceName() {
+		
+		return deviceName;
 	}
 	
 	public File getDirectory()
@@ -97,6 +109,7 @@ public class FileSystemFormatDescriptorService extends Service<ArrayList<FormatD
 				
 				if (formatDescription != null)
 				{
+					formatDescription.setDeviceName(deviceName);
 					formatDescriptions.add(formatDescription);
 					binaryImageType = formatDescription.getBinaryImageType();
 				}

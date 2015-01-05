@@ -11,8 +11,8 @@ public class DBInsertQueries {
 	
 	public String insertNewDevice() {
 		
-		String script = "INSERT INTO Device(DeviceName, DeviceOwner, ContentSize, DateCreated, LastViewedOn) "
-						+ "VALUES(?,?,?,datetime('now'),datetime('now'))";
+		String script = "INSERT INTO Device(DeviceName, DeviceOwner, ContentSize, DateCreated, LastViewedOn, DeviceFolderPath) "
+						+ "VALUES(?,?,?,datetime('now'),datetime('now'), ?)";
 		
 		return script;
 	}

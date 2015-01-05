@@ -43,6 +43,7 @@ public class DBQueryController {
 				device.modifyContentSize(rs.getString("ContentSize"));
 				device.modifyDateCreated(rs.getString("DateCreated"));
 				device.modifyLastViewedOn(rs.getString("LastViewedOn"));
+				device.modifyDeviceFolderPath(rs.getString("DeviceFolderPath"));
 				
 				listOfDevices.add(device);
 			}
@@ -60,6 +61,35 @@ public class DBQueryController {
 		
 		return listOfDevices;
 	}
+	
+	public ArrayList<String> getAllDeviceNames() {
+		
+		ArrayList<String> listOfDeviceNames = new ArrayList<String> (); 
+		Connection conn = DBConnection.dbConnector();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllDeviceNames());
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				String deviceName = rs.getString("DeviceName");
+				listOfDeviceNames.add(deviceName);
+			}
+			
+			conn.close();
+			
+		} catch (Exception e) {
+			
+			try {
+				conn.close();
+			} catch (Exception e2) {
+				
+			}
+		}
+		
+		return listOfDeviceNames;
+	}
+	
 	
 	
 	//use for tree-view

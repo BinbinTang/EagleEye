@@ -7,6 +7,7 @@ public class FormatDescription
 	protected File file;
 	protected String operatingSystem;
 	protected String binaryImageType;
+	protected String deviceName;
 	
 	public String getBinaryImageType()
 	{
@@ -36,5 +37,14 @@ public class FormatDescription
 	public void setOperatingSystem(String operatingSystem)
 	{
 		this.operatingSystem = operatingSystem;
+	}
+	
+	public void setDeviceName(String deviceName)
+	{
+		this.deviceName = deviceName;
+	}
+	public String getDeviceName()
+	{
+		return deviceName;
 	}
 }

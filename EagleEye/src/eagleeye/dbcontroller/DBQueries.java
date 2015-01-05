@@ -13,6 +13,12 @@ public class DBQueries {
 		return query;
 	}
 	
+	public String getAllDeviceNames() {
+		
+		String query = "SELECT DeviceName FROM Device";
+		return query;
+	}
+	
 	public String getAllDirectories() {
 		
 		String query = "SELECT * FROM Directory WHERE DeviceID = ?";
