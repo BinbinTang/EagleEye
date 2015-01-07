@@ -29,9 +29,9 @@
             </Label>
             <Label text="Owner Of Device" GridPane.rowIndex="2" />
             <Label text="Device Image Path" GridPane.rowIndex="4" />
-            <TextField fx:id="deviceNameTxtBox" onKeyPressed="#deviceNameChange" onMouseClicked="#deviceNameChange" GridPane.columnIndex="1" />
-            <TextField fx:id="deviceOwnerTxtBox" onKeyPressed="#ownerNameChange" onMouseClicked="#ownerNameChange" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="filePathTxtBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#pathChange" onMouseClicked="#pathChange" prefHeight="25.0" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="deviceNameTxtBox" onKeyPressed="#deviceNameChange" onMouseClicked="#deviceNameChange" styleClass="custom-original-textField" stylesheets="@Validation.css" GridPane.columnIndex="1" />
+            <TextField fx:id="deviceOwnerTxtBox" onKeyPressed="#ownerNameChange" onMouseClicked="#ownerNameChange" styleClass="custom-original-textField" stylesheets="@Validation.css" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="filePathTxtBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#pathChange" onMouseClicked="#pathChange" prefHeight="25.0" prefWidth="160.0" styleClass="custom-original-textField" stylesheets="@Validation.css" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Button fx:id="browseBtn" alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleBrowse" text="..." GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
             <Label fx:id="deviceNameWarning" styleClass="custom-label" stylesheets="@Validation.css" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label fx:id="pathWarning" styleClass="custom-label" stylesheets="@Validation.css" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />

@@ -5,3 +5,8 @@
 	-fx-text-fill: red;
 	-fx-opacity: 1.0;
 }
+
+.custom-wrong-textField {
+
+	-fx-border-color: red;
+}

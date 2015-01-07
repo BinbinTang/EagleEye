@@ -79,6 +79,7 @@ public class NewDeviceDialogController {
 		if(deviceNameTxtBox.getText().equals(EMPTY_FIELD)) {
 			deviceNameWarning.setText(EMPTY_DEVICE_NAME_WARNING);
 			deviceNameWarning.setVisible(true);
+			deviceNameTxtBox.getStyleClass().add("custom-wrong-textField");
 			isAnyFieldsEmpty = true;
 		}
 			
@@ -86,6 +87,7 @@ public class NewDeviceDialogController {
 			
 			ownerNameWarning.setText(EMPTY_OWNER_NAME_WARNING);
 			ownerNameWarning.setVisible(true);
+			deviceOwnerTxtBox.getStyleClass().add("custom-wrong-textField");
 			isAnyFieldsEmpty = true;
 		}
 		
@@ -93,6 +95,7 @@ public class NewDeviceDialogController {
 			
 			pathWarning.setText(EMPTY_PATH_WARNING);
 			pathWarning.setVisible(true);
+			filePathTxtBox.getStyleClass().add("custom-wrong-textField");
 			isAnyFieldsEmpty = true;
 		}
 			
@@ -124,16 +127,19 @@ public class NewDeviceDialogController {
 	private void deviceNameChange() {
 		
 		deviceNameWarning.setVisible(false);
+		deviceNameTxtBox.getStyleClass().remove("custom-wrong-textField");
 	}
 	
 	@FXML
 	private void ownerNameChange() {
 		ownerNameWarning.setVisible(false);
+		deviceOwnerTxtBox.getStyleClass().remove("custom-wrong-textField");
 	}
 	
 	@FXML
 	private void pathChange() {
 		pathWarning.setVisible(false);
+		filePathTxtBox.getStyleClass().remove("custom-wrong-textField");
 	}
 	
 	@FXML
@@ -145,6 +151,8 @@ public class NewDeviceDialogController {
 			{
 				deviceNameWarning.setText(SAME_DEVICE_NAME_WARNING);
 				deviceNameWarning.setVisible(true);
+				deviceNameTxtBox.getStyleClass().add("custom-wrong-textField");
+				
 			}
 			else
 			{
