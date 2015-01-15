@@ -49,11 +49,11 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 				geoPoints  = (List<List<String>>) i.getResult();
 			}
 		}
-		/*
+		
 		for(List<String> pt: geoPoints){
 		    	System.out.println(Double.parseDouble(pt.get(1))+","+Double.parseDouble(pt.get(2))+","+pt.get(3));
 		    	//markLocations(Double.parseDouble(geoPoints.get(0).get(1)),Double.parseDouble(geoPoints.get(0).get(2)),geoPoints.get(0).get(3));
-		}*/
+		}
 		if(geoPoints.size()==0){
 			System.out.println("no data");
 		}
