@@ -133,4 +133,12 @@ public class DBQueries {
 		
 		return query;
 	}
+	
+	public String getDeviceRoot () {
+		
+		String query = "SELECT DeviceFolderPath FROM Device WHERE DeviceID = ?";
+		
+		return query;
+		
+	}
 }

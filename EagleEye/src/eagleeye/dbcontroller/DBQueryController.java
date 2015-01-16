@@ -5,27 +5,30 @@ import eagleeye.entities.*;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DBQueryController {
+public class DBQueryController implements DBController {
 
 	protected int deviceID;
 	protected DBQueries queryMaker;
-		
+	
 	public DBQueryController() {
 		System.out.println("new DB set");
 		this.deviceID = -1;
 		queryMaker = new DBQueries();
 	}
 	
+	@Override
 	public void setDeviceID(int deviceID){
 		
 		this.deviceID = deviceID;
 	}
 	
+	@Override
 	public int getDeviceID(){
 	
 		return deviceID;
 	}
 	
+	@Override
 	public ArrayList<Device> getAllDevices() {
 		
 		ArrayList<Device> listOfDevices = new ArrayList<Device> (); 
@@ -62,6 +65,7 @@ public class DBQueryController {
 		return listOfDevices;
 	}
 	
+	@Override
 	public ArrayList<String> getAllDeviceNames() {
 		
 		ArrayList<String> listOfDeviceNames = new ArrayList<String> (); 
@@ -91,7 +95,7 @@ public class DBQueryController {
 	}
 	
 	
-	
+	@Override
 	//use for tree-view
 	//Call this method if using tree
 	public ArrayList<Directory> getAllDirectoriesAndFiles() {
@@ -108,6 +112,7 @@ public class DBQueryController {
 		
 	}
 	
+	@Override
 	public ArrayList<Directory> getAllDirectories(){
 		
 		ArrayList<Directory> listOfDirectory = new ArrayList<Directory>();
@@ -148,6 +153,7 @@ public class DBQueryController {
 		return listOfDirectory;
 	}
 	
+	@Override
 	public ArrayList<FileEntity> getAllFiles() {
 		
 		ArrayList<FileEntity> listOfFiles = new ArrayList<FileEntity>();
@@ -198,6 +204,7 @@ public class DBQueryController {
 		
 	}
 	
+	@Override
 	public ArrayList<FileEntity> getFilteredFiles(Filter filter) {
 		
 		boolean isKeywordPresent = isKeywordPresent(filter.getKeyword());
@@ -262,6 +269,46 @@ public class DBQueryController {
 		
 	}
 	
+	@Override
+	public String getDeviceRootPath() {
+		
+		if(deviceID == -1)
+			return null;
+		
+		String deviceRootPath = "";
+		Connection conn = DBConnection.dbConnector();
+		
+		try {
+			
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getDeviceRoot());
+			stmt.setInt(1, deviceID);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			int count = 0;
+			while(rs.next()){
+				
+				deviceRootPath = rs.getString("DeviceFolderPath");
+			}
+			
+			conn.close();
+		
+		} catch (Exception e) {
+			
+			System.out.println("Device Folder Path Query Failed");
+			System.out.println(e.getMessage());
+			try {
+				conn.close();
+			} catch (Exception e2) {
+				
+			}
+		}
+		
+		return deviceRootPath;
+		
+	}
+	
+	
 	//HELPER METHODS SECTION
 	private ArrayList<Directory> organizeFilesAndDirectory (ArrayList<Directory> listOfDirectory, ArrayList<FileEntity> listOfFiles){
 		
@@ -282,6 +329,7 @@ public class DBQueryController {
 		
 		return listOfDirectory;
 	}
+	
 	
 	private PreparedStatement setFieldsForFilter(PreparedStatement stmt,boolean isKeywordPresent, Filter filter) throws SQLException {
 		
@@ -306,7 +354,7 @@ public class DBQueryController {
 		return stmt;
 		
 	}
-	
+		
 	private boolean isKeywordPresent(String keyword) {
 		
 		String emptyString = "";

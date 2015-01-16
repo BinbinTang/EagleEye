@@ -62,6 +62,7 @@ import javafx.stage.WindowEvent;
 import eagleeye.controller.MainAppFinal;
 import eagleeye.datacarving.unpack.FileSystemFormatDescriptorService;
 import eagleeye.datacarving.unpack.UnpackDirectoryService;
+import eagleeye.dbcontroller.DBController;
 import eagleeye.dbcontroller.DBInsertTransaction;
 import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.Device;
@@ -85,7 +86,7 @@ public class WorkBenchControllerFinal {
 	private Color isModifiedColor = Color.web("#f42929");
 
 	// DataBase
-	private DBQueryController dbController;
+	private DBController dbController;
 	
 	// File chooser
 	private File file;

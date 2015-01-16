@@ -2,6 +2,9 @@ package eagleeye.entities;
 
 import java.util.ArrayList;
 
+import eagleeye.api.entities.EagleDirectory;
+import eagleeye.api.entities.EagleFile;
+
 //This class is used when querying
 public class Directory {
 
@@ -21,6 +24,7 @@ public class Directory {
 		fileList = new ArrayList<FileEntity>();
 	}
 
+	
 	public int getDeviceID(){
 
 		return deviceID;
