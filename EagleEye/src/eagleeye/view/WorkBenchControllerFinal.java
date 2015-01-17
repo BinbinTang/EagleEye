@@ -66,10 +66,7 @@ import eagleeye.dbcontroller.DBController;
 import eagleeye.dbcontroller.DBInsertTransaction;
 import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.Device;
-import eagleeye.entities.Directory;
 import eagleeye.entities.FileEntity;
-import eagleeye.entities.Filter;
-import eagleeye.fileReader.fileLoader;
 //import eagleeye.fileReader.fileReader;
 import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
@@ -98,9 +95,6 @@ public class WorkBenchControllerFinal {
 	
 	@FXML
 	private StackPane timeLineViewPane;
-	
-	//@FXML dynamically created
-	private ListView resultListView;	
 
 	// Menubar
 	ArrayList<String> functionList;
@@ -133,7 +127,6 @@ public class WorkBenchControllerFinal {
 	 */
 	public WorkBenchControllerFinal() {
 		pm = new PluginManager("PluginBinaries");
-		resultListView = new ListView();
 		functionList = new ArrayList<String>();
 	}
 

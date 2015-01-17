@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
@@ -44,13 +45,19 @@ import eagleeye.entities.Directory;
 import eagleeye.entities.FileEntity;
 import eagleeye.entities.Filter;
 import eagleeye.pluginmanager.Plugin;
+import eagleeye.pluginmanager.PluginManager;
 import eagleeye.utils.FileFormatIdentifier;
-import eagleeye.view.WorkBenchControllerFinal.MyTreeItem;
 
 public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	// DataBase
 	private DBController dbController;
+	
+	// Path to identify current case
+	private String casePath = "";
+	private int currentCaseID = -1;
+	private int currentDirID = 0;
+	private String currentDir = "";	
 	
 	// Primary stage
 	private Stage primaryStage;
@@ -59,7 +66,10 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	// Colors
 	private Color originalColor = Color.web("#2e00ff");
 	private Color isRecoveredColor = Color.web("#025013");
-	private Color isModifiedColor = Color.web("#f42929");	
+	private Color isModifiedColor = Color.web("#f42929");		
+	
+	//@FXML dynamically created
+	private ListView resultListView;	
 	    
     // Filter
  	private Filter filter;
@@ -159,6 +169,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		
 	
 	public FolderStructureTreePlugin(){
+		resultListView = new ListView();
 	}
 	
 	@FXML
@@ -287,7 +298,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					if (mouseEvent.getClickCount() == 2) {
 						// Check if it is a file, and open						
 						if (item.isLeaf()) {
-							String filePath = item.getFileEntity().getFilePath() + file.separator + item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
+							String filePath = item.getFileEntity().getFilePath() + File.separator + item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
 							//File currentFile = new File(filePath);
 							//Desktop.getDesktop().open(currentFile);
 							/*
@@ -912,7 +923,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	@Override
 	public Object getResult() {
-		return tree;
+		return primaryStage;
 	}
 
 	@Override
@@ -994,33 +1005,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		}
 
 	}
-	// Find Directory according to ID
-	public Directory findDir(ArrayList<Directory> db, int ID) {
-		for (Directory checkParent : db) {
-			if (checkParent.getDirectoryID() == ID) {
-				return checkParent;
-			}
-		}
-		return null;
-	}
-	// Find whether a target is inside the tree of root, by recursion
-	public TreeItem<String> findItem(TreeItem<String> root, String target) {
-		TreeItem<String> result = null;
-
-		if (root.getValue() == target) {
-			return root;
-		} else if (root.getChildren().size() != 0) {
-			for (TreeItem<String> sub : root.getChildren()) {
-				TreeItem<String> subResult = findItem(sub, target);
-				if (subResult != null) {
-					return subResult;
-				}
-			}
-		}
-
-		return result;
-	}
-		
+	
 	//Filters Controller Function
 	@FXML 
 	public void handleFilter() {
