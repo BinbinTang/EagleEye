@@ -26,7 +26,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import eagleeye.api.entities.*;
-import eagleeye.entities.Filter;
 import eagleeye.pluginmanager.Plugin;
 
 public class FolderStructureTreePlugin extends Application implements Plugin{
@@ -36,7 +35,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
     private AnchorPane rootLayout;
     
     // Filter
- 	private Filter filter = new Filter();
+ 	private EagleFilter filter = new EagleFilter();
  	final ObservableList<String> listItems = FXCollections.observableArrayList(); 
 	
 	private TreeView<String> tree;
@@ -150,7 +149,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	}
 	
 	// Add files into directory
-	public void addFiles(Directory dir, TreeItem<String> node) {
+	public void addFiles(EagleDirectory dir, TreeItem<String> node) {
 		for (EagleFile file : dir.getFiles()) {
 			TreeItem<String> newItem = new TreeItem<String>(file.getFileName()
 					+ "." + file.getFileExt(), new ImageView(fileIcon));
@@ -159,8 +158,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	}
 	// Find Directory according to ID
-	public Directory findDir(ArrayList<Directory> db, int ID) {
-		for (Directory checkParent : db) {
+	public EagleDirectory findDir(ArrayList<EagleDirectory> db, int ID) {
+		for (EagleDirectory checkParent : db) {
 			if (checkParent.getDirectoryID() == ID) {
 				return checkParent;
 			}
@@ -191,7 +190,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			// TreeView
 			rootNode = new TreeItem<String>(TreeStructure.get(0)
 					.getDirectoryName(), rootIcon);
-			ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
+			ArrayList<EagleDirectory> CopyTreeStructure = new ArrayList<EagleDirectory>(
 					TreeStructure);
 			tree = new TreeView<String>(rootNode);
 
@@ -204,7 +203,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			
 			while (CopyTreeStructure.size() > 0) {
 				int startSize = CopyTreeStructure.size();
-				for (Directory dir : CopyTreeStructure) {
+				for (EagleDirectory dir : CopyTreeStructure) {
 					TreeItem<String> targetParent = null;
 					//System.out.println("Current remaining Size: "
 					//		+ CopyTreeStructure.size());
@@ -220,7 +219,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					TreeItem<String> newItem = new TreeItem<String>(
 							dir.getDirectoryName());
 
-					Directory parent = findDir(TreeStructure,dir.getParentDirectory());
+					EagleDirectory parent = findDir(TreeStructure,dir.getParentDirectory());
 
 					if (parent != null) {
 						targetParent = findItem(rootNode,parent.getDirectoryName());
@@ -243,7 +242,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 				// and exit
 				if (startSize == endSize) {
 					System.out.println("Remaining Directories:");
-					for (Directory dir : CopyTreeStructure) {
+					for (EagleDirectory dir : CopyTreeStructure) {
 						System.out.println(dir.getDirectoryName()
 								+ " needed parent not found: "
 								+ dir.getParentDirectory());

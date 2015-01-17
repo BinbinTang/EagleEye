@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.TimeZone;
 
-public class Filter {
+import eagleeye.api.entities.EagleFilter;
+
+public class Filter implements EagleFilter{
 
 	private String keyword;
 	private LocalDate startDate;
