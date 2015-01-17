@@ -1,23 +1,43 @@
 package view.folderstructure;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import eagleeye.api.entities.*;
+import eagleeye.entities.Filter;
 import eagleeye.pluginmanager.Plugin;
 
 public class FolderStructureTreePlugin extends Application implements Plugin{
+	
+	// Declare primary stage
+	private Stage primaryStage;
+    private AnchorPane rootLayout;
+    
+    // Filter
+ 	private Filter filter = new Filter();
+ 	final ObservableList<String> listItems = FXCollections.observableArrayList(); 
 	
 	private TreeView<String> tree;
 	private Node rootIcon;
@@ -38,6 +58,17 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		allFiles = new ArrayList<FileEntity>();
 		initTreeView();
 	}
+	
+	public static void main(String[] args){
+		launch(args);
+	}
+	
+	@Override
+	public int setAvailablePlugins(List<Plugin> arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
 	@Override
 	public String getName() {
 		return "Folder Structure";
@@ -81,12 +112,40 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		
+		this.primaryStage = stage;
+		
 		Node view = (Node)getResult();
 		BorderPane bp = new BorderPane();
 		bp.setCenter(view);
 		stage.setTitle(this.getName());
 	    stage.setScene(new Scene(bp)); 
 	    stage.show();	
+	    
+	    // Load FXML
+	    try {
+            // Load the root layout from the fxml file
+            FXMLLoader loader = new FXMLLoader(FolderStructureTreePlugin.class.getResource("FolderStructure.fxml"));
+            rootLayout = (AnchorPane) loader.load();
+            final double rem = Math.rint(new Text(" ").getLayoutBounds().getHeight());
+            Scene scene = new Scene(rootLayout, 50 * rem, 40 * rem);
+            //Scene scene = new Scene(rootLayout);
+
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (IOException e) {
+            // Exception gets thrown if the fxml file could not be loaded
+            e.printStackTrace();
+        }
+	    
+	    // Set On Close Window
+	    this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
 		
 	}
 	
@@ -125,6 +184,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 		return result;
 	}
+	
 	public void initTreeView(){
 		// Check if DB empty
 		if (TreeStructure.size() != 0) {
@@ -193,14 +253,53 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			}
 		}
 	}
-	public static void main(String[] args){
-		launch(args);
-	}
-	@Override
-	public int setAvailablePlugins(List<Plugin> arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
 	
+	
+	//Filters Controller Function
+		@FXML 
+		public void handleFilter() {
+			
+			this.filter = new Filter();
+			categoryFilter = new ArrayList<String>();
+			
+			if(!startDatePicker.getValue().equals(null))
+				filter.modifyStartDate(startDatePicker.getValue());
+			if(!endDatePicker.getValue().equals(null))
+				filter.modifyEndDate(endDatePicker.getValue());
+			
+			String startTimeDaily = startHourDailyTf.getText() + ":" + startMinuteDailyTf.getText();
+			String endTimeDaily = endHourDailyTf.getText() + ":" + endMinuteDailyTf.getText();
+			String startTime = startHourTf.getText() +":"+ startMinuteTf.getText();
+			String endTime = endHourTf.getText() + ":" + endMinuteTf.getText();
+			
+			
+			filter.modifyStartTimeDaily(startTimeDaily);
+			filter.modifyEndTimeDaily(endTimeDaily);
+			filter.modifyStartTime(startTime);
+			filter.modifyEndTime(endTime);
+			
+			
+			if(!keywordsTf.getText().equals(EMPTY_STRING))
+				filter.modifyKeyword(keywordsTf.getText());
+			
+			filter.modifyIsModified(isModifiedCheckBox.isSelected());
+			filter.modifyIsRecovered(isDeletedCheckBox.isSelected());
+			filter.modifiyIsOriginal(isOriginalCheckBox.isSelected());
+
+			for(Node N : categoryViewPane.getChildren())
+			{
+				CheckBox cb = (CheckBox) N;
+				if(cb.isSelected())
+					categoryFilter.add(cb.getText());
+			}
+			
+			
+			
+			
+			filter.setCategoryFilter(categoryFilter);
+			//displayResult(listItems,"category");
+			addDirectoryView(filter);
+		}
 
 }
