@@ -13,7 +13,7 @@ public interface EagleDirectory {
 	public String getDateAccessed();	
 	public String getDateModified();	
 	public boolean getIsRecovered();	
-	public ArrayList<EagleFile> getFiles();
+	public ArrayList<FileEntity> getFiles();
 	public void modifyDeviceID(int deviceID);	
 	public void modifyDirectoryID(int directoryID);	
 	public void modifyDirectoryName(String directoryName);	
@@ -22,5 +22,5 @@ public interface EagleDirectory {
 	public void modifyDateAccessed(String dateAccessed);	
 	public void modifyDateModified(String dateModified);	
 	public void modifyIsRecovered(boolean isRecovered);	
-	public void addNewFile(EagleFile newFile);
+	public void addNewFile(FileEntity newFile);
 }

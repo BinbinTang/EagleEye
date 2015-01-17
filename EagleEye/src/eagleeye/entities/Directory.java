@@ -6,7 +6,7 @@ import eagleeye.api.entities.EagleDirectory;
 import eagleeye.api.entities.EagleFile;
 
 //This class is used when querying
-public class Directory {
+public class Directory implements EagleDirectory {
 
 	protected String directoryName;		//Name of the directory
 	protected int parentDirectory; 		//parent Object ID
