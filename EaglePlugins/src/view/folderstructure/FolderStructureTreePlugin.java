@@ -171,10 +171,49 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private CheckBox isOriginalCheckBox;
 		
 	
+	@Override
+	public void start(Stage stage) throws Exception {
+		
+		this.primaryStage = stage;
+		
+		//Node view = (Node)getResult();
+		//BorderPane bp = new BorderPane();
+		//bp.setCenter(view);
+		stage.setTitle(this.getName());
+	    //stage.setScene(new Scene(bp)); 
+	    stage.show();	
+	    
+	    // Load FXML
+	    try {
+            // Load the root layout from the fxml file
+            FXMLLoader loader = new FXMLLoader(FolderStructureTreePlugin.class.getResource("FolderStructure.fxml"));
+            System.out.println("FXML finded");
+            rootLayout = (AnchorPane) loader.load();
+            final double rem = Math.rint(new Text(" ").getLayoutBounds().getHeight());
+            Scene scene = new Scene(rootLayout, 50 * rem, 40 * rem);
+            //Scene scene = new Scene(rootLayout);
+
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (IOException e) {
+            // Exception gets thrown if the fxml file could not be loaded
+            e.printStackTrace();
+        }
+	    
+	    // Set On Close Window
+	    this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+		
+	}
+	
 	public FolderStructureTreePlugin(){
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
-		initialize();
 	}
 	
 	@FXML
@@ -927,6 +966,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	@Override
 	public int setAvailablePlugins(List<Plugin> pls) {
+		if(pls == null) return 0;
 		for(Plugin pl: pls){
 			if(pl.getType().equals(Plugin.Type.READER)){
 				readers.add(pl);
@@ -975,46 +1015,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		//tmp create dummy folders and files
 
 		return 0;
-	}
-
-	@Override
-	public void start(Stage stage) throws Exception {
-		
-		this.primaryStage = stage;
-		
-		Node view = (Node)getResult();
-		BorderPane bp = new BorderPane();
-		bp.setCenter(view);
-		stage.setTitle(this.getName());
-	    stage.setScene(new Scene(bp)); 
-	    stage.show();	
-	    
-	    // Load FXML
-	    try {
-            // Load the root layout from the fxml file
-            FXMLLoader loader = new FXMLLoader(FolderStructureTreePlugin.class.getResource("FolderStructure.fxml"));
-            rootLayout = (AnchorPane) loader.load();
-            final double rem = Math.rint(new Text(" ").getLayoutBounds().getHeight());
-            Scene scene = new Scene(rootLayout, 50 * rem, 40 * rem);
-            //Scene scene = new Scene(rootLayout);
-
-            primaryStage.setScene(scene);
-            primaryStage.show();
-        } catch (IOException e) {
-            // Exception gets thrown if the fxml file could not be loaded
-            e.printStackTrace();
-        }
-	    
-	    // Set On Close Window
-	    this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent t) {
-                Platform.exit();
-                System.exit(0);
-            }
-        });
-		
-	}
+	}	
 	
 	// Add files into directory
 	public void addFiles(Directory dir, TreeItem<String> node) {
