@@ -50,6 +50,9 @@ import eagleeye.utils.FileFormatIdentifier;
 
 public class FolderStructureTreePlugin extends Application implements Plugin{
 	
+	// Neeeded Reader-type plugin
+	private List<Plugin> readers;
+	
 	// DataBase
 	private DBController dbController;
 	
@@ -170,12 +173,15 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	public FolderStructureTreePlugin(){
 		resultListView = new ListView();
+		readers = new ArrayList<Plugin>();
+		initialize();
 	}
 	
 	@FXML
 	private void initialize() {
 		initializeCategoryFilter();
-		initializeDateTimePicker();				
+		initializeDateTimePicker();	
+		setAvailablePlugins(null);
 	}
 	
 	
@@ -315,7 +321,12 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						    
 							FileFormatIdentifier fi = new FileFormatIdentifier();
 							if(fi.checkFormat(filePath)==FileFormatIdentifier.Format.IMAGE){
-								Plugin pl = pm.getPluginWithName("Image View");
+								Plugin pl = null;
+								for(Plugin p: readers){
+									if(p.getName().equals("Image View")){
+										pl = p;
+									};
+								}
 								
 								//set plugin input params
 								List params = new ArrayList();
@@ -334,8 +345,12 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 							    stage.setTitle(new File(filePath).getName());
 							    stage.show();						
 							}else if(fi.checkFormat(filePath)==FileFormatIdentifier.Format.TEXT){
-								Plugin pl = pm.getPluginWithName("Text View");
-								System.out.println(pl.getName());
+								Plugin pl = null;
+								for(Plugin p: readers){
+									if(p.getName().equals("Text View")){
+										pl = p;
+									};
+								}
 								//set plugin input params
 								List params = new ArrayList();
 								params.add(filePath);
@@ -911,8 +926,13 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	}
 	
 	@Override
-	public int setAvailablePlugins(List<Plugin> arg0) {
-		// TODO Auto-generated method stub
+	public int setAvailablePlugins(List<Plugin> pls) {
+		for(Plugin pl: pls){
+			if(pl.getType().equals(Plugin.Type.READER)){
+				readers.add(pl);
+				System.out.println(getName()+": Find "+pl.getName());
+			}
+		}
 		return 0;
 	}
 	
