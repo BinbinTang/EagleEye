@@ -3,6 +3,8 @@ package eagleeye.dbcontroller;
 import java.util.ArrayList;
 
 
+
+import eagleeye.api.entities.EagleFilter;
 import eagleeye.entities.Filter;
 
 public class DBQueries {
@@ -41,7 +43,7 @@ public class DBQueries {
 		
 	}
 	
-	public String getFilteredFiles(boolean isKeywordPresent, Filter filter) {
+	public String getFilteredFiles(boolean isKeywordPresent, EagleFilter filter) {
 		
 		String query;
 		

@@ -1,7 +1,8 @@
 package eagleeye.dbcontroller;
 
 import eagleeye.entities.*;
-
+import eagleeye.api.dbcontroller.*;
+import eagleeye.api.entities.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -29,9 +30,9 @@ public class DBQueryController implements DBController {
 	}
 	
 	@Override
-	public ArrayList<Device> getAllDevices() {
+	public ArrayList<EagleDevice> getAllDevices() {
 		
-		ArrayList<Device> listOfDevices = new ArrayList<Device> (); 
+		ArrayList<EagleDevice> listOfDevices = new ArrayList<EagleDevice> (); 
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
@@ -98,24 +99,23 @@ public class DBQueryController implements DBController {
 	@Override
 	//use for tree-view
 	//Call this method if using tree
-	public ArrayList<Directory> getAllDirectoriesAndFiles() {
+	public ArrayList<EagleDirectory> getAllDirectoriesAndFiles() {
 		
-		ArrayList<Directory> listOfDirectory = getAllDirectories();
-		ArrayList<FileEntity> listOfFiles = getAllFiles();
+		ArrayList<EagleDirectory> listOfDirectory = getAllDirectories();
+		ArrayList<EagleFile> listOfFiles = getAllFiles();
 		
 		System.out.println("CaiJun: D_List Size =" + listOfDirectory.size());
 		System.out.println("CaiJun: F_List Size =" + listOfFiles.size());
 		
-		ArrayList<Directory> organizedDirectoryList = this.organizeFilesAndDirectory(listOfDirectory, listOfFiles);
-		
+		ArrayList<EagleDirectory> organizedDirectoryList = this.organizeFilesAndDirectory(listOfDirectory, listOfFiles);
 		return organizedDirectoryList;
 		
 	}
 	
 	@Override
-	public ArrayList<Directory> getAllDirectories(){
+	public ArrayList<EagleDirectory> getAllDirectories(){
 		
-		ArrayList<Directory> listOfDirectory = new ArrayList<Directory>();
+		ArrayList<EagleDirectory> listOfDirectory = new ArrayList<EagleDirectory>();
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
@@ -154,9 +154,9 @@ public class DBQueryController implements DBController {
 	}
 	
 	@Override
-	public ArrayList<FileEntity> getAllFiles() {
+	public ArrayList<EagleFile> getAllFiles() {
 		
-		ArrayList<FileEntity> listOfFiles = new ArrayList<FileEntity>();
+		ArrayList<EagleFile> listOfFiles = new ArrayList<EagleFile>();
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
@@ -205,10 +205,10 @@ public class DBQueryController implements DBController {
 	}
 	
 	@Override
-	public ArrayList<FileEntity> getFilteredFiles(Filter filter) {
+	public ArrayList<EagleFile> getFilteredFiles(EagleFilter filter) {
 		
 		boolean isKeywordPresent = isKeywordPresent(filter.getKeyword());
-		ArrayList<FileEntity> listOfFiles = new ArrayList<FileEntity>();
+		ArrayList<EagleFile> listOfFiles = new ArrayList<EagleFile>();
 		
 		System.out.println("StartDateTime = " + filter.getStartDateTimeAsString());
 		System.out.println("EndDateTime = " + filter.getEndDateTimeAsString());
@@ -219,7 +219,6 @@ public class DBQueryController implements DBController {
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
-			
 			PreparedStatement stmt = conn.prepareStatement(queryMaker.getFilteredFiles(isKeywordPresent, filter));
 			stmt = setFieldsForFilter(stmt,isKeywordPresent,filter);
 			System.out.println("query is " + stmt.getMetaData());
@@ -264,6 +263,7 @@ public class DBQueryController implements DBController {
 				
 			}
 		}
+		
 		
 		return listOfFiles;
 		
@@ -310,18 +310,18 @@ public class DBQueryController implements DBController {
 	
 	
 	//HELPER METHODS SECTION
-	private ArrayList<Directory> organizeFilesAndDirectory (ArrayList<Directory> listOfDirectory, ArrayList<FileEntity> listOfFiles){
+	private ArrayList<EagleDirectory> organizeFilesAndDirectory (ArrayList<EagleDirectory> listOfDirectory, ArrayList<EagleFile> listOfFiles){
 		
-		for(FileEntity f : listOfFiles) {
+		for(EagleFile f : listOfFiles) {
 			
 			int fileDirectory = f.getDirectoryID();
 			
-			for(Directory d : listOfDirectory) {
+			for(EagleDirectory d : listOfDirectory) {
 				
 				int directoryID = d.getDirectoryID();
 				
 				if(fileDirectory == directoryID) {
-					d.addNewFile(f);
+					d.addNewFile((FileEntity)f);
 					break;
 				}
 			}
@@ -331,7 +331,7 @@ public class DBQueryController implements DBController {
 	}
 	
 	
-	private PreparedStatement setFieldsForFilter(PreparedStatement stmt,boolean isKeywordPresent, Filter filter) throws SQLException {
+	private PreparedStatement setFieldsForFilter(PreparedStatement stmt,boolean isKeywordPresent, EagleFilter filter) throws SQLException {
 		
 		if(isKeywordPresent) {
 			

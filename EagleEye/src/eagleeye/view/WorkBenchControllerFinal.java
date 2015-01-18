@@ -59,10 +59,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+import eagleeye.api.dbcontroller.DBController;
+import eagleeye.api.entities.EagleDevice;
 import eagleeye.controller.MainAppFinal;
 import eagleeye.datacarving.unpack.FileSystemFormatDescriptorService;
 import eagleeye.datacarving.unpack.UnpackDirectoryService;
-import eagleeye.dbcontroller.DBController;
 import eagleeye.dbcontroller.DBInsertTransaction;
 import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.Device;
@@ -304,9 +305,9 @@ public class WorkBenchControllerFinal {
 	private void refreshDeviceList(){
 		System.out.println("refreshDeviceList");
 		//dbController = new DBQueryController();
-		ArrayList<Device> devices = dbController.getAllDevices();
+		ArrayList<EagleDevice> devices = dbController.getAllDevices();
 		openMenu.getItems().clear();
-		for (Device device : devices){
+		for (EagleDevice device : devices){
 			int ID = device.getDeviceID();
 			MenuItem newItem = new MenuItem(device.getDeviceName() + " [" + device.getDeviceOwner() + "]");
 			openMenu.getItems().add(newItem);

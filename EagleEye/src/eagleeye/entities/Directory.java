@@ -16,12 +16,12 @@ public class Directory implements EagleDirectory {
 	protected String dateAccessed;
 	protected String dateModified;
 	protected boolean isRecovered;
-	protected ArrayList<FileEntity> fileList;
+	protected ArrayList<EagleFile> fileList;
 	
 	public Directory(){
 		
 		isRecovered = false;
-		fileList = new ArrayList<FileEntity>();
+		fileList = new ArrayList<EagleFile>();
 	}
 
 	
@@ -65,7 +65,7 @@ public class Directory implements EagleDirectory {
 		return isRecovered;
 	}
 	
-	public ArrayList<FileEntity> getFiles(){
+	public ArrayList<EagleFile> getFiles(){
 		
 		return fileList;
 	}
@@ -110,7 +110,7 @@ public class Directory implements EagleDirectory {
 		this.isRecovered = isRecovered;
 	}
 	
-	public void addNewFile(FileEntity newFile){
+	public void addNewFile(EagleFile newFile){
 		
 		this.fileList.add(newFile);
 	}

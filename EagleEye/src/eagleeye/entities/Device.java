@@ -2,7 +2,9 @@ package eagleeye.entities;
 
 import java.io.File;
 
-public class Device {
+import eagleeye.api.entities.EagleDevice;
+
+public class Device implements EagleDevice{
 
 	protected int deviceID;
 	protected String deviceName;

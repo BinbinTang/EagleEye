@@ -2,6 +2,7 @@ package eagleeye.model;
 
 import java.util.ArrayList;
 
+import eagleeye.api.entities.*;
 import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.*;
 
@@ -22,7 +23,7 @@ public class UIRequestHandler implements RequestHandler {
 			DBQueryController dbController = new DBQueryController();
 			dbController.setDeviceID(1);
 			
-			ArrayList<Directory> TreeStructure = dbController.getAllDirectoriesAndFiles();
+			ArrayList<EagleDirectory> TreeStructure = dbController.getAllDirectoriesAndFiles();
 			
 			System.out.println("The number of Directories: " + TreeStructure.size());
 			
@@ -32,7 +33,12 @@ public class UIRequestHandler implements RequestHandler {
 	
 	public ArrayList<Device> getExistingDevices(){
 		DBQueryController dbController = new DBQueryController();
-		return dbController.getAllDevices();
+		ArrayList<Device> ds = new ArrayList<Device>();
+		ArrayList<EagleDevice> eds = dbController.getAllDevices();
+		for(EagleDevice ed: eds){
+			ds.add((Device)ed);
+		}
+		return ds;
 	}
 
 	@Override
