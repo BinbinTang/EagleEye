@@ -32,17 +32,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import eagleeye.api.dbcontroller.DBController;
 import eagleeye.api.entities.*;
-import eagleeye.dbcontroller.DBController;
-import eagleeye.entities.Directory;
-import eagleeye.entities.FileEntity;
+//import eagleeye.entities.Directory;
+//import eagleeye.entities.FileEntity;
 import eagleeye.entities.Filter;
 import eagleeye.pluginmanager.Plugin;
 import eagleeye.pluginmanager.PluginManager;
@@ -103,9 +102,9 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	MyTreeItem<String> rootNodeC;
 	ArrayList<String> categoryList = new ArrayList(Arrays.asList("All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
 
-	ArrayList<FileEntity> allFiles;
+	ArrayList<EagleFile> allFiles;
 	
-	ArrayList<Directory> TreeStructure;
+	ArrayList<EagleDirectory> TreeStructure;
 	
 	// FXML controls
 	@FXML
@@ -242,7 +241,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			rootNode = new MyTreeItem<Label>(new Label(TreeStructure.get(0)
 					.getDirectoryName()), rootIcon);
 			rootNode.setDirectoryEntity(TreeStructure.get(0));
-			ArrayList<Directory> CopyTreeStructure = new ArrayList<Directory>(
+			ArrayList<EagleDirectory> CopyTreeStructure = new ArrayList<EagleDirectory>(
 					TreeStructure);
 			TreeView<Label> tree = new TreeView<Label>(rootNode);
 
@@ -255,7 +254,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			
 			while (CopyTreeStructure.size() > 0) {
 				int startSize = CopyTreeStructure.size();
-				for (Directory dir : CopyTreeStructure) {
+				for (EagleDirectory dir : CopyTreeStructure) {
 					MyTreeItem<Label> targetParent = null;
 					//System.out.println("Current remaining Size: "
 					//		+ CopyTreeStructure.size());
@@ -272,7 +271,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 							new Label(dir.getDirectoryName()));
 					newItem.setDirectoryEntity(dir);
 
-					Directory parent = findDir(TreeStructure,dir.getParentDirectory());
+					EagleDirectory parent = findDir(TreeStructure,dir.getParentDirectory());
 
 					if (parent != null) {
 						targetParent = findItem(rootNode,parent.getDirectoryName());
@@ -305,7 +304,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 				// and exit
 				if (startSize == endSize) {
 					System.out.println("Remaining Directories:");
-					for (Directory dir : CopyTreeStructure) {
+					for (EagleDirectory dir : CopyTreeStructure) {
 						System.out.println(dir.getDirectoryName()
 								+ " needed parent not found: "
 								+ dir.getParentDirectory());
@@ -429,11 +428,11 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 		ObservableList<String> resultList = FXCollections.observableArrayList(); 
 		
-        ArrayList<FileEntity> results = dbController.getFilteredFiles(filter);
+        ArrayList<EagleFile> results = dbController.getFilteredFiles(filter);
         System.out.println("now: " + dbController.getDeviceID());
         System.out.println("filtered result size: " + results.size());
         
-        for (FileEntity resultFile : results){
+        for (EagleFile resultFile : results){
         	String name = resultFile.getFileName();
         	String ext = resultFile.getFileExt();
         	resultList.add(name + "." + ext);
@@ -461,8 +460,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	}
 
 	// Find Directory according to ID
-	private Directory findDir(ArrayList<Directory> db, int ID) {
-		for (Directory checkParent : db) {
+	private EagleDirectory findDir(ArrayList<EagleDirectory> db, int ID) {
+		for (EagleDirectory checkParent : db) {
 			if (checkParent.getDirectoryID() == ID) {
 				return checkParent;
 			}
@@ -471,8 +470,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	}
 
 	// Add files into directory
-	private void addFiles(Directory dir, MyTreeItem<Label> node) {
-		for (eagleeye.entities.FileEntity file : allFiles) {
+	private void addFiles(EagleDirectory dir, MyTreeItem<Label> node) {
+		for (EagleFile file : allFiles) {
 			if(file.getDirectoryID() == dir.getDirectoryID()){
 				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt() + " [" + file.getDateCreated() + "]");
 				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName);
@@ -1019,7 +1018,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	// Add files into directory
 	public void addFiles(Directory dir, TreeItem<String> node) {
-		for (FileEntity file : dir.getFiles()) {
+		for (EagleFile file : dir.getFiles()) {
 			TreeItem<String> newItem = new TreeItem<String>(file.getFileName()
 					+ "." + file.getFileExt(), new ImageView(fileIcon));
 			node.getChildren().add(newItem);
@@ -1110,22 +1109,22 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	public class MyTreeItem<T> extends TreeItem<T>{
 		
-		private FileEntity file;
-		private Directory dir;
+		private EagleFile file;
+		private EagleDirectory dir;
 		
-		public void setFileEntity(FileEntity file){
+		public void setFileEntity(EagleFile file){
 			this.file = file;
 		}
 		
-		public void setDirectoryEntity(Directory dir){
+		public void setDirectoryEntity(EagleDirectory dir){
 			this.dir = dir;
 		}
 		
-		public FileEntity getFileEntity(){
+		public EagleFile getFileEntity(){
 			return file;
 		}
 		
-		public Directory getDirectory(){
+		public EagleDirectory getDirectory(){
 			return dir;
 		}
 		

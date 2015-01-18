@@ -23,7 +23,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import eagleeye.api.entities.EagleLocation;
 import eagleeye.pluginmanager.Plugin;
 
 public class MapPlugin extends Application implements Plugin,MapComponentInitializedListener{
