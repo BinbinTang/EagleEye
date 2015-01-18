@@ -82,6 +82,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private final String EMPTY_STRING = "";
 	
 	// TreeView & CategoryVuew
+	/*
 	private final Node rootIcon = new ImageView(new Image(getClass()
 			.getResourceAsStream("Icons/folder.png"), 16, 16, false, false));
 	private final Image fileIcon = new Image(getClass().getResourceAsStream(
@@ -97,7 +98,15 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private final Image othersIcon = new Image(getClass().getResourceAsStream(
 			"Icons/unknown.png"), 16, 16, false, false);
 	private final Image dbIcon = new Image(getClass().getResourceAsStream(
-			"Icons/DB.png"), 16, 16, false, false);
+			"Icons/DB.png"), 16, 16, false, false);*/
+	private final Node rootIcon = new ImageView(new Image("file:Icons/folder.png", 16, 16, false, false));
+	private final Image fileIcon = new Image("file:Icons/file.png",16, 16, false, false);
+	private final Image docIcon = new Image("file:Icons/doc.png",16, 16, false, false);
+	private final Image imageIcon = new Image("file:Icons/photo icon.png",16, 16, false, false);
+	private final Image videoIcon = new Image("file:Icons/video icon.png",16, 16, false, false);
+	private final Image audioIcon = new Image("file:Icons/audio icon.png",16, 16, false, false);
+	private final Image othersIcon = new Image("file:Icons/unknown.png",16, 16, false, false);
+	private final Image dbIcon = new Image("file:Icons/DB.png",16, 16, false, false);
 	MyTreeItem<Label> rootNode;
 	MyTreeItem<String> rootNodeC;
 	ArrayList<String> categoryList = new ArrayList(Arrays.asList("All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
@@ -117,8 +126,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private ScrollPane MainResultPane;
 	
 	// SearchButton
-	private final Image searchIcon = new Image(getClass().getResourceAsStream(
-			"Icons/search icon1.png"), 16, 16, false, false);
+	private final Image searchIcon = new Image("file:Icons/search icon1.png", 16, 16, false, false);
 	@FXML
 	private Button searchButton;
 	@FXML
@@ -127,8 +135,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	// DatePicker
 	private LocalDate startDate = LocalDate.parse("1992-05-08");
 	private LocalDate endDate = LocalDate.now();
-	private final Image calendarIcon = new Image(getClass()
-			.getResourceAsStream("Icons/fileIcon.jpg"));
+	private final Image calendarIcon = new Image("file:Icons/fileIcon.jpg");
 	@FXML
 	private DatePicker startDatePicker;
 	@FXML
@@ -960,6 +967,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	
 	public static void main(String[] args){
+		System.out.println("Working Directory = " + System.getProperty("user.dir"));
 		launch(args);
 	}
 	
