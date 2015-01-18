@@ -971,7 +971,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			if(pl.getType().equals(Plugin.Type.READER)){
 				readers.add(pl);
 				System.out.println(getName()+": Find "+pl.getName());
-			}
+			} 
 		}
 		return 0;
 	}
