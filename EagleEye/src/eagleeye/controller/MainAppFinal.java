@@ -42,8 +42,8 @@ public class MainAppFinal extends Application {
         
         try {
             // Load the root layout from the fxml file
-            FXMLLoader loader = new FXMLLoader(MainAppFinal.class.getResource("../view/WorkBenchRootLayout.fxml"));
-            rootLayout = (BorderPane) loader.load();
+            FXMLLoader mainLoader = new FXMLLoader(MainAppFinal.class.getResource("../view/WorkBenchRootLayout.fxml"));
+            rootLayout = (BorderPane) mainLoader.load();
             final double rem = Math.rint(new Text(" ").getLayoutBounds().getHeight());
             Scene scene = new Scene(rootLayout, 50 * rem, 40 * rem);
             //Scene scene = new Scene(rootLayout);

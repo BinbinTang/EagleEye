@@ -1,6 +1,8 @@
 package view.folderstructure;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -192,31 +194,18 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		this.primaryStage = stage;
 		
 
-	    
-	    // Load FXML
-	    try {
-            // Load the root layout from the fxml file
-	    	System.out.println("loading faml");
-            FXMLLoader loader = new FXMLLoader(FolderStructureTreePlugin.class.getResource("FolderStructure.fxml"));
-            System.out.println("FXML finded");
-            rootLayout = (AnchorPane) loader.load();
 
-            myNode = rootLayout;
-            //Scene scene = new Scene(rootLayout);
-    		Node view = (Node)getResult();
-    		BorderPane bp = new BorderPane();
-    		bp.setCenter(view);
-    		primaryStage.setTitle(this.getName());
-    	    primaryStage.setScene(new Scene(bp)); 
+		// Load the root layout from the fxml file
+        //Scene scene = new Scene(rootLayout);
+		Node view = (Node)getResult();
+		BorderPane bp = new BorderPane();
+		bp.setCenter(view);
+		primaryStage.setTitle(this.getName());
+	    primaryStage.setScene(new Scene(bp)); 
 
-            //primaryStage.setScene(scene);
-            primaryStage.show();
-        } catch (IOException e) {
-            // Exception gets thrown if the fxml file could not be loaded
-        	System.out.println("Cannot load faxml");
-            e.printStackTrace();
-        }
-	    
+        //primaryStage.setScene(scene);
+        primaryStage.show();
+
 	    // Set On Close Window
 	    this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -1008,7 +997,18 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	@Override
 	public Object getResult() {
-		return myNode;
+    	System.out.println("loading faml");
+        FXMLLoader loader = null;
+		loader = new FXMLLoader(FolderStructureTreePlugin.class.getResource("FolderStructure.fxml"));
+        try {
+			rootLayout = loader.load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        //myNode = (Node)rootLayout;
+		return rootLayout;
 	}
 
 	@Override
