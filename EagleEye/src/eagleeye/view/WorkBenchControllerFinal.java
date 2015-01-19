@@ -170,7 +170,7 @@ public class WorkBenchControllerFinal {
 			functionHBox.getChildren().add(newBtn);
 			
 			//System.out.println(functionName);
-			if(functionName.equals("Folder Structure")){
+			if(functionName.equals("")){
 				newBtn.setOnMouseClicked(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent event) {

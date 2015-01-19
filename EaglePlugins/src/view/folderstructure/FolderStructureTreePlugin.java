@@ -6,12 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JComponent;
+import javax.swing.JRootPane;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -32,6 +36,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -40,6 +45,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import eagleeye.api.dbcontroller.DBController;
 import eagleeye.api.entities.*;
+import eagleeye.dbcontroller.DBQueryController;
 //import eagleeye.entities.Directory;
 //import eagleeye.entities.FileEntity;
 import eagleeye.entities.Filter;
@@ -63,7 +69,10 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	// Primary stage
 	private Stage primaryStage;
-    private AnchorPane rootLayout;    
+    private AnchorPane rootLayout;   
+    
+    // Node
+    private Node myNode;
 
 	// Colors
 	private Color originalColor = Color.web("#2e00ff");
@@ -179,30 +188,32 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		
+		System.out.println("folder structure started");
 		this.primaryStage = stage;
 		
-		//Node view = (Node)getResult();
-		//BorderPane bp = new BorderPane();
-		//bp.setCenter(view);
-		stage.setTitle(this.getName());
-	    //stage.setScene(new Scene(bp)); 
-	    stage.show();	
+
 	    
 	    // Load FXML
 	    try {
             // Load the root layout from the fxml file
+	    	System.out.println("loading faml");
             FXMLLoader loader = new FXMLLoader(FolderStructureTreePlugin.class.getResource("FolderStructure.fxml"));
             System.out.println("FXML finded");
             rootLayout = (AnchorPane) loader.load();
-            final double rem = Math.rint(new Text(" ").getLayoutBounds().getHeight());
-            Scene scene = new Scene(rootLayout, 50 * rem, 40 * rem);
-            //Scene scene = new Scene(rootLayout);
 
-            primaryStage.setScene(scene);
+            myNode = rootLayout;
+            //Scene scene = new Scene(rootLayout);
+    		Node view = (Node)getResult();
+    		BorderPane bp = new BorderPane();
+    		bp.setCenter(view);
+    		primaryStage.setTitle(this.getName());
+    	    primaryStage.setScene(new Scene(bp)); 
+
+            //primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
             // Exception gets thrown if the fxml file could not be loaded
+        	System.out.println("Cannot load faxml");
             e.printStackTrace();
         }
 	    
@@ -215,15 +226,22 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
             }
         });
 		
+
+	    primaryStage.show();	
 	}
 	
 	public FolderStructureTreePlugin(){
+		myNode = new SwingNode();
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
+		System.out.println("Folder Structure Plugin Loaded");
 	}
 	
 	@FXML
 	private void initialize() {
+		dbController = new DBQueryController();
+		System.out.println(dbController.getDeviceID());
+		System.out.println(dbController.getAllDeviceNames());
 		initializeCategoryFilter();
 		initializeDateTimePicker();	
 		setAvailablePlugins(null);
@@ -990,7 +1008,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	@Override
 	public Object getResult() {
-		return primaryStage;
+		return myNode;
 	}
 
 	@Override
