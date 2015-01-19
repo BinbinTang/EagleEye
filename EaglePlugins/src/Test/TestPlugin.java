@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import view.folderstructure.FolderStructureTreePlugin;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -38,13 +39,7 @@ public class TestPlugin extends Application implements Plugin{
 		
 		Node rootLayout = null;
 		FXMLLoader loader = null;
-		try {
-			loader = new FXMLLoader(new URL("file:Test.fxml"));
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-	        System.out.println("FXML not finded");
-		}
+		loader = new FXMLLoader(TestPlugin.class.getResource("Test.fxml"));
         try {
 			rootLayout = loader.load();
 		} catch (IOException e) {
