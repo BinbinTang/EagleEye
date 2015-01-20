@@ -34,6 +34,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import reader.SQLiteReaderPlugin;
+import tempDBcontroller.DBQueryController;
 import timeflow.app.actions.AddFieldAction;
 import timeflow.app.actions.AddRecordAction;
 import timeflow.app.actions.CopySchemaAction;
@@ -74,7 +75,6 @@ import timeflow.views.TableView;
 import timeflow.views.TimelineView;
 import eagleeye.api.dbcontroller.DBController;
 import eagleeye.pluginmanager.Plugin;
-import db.DBQueryController;
 
 public class TimelinePlugin extends Application implements Plugin{
 	//timeline view attributes
