@@ -13,7 +13,7 @@ import java.util.Map;
 import reader.SQLiteReaderPlugin;
 import eagleeye.pluginmanager.Plugin;
 
-public class WhatsAppAnalyzerPlugin implements Plugin{
+public class IOSWhatsAppAnalyzerPlugin implements Plugin{
 	private class WAMessage{
 		private boolean isFrom;
 		private String timestamp;
@@ -65,7 +65,7 @@ public class WhatsAppAnalyzerPlugin implements Plugin{
 	private String outputPath;
 	private Plugin sqlreader;
 	private List<Chat> chats;
-	public WhatsAppAnalyzerPlugin(){
+	public IOSWhatsAppAnalyzerPlugin(){
 		
 	}
 	public void getAllChats(){
@@ -216,7 +216,7 @@ public class WhatsAppAnalyzerPlugin implements Plugin{
 	}
 	@Override
 	public String getName() {
-		return "WhatsApp Analyzer";
+		return "IOS WhatsApp Analyzer";
 	}
 
 	@Override
@@ -246,6 +246,12 @@ public class WhatsAppAnalyzerPlugin implements Plugin{
 	public int setParameter(List argList) {
 		deviceRoot = (String) argList.get(0);
 		WAChatHistoryPath = deviceRoot+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Applications"+File.separator+"00CAE5F5-CA3E-45D2-91F2-33E3F2FB12E1"+File.separator+"Documents"+File.separator+"ChatStorage.sqlite";
+		File f = new File(WAChatHistoryPath);
+		if(!f.exists()){
+			System.out.println("["+getName()+"] test analyze fail");
+			return 1;
+		}
+		System.out.println("["+getName()+"] test analyze successful");
 		outputPath = (String) argList.get(1);
 		return 0;
 	}
@@ -263,7 +269,7 @@ public class WhatsAppAnalyzerPlugin implements Plugin{
 	
 	public static void main(String[] args) { 
 		
-		WhatsAppAnalyzerPlugin sp = new WhatsAppAnalyzerPlugin();
+		IOSWhatsAppAnalyzerPlugin sp = new IOSWhatsAppAnalyzerPlugin();
 		List<Plugin> pls = new ArrayList<Plugin>();
 		pls.add(new SQLiteReaderPlugin());
 		sp.setAvailablePlugins(pls);

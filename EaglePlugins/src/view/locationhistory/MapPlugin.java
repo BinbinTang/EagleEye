@@ -24,11 +24,15 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.dbcontroller.*;
+
+//import db.DBQueryController;
 
 public class MapPlugin extends Application implements Plugin,MapComponentInitializedListener{
 	private GoogleMapView mapView;
 	private GoogleMap map;
 	private List<Plugin> analyzers;
+	private int chosenAnalyzerIdx;
 	private String deviceType;
 	List<List<String>> geoPoints;
 	public MapPlugin(){
@@ -42,19 +46,18 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 
 	@Override
 	public Object getResult() {
-		geoPoints= new ArrayList<List<String>>();
-		for(Plugin i: analyzers){
-			if(i.getName().equalsIgnoreCase("Android Location Analyzer")){
-				geoPoints  = (List<List<String>>) i.getResult();
-			}
+		if(chosenAnalyzerIdx ==-1){
+			geoPoints = new ArrayList<List<String>>();
+		}else{
+			geoPoints  = (List<List<String>>) analyzers.get(chosenAnalyzerIdx).getResult();
 		}
+		//for(List<String> pt: geoPoints){
+		//    	System.out.println(Double.parseDouble(pt.get(1))+","+Double.parseDouble(pt.get(2))+","+pt.get(3));
+		//}
 		
-		for(List<String> pt: geoPoints){
-		    	System.out.println(Double.parseDouble(pt.get(1))+","+Double.parseDouble(pt.get(2))+","+pt.get(3));
-		    	//markLocations(Double.parseDouble(geoPoints.get(0).get(1)),Double.parseDouble(geoPoints.get(0).get(2)),geoPoints.get(0).get(3));
-		}
 		if(geoPoints.size()==0){
 			System.out.println("no data");
+			return null;
 		}
 		
 		mapView = new GoogleMapView();
@@ -111,19 +114,25 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	}
 	@Override
 	public int setParameter(List params) {
-		String deviceRoot = (String)params.get(0);
-		deviceType = (String) params.get(1);
-		if(deviceType.equalsIgnoreCase("android")){
-			for(Plugin i:analyzers){
-				if(i.getName().equalsIgnoreCase("Android Location Analyzer")){
-					List<String> params2 = new ArrayList<String>();
-					params2.add(deviceRoot);
-					i.setParameter(params);
+		chosenAnalyzerIdx = -1;
+		Object p = params.get(0);
+		Class[] interfaces = p.getClass().getInterfaces();
+		if(interfaces[0].equals(DBController.class)){
+			DBController dbc = (DBController) p;
+			
+			List params2 = new ArrayList();
+			params2.add(dbc.getDeviceRootPath()+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");
+			for(int i=0; i<analyzers.size(); i++){
+				if(analyzers.get(i).setParameter(params2)==0){
+					chosenAnalyzerIdx=i;
+					return 0;	//assume only 1 analyzer meet the requirement
 				}
 			}
+			System.out.println("ERROR: ["+getName()+"] no available data or suitable analyzer");
+		}else{
+			System.out.println("ERROR: ["+getName()+"] cannot recognize input parameters");
 		}
-		
-		return 0;
+		return 1;
 	}
 	@Override
 	public int setAvailablePlugins(List<Plugin> pls) {
@@ -137,6 +146,7 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 		return 0;
 	}
 	
+	/**************************for test*******************************/
 	@Override
 	public void start(Stage stage) throws Exception {
 		MapPlugin tp = new MapPlugin();
@@ -153,9 +163,14 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 
 	
 		List params = new ArrayList();
-		params.add(".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");
-		//params.add(".."+File.separator+".."+File.separator+".."+File.separator+"device_ios");
-		params.add("android");
+		
+		/*uncomment for success case
+		DBController dc =  new DBQueryController();
+		dc.setDeviceID(3);
+		params.add(dc);*/
+		
+		//failure case
+		params.add("this/is/a/bad/path");
 		tp.setParameter(params);
 		
 		Node view = (Node)tp.getResult();
@@ -168,4 +183,5 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	public static void main(String[] args){
 		launch(args);
 	}
+	/**************************end test*******************************/
 }

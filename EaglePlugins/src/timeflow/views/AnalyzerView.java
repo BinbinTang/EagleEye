@@ -39,7 +39,7 @@ import javax.swing.table.TableModel;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.StyleSheet;
 
-import analyzer.WhatsAppAnalyzerPlugin;
+import analyzer.IOSWhatsAppAnalyzerPlugin;
 import timeflow.util.*;
 import view.timeline.TimelinePlugin;
 import eagleeye.pluginmanager.Plugin;

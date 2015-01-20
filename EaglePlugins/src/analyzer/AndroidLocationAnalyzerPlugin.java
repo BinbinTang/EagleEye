@@ -65,6 +65,7 @@ public class AndroidLocationAnalyzerPlugin implements Plugin{
 	private String deviceRoot;
 	private List<String> searchPaths;
 	private Plugin sqlreader;
+	private List<Plugin> upperStreamPlugins;
 	public static String decodeString(final byte[] arr, final int idx, final int length)
 	{
 		final StringBuilder sb = new StringBuilder(length);
@@ -214,7 +215,8 @@ public class AndroidLocationAnalyzerPlugin implements Plugin{
 
 	@Override
 	public int setParameter(List argList) {
-		deviceRoot = (String) argList.get(0);
+		String upperStreamPlugin = (String) argList.get(0);
+		deviceRoot = (String) argList.get(1);
 		List<String> paths = new ArrayList<String>();
 		searchPaths = new ArrayList<String>();
 		
@@ -230,6 +232,11 @@ public class AndroidLocationAnalyzerPlugin implements Plugin{
 			}
 		}
 		
+		if(searchPaths.size()==0){
+			System.out.println("["+getName()+"] test analyze fail");
+			return 1;
+		}
+		System.out.println("["+getName()+"] test analyze successful");
 		return 0;
 	}
 	

@@ -197,6 +197,12 @@ public class AndroidGmailAnalyzerPlugin implements Plugin{
 		deviceRoot = (String) argList.get(0);
 		//System.out.println(deviceRoot);
 		dbFolderPath = deviceRoot+File.separator+"data"+File.separator+"com.google.android.providers.gmail"+File.separator+"databases";
+		File f = new File(dbFolderPath);
+		if(!f.exists()){
+			System.out.println("["+getName()+"] test analyze fail");
+			return 1;
+		}
+		System.out.println("["+getName()+"] test analyze successful");
 		outputPath = (String) argList.get(1);
 		return 0;
 	}

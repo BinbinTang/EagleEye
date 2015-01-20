@@ -146,7 +146,7 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 	}
 	@Override
 	public String getName() {
-		return "Calendar Analyzer";
+		return "IOS Calendar Analyzer";
 	}
 
 	@Override
@@ -175,6 +175,12 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 	public int setParameter(List argList) {
 		deviceRoot = (String) argList.get(0);
 		calendarPath = deviceRoot+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Library"+File.separator+"Calendar"+File.separator+"Calendar.sqlitedb";
+		File f = new File(calendarPath);
+		if(!f.exists()){
+			System.out.println("["+getName()+"] test analyze fail");
+			return 1;
+		}
+		System.out.println("["+getName()+"] test analyze successful");
 		outputPath = (String) argList.get(1);
 		return 0;
 	}

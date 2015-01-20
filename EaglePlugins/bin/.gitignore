@@ -1,10 +1,8 @@
-/META-INF/
+/Test/
 /analyzer/
 /com/
+/db/
 /extractor/
-/html/
 /reader/
 /timeflow/
 /view/
-/Test/
-/Test.fxml

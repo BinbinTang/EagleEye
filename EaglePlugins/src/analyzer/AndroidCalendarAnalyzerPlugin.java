@@ -174,6 +174,12 @@ public class AndroidCalendarAnalyzerPlugin implements Plugin{
 	public int setParameter(List argList) {
 		deviceRoot = (String) argList.get(0);
 		calendarPath = deviceRoot+File.separator+"data"+File.separator+"com.android.providers.calendar"+File.separator+"databases"+File.separator+"calendar.db";
+		File f = new File(calendarPath);
+		if(!f.exists()){
+			System.out.println("["+getName()+"] test analyze fail");
+			return 1;
+		}
+		System.out.println("["+getName()+"] test analyze successful");
 		outputPath = (String) argList.get(1);
 		return 0;
 	}

@@ -72,29 +72,20 @@ import timeflow.views.ListView;
 import timeflow.views.SummaryView;
 import timeflow.views.TableView;
 import timeflow.views.TimelineView;
+import eagleeye.api.dbcontroller.DBController;
 import eagleeye.pluginmanager.Plugin;
+import db.DBQueryController;
 
 public class TimelinePlugin extends Application implements Plugin{
 	//timeline view attributes
 	public TFModel model;
 	private  SwingNode timelineNode;
 	private List<Plugin> analyzers;
-
+	private List<Plugin> showAnalyzers;
 	public TimelinePlugin(){
 		model = new TFModel();
 		timelineNode = new SwingNode();
 		analyzers = new ArrayList<Plugin>();
-		//getAnalyzerPlugins();
-		//initTimelineView();
-	}
-	public void getAnalyzerPlugins(){
-		//TODO: get this from plugin manager instead
-		Plugin whatsAppAnalyzer = new WhatsAppAnalyzerPlugin();
-		analyzers.add(whatsAppAnalyzer);
-		for(int i=0; i<19; i++){
-			Plugin testAnalyzer = new TestAnalyzerPlugin();
-			analyzers.add(testAnalyzer);
-		}
 	}
 	public void initTimelineView(){
 		JRootPane jf = new JRootPane();
@@ -134,7 +125,7 @@ public class TimelinePlugin extends Application implements Plugin{
 		jf.add(center, BorderLayout.CENTER);
 		
 		TimelineView timeline=new TimelineView(model);
-		AnalyzerView startView = new AnalyzerView(model, analyzers);
+		AnalyzerView startView = new AnalyzerView(model, showAnalyzers);
 		
 		//create tab list	
 		AbstractView[] views={
@@ -258,32 +249,47 @@ public class TimelinePlugin extends Application implements Plugin{
 	}
 
 	@Override
-	public int setParameter(List argList) {
-		String deviceRootPath = (String) argList.get(0);
-		String analyzerOutputPath = (String) argList.get(1);
-		
-		for(int i=2; i<argList.size();i++){
-			analyzers.add((Plugin)argList.get(i));
+	public int setParameter(List params) {
+		showAnalyzers = new ArrayList<Plugin>();
+		Object p = params.get(0);
+		Class[] interfaces = p.getClass().getInterfaces();
+		System.out.println("Timeline input interface = "+interfaces[0].getName());
+		if(interfaces[0].equals(DBController.class)){
+			DBController dbc = (DBController) p;
+			String deviceRoot = dbc.getDeviceRootPath();
+			String [] tokens = deviceRoot.split("\\"+File.separator);
+			String outputPath = "analysis"+File.separator+tokens[tokens.length-1];
+			File f = new File(outputPath);
+			if (!f.exists()) {
+			    System.out.println("creating directory: " + outputPath);
+			    try{
+			    	f.mkdir();
+			        System.out.println("Created directory: "+ outputPath);
+			    } catch(SecurityException se){
+			    	System.out.println("Failed to create directory: "+ outputPath);
+			    }
+			}
+			
+			List params2 = new ArrayList();
+			params2.add(deviceRoot+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");
+			params2.add(outputPath);
+			for(int i=0; i<analyzers.size(); i++){
+				if(analyzers.get(i).setParameter(params2)==0){
+					showAnalyzers.add(analyzers.get(i));
+				}
+			}
+			initTimelineView();
+			return 0;
+		}else{
+			System.out.println("ERROR: ["+getName()+"] cannot recognize input parameters");
 		}
+		return 1;
 		
-		for(Plugin p:analyzers){
-			List params = new ArrayList();
-			params.add(deviceRootPath);
-			params.add(analyzerOutputPath);
-			p.setParameter(params);
-		}
-		return 0;
 	}
 	
 	@Override
 	public int setAvailablePlugins(List<Plugin> pls) {
-		for(Plugin pl: pls){
-			if(pl.getType().equals(Plugin.Type.ANALYZER)){
-				analyzers.add(pl);
-				System.out.println(getName()+": Find "+pl.getName());
-			}
-		}
-		initTimelineView();
+		analyzers = pls;
 		return 0;
 	}
 	
@@ -292,21 +298,21 @@ public class TimelinePlugin extends Application implements Plugin{
 		TimelinePlugin tp = new TimelinePlugin();
 		List<Plugin> pls = new ArrayList<Plugin>();
 		pls.add(tp);
-		//pls.add(new WhatsAppAnalyzerPlugin());
-		//pls.add(new TestAnalyzerPlugin());
-		//pls.add(new SQLiteReaderPlugin());
-		//pls.add(new IOSCalendarAnalyzerPlugin());
+		pls.add(new IOSWhatsAppAnalyzerPlugin());
+		pls.add(new TestAnalyzerPlugin());
+		pls.add(new SQLiteReaderPlugin());
+		pls.add(new IOSCalendarAnalyzerPlugin());
 		pls.add(new AndroidCalendarAnalyzerPlugin());
 		pls.add(new AndroidGmailAnalyzerPlugin());
 		for(Plugin pl: pls){
 			pl.setAvailablePlugins(pls);
 		}
 		
-		
+		DBController dbc = new DBQueryController();
+		dbc.setDeviceID(3);
 		List params = new ArrayList();
-		params.add(".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");
+		params.add(dbc);
 		//params.add(".."+File.separator+".."+File.separator+".."+File.separator+"device_ios");
-		params.add("analysis");
 		tp.setParameter(params);
 		
 		Node view = (Node)tp.getResult();

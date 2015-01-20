@@ -245,6 +245,7 @@ public class TestAnalyzerPlugin implements Plugin{
 	@Override
 	public int setParameter(List argList) {
 		deviceRoot = (String) argList.get(0);
+		System.out.println("["+getName()+"] test analyze successful");
 		WAChatHistoryPath = deviceRoot+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Applications"+File.separator+"00CAE5F5-CA3E-45D2-91F2-33E3F2FB12E1"+File.separator+"Documents"+File.separator+"ChatStorage.sqlite";
 		outputPath = (String) argList.get(1);
 		return 0;
