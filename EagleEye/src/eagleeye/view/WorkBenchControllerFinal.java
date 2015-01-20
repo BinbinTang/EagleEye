@@ -191,20 +191,10 @@ public class WorkBenchControllerFinal {
 						@Override
 						public void handle(MouseEvent event) {
 							if(dbController.getDeviceID() != -1){
-								//set Timeline View params
-								if(functionName.equals("Time Line")){
-									List params = new ArrayList();
-									//TODO: add local disk device root path here
-									params.add("output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");
-									params.add("analysis");
-									pl.setParameter(params);
-								}
-								if(functionName.equals("Location History")){
-									List params = new ArrayList();
-									params.add("output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd");	//TODO: add local disk device root path here
-									params.add("android");	//TODO: add device type here
-									pl.setParameter(params);
-								}
+								System.out.println("[set event]"+ pl.getClass().getName());
+								List params = new ArrayList();
+								params.add((DBController) dbController);
+								pl.setParameter(params);
 								addPluginView(pl);
 								
 							}else{

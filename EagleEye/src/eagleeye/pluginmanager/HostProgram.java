@@ -21,7 +21,7 @@ public class HostProgram {
 		String outputPath = "D:/MyFolder/y4/CS3283_MediaTech_Project/CodeX/EagleEye/EagleEye/Output";
 		
 		PluginManager demo = new PluginManager(pluginFolder);
-		demo.searchPlugins();
+		demo.loadPlugins();
 		//demo.extractFiles(diskimgPath,outputPath);
 		//demo.loadView();
 	}
