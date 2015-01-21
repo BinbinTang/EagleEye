@@ -1000,6 +1000,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
     	System.out.println("loading faml");
         FXMLLoader loader = null;
 		loader = new FXMLLoader(FolderStructureTreePlugin.class.getResource("FolderStructure.fxml"));
+		loader.setController(this);
         try {
 			rootLayout = loader.load();
 		} catch (IOException e) {
