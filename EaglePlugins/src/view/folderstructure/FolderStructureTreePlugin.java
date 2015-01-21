@@ -228,9 +228,6 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	@FXML
 	private void initialize() {
-		dbController = new DBQueryController();
-		System.out.println(dbController.getDeviceID());
-		System.out.println(dbController.getAllDeviceNames());
 		initializeCategoryFilter();
 		initializeDateTimePicker();	
 		setAvailablePlugins(null);
@@ -1025,6 +1022,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	@Override
 	public int setParameter(List arg0) {
+		dbController = (DBController) arg0.get(0);
+		//dbc.getDeviceRootPath();
 		// TODO Get List of Files and Directories from host application
 		// Avoid getting DB as the parameter
 		/*
