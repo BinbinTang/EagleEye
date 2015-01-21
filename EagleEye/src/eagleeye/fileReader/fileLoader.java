@@ -1,4 +1,4 @@
-package eagleeye.fileReader;
+/*package eagleeye.fileReader;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -250,4 +250,71 @@ class CustomPanel extends JPanel
 		}
 		return list;
 	}
+}
+
+*/
+
+
+package eagleeye.fileReader;
+import java.awt.Desktop;  
+import java.io.File;  
+import java.io.IOException;  
+import javax.swing.*;
+import java.util.LinkedList;
+import javax.swing.JOptionPane;
+
+public class fileLoader
+{
+	public String path=null;
+	static int ListOfFormatSize=5;
+	private static LinkedList<String> listOfFormat=new LinkedList();
+
+	public static String checkFormat (String filePath){    //check and return the file type of the given directory
+		String extension=null;
+		extension=filePath.substring(filePath.lastIndexOf(".")+1);
+
+		for(int i=0;i<ListOfFormatSize;i++){
+			if(listOfFormat.get(i).equals(extension)){
+				return listOfFormat.get(i);
+			}
+		}
+		return "illegal"; 
+	}
+
+	public void start(String filePath)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				listOfFormat.add("jpg");
+				listOfFormat.add("jpeg");
+				listOfFormat.add("png");
+				listOfFormat.add("pdf");
+				listOfFormat.add("txt");
+
+				if(checkFormat(filePath)=="illegal"){
+					JOptionPane.showMessageDialog(null,"Current file format is not supported by viewer","Format not suppported",JOptionPane.INFORMATION_MESSAGE);   
+				}
+				else{  
+						  final File file= new File(filePath);
+					       try {
+							Desktop.getDesktop().open(file);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}   					
+				
+				}
+			}
+		});
+	}
+ 
+   
+   
+	public void printPath(){
+		System.out.println("path is "+path);
+	}
+
+	
 }
