@@ -7,7 +7,7 @@ public class controller {
     }
 	public static void main(String[] args){
 	 	fileLoader test=new fileLoader();
-	 	String filePath="c:\\sp.png";
+	 	String filePath="/Users/MACHERIE/Documents/trytry.pdf";
 	 	test.start(filePath);
 	}
 	
