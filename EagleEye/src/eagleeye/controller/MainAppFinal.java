@@ -30,6 +30,7 @@ public class MainAppFinal extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+    	
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("EagleEye");
         Screen screen = Screen.getPrimary();

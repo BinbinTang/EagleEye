@@ -92,8 +92,7 @@ public class WorkBenchControllerFinal {
 	private String currentDir = "";	
 	
 	@FXML
-	private ScrollPane MainResultPane;
-	
+	private ScrollPane MainResultPane;	
 	@FXML
 	private StackPane timeLineViewPane;
 
