@@ -59,6 +59,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	// Neeeded Reader-type plugin
 	private List<Plugin> readers;
+	private List<Plugin> popUpViews;
 	
 	// DataBase
 	private DBController dbController;
@@ -223,6 +224,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		myNode = new SwingNode();
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
+		popUpViews = new ArrayList<Plugin>();
 		System.out.println("Folder Structure Plugin Loaded");
 	}
 	
@@ -360,6 +362,30 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 							fileLoader fd = new fileLoader();
 							fd.start(filePath);
 							*/
+							
+							List params = new ArrayList();
+							params.add(filePath);
+							for(Plugin pl: popUpViews){
+								if(pl.setParameter(params)==0){
+									Stage stage = new Stage();
+									double WindowWidth = 600;
+									double WindowHeight = 400;
+									stage.setWidth(WindowWidth);
+								    stage.setHeight(WindowHeight);
+								  //get display content
+									Node pc = (Node)pl.getResult();
+									
+									//put content in new window
+									ScrollPane sp = new ScrollPane();
+									sp.setContent(pc);
+									stage.setScene(new Scene(sp));
+								    stage.setTitle(new File(filePath).getName());
+								    stage.show();						
+								    
+								}
+							}
+							
+							/*
 							Stage stage = new Stage();
 							double WindowWidth = 600;
 							double WindowHeight = 400;
@@ -414,7 +440,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 								stage.setScene(new Scene(sp));
 							    stage.setTitle(new File(filePath).getName());
 							    stage.show();						
-							}	
+							}	*/
 						}	
 					}
 				}
@@ -978,12 +1004,13 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	@Override
 	public int setAvailablePlugins(List<Plugin> pls) {
 		if(pls == null) return 0;
-		for(Plugin pl: pls){
+		popUpViews = pls;
+		/*for(Plugin pl: pls){
 			if(pl.getType().equals(Plugin.Type.READER)){
 				readers.add(pl);
 				System.out.println(getName()+": Find "+pl.getName());
 			} 
-		}
+		}*/
 		return 0;
 	}
 	

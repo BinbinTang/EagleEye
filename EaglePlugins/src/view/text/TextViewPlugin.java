@@ -48,7 +48,36 @@ public class TextViewPlugin extends Application implements Plugin{
 	public TextViewPlugin(){
 		
 	}
-
+	private boolean isText(String path){
+		String[] extList ={
+				"txt",
+				"html",
+				"xml",
+				"csv",
+				"jsp",
+				"ini",
+				"h",
+				"cpp",
+				"c",
+				"java"
+				
+				//more to be added
+		};
+		
+		File f = new File(path);
+		if(f.exists()){
+			String n = f.getName();
+			String[] nSplit = n.split("\\.");
+			String ext = nSplit[nSplit.length-1];
+			System.out.println(ext);
+			
+			for(int i=0;i<extList.length;i++){
+				if(ext.equalsIgnoreCase(extList[i]))
+					return true;
+			}
+		}
+		return false;
+	}
 	@Override
 	public String getName() {
 		return "Text View";
@@ -73,6 +102,8 @@ public class TextViewPlugin extends Application implements Plugin{
 	@Override
 	public int setParameter(List argList) {
 		String textPath = (String)argList.get(0);
+		if(!isText(textPath)) return 1;
+		
 		ctv = new CustomTextView(textPath);
 		return 0;
 	}
