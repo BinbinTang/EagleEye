@@ -9,7 +9,7 @@ PLUGINDIR : PluginBinaries
 NAME: TimelinePlugin # some comment
 # input : DBController
 # output: GUI view
-USES: AndroidCalendarAnalyzerPlugin : AndroidGmailAnalyzerPlugin : IOSCalendarAnalyzerPlugin : TestAnalyzerPlugin : IOSWhatsAppAnalyzerPlugin
+USES: AndroidCalendarAnalyzerPlugin : AndroidGmailAnalyzerPlugin : IOSCalendarAnalyzerPlugin : TestAnalyzerPlugin : IOSWhatsAppAnalyzerPlugin : AndroidCallHistoryAnalyzerPlugin
 
 NAME: AndroidCalendarAnalyzerPlugin
 # input : List{String deviceRoot, String analysisOutputFolder}
@@ -42,6 +42,11 @@ NAME: TestAnalyzerPlugin
 USES: SQLiteReaderPlugin
 
 NAME: AndroidLocationAnalyzerPlugin
+# input : List{String deviceRoot}
+# output: List<List<String>> locationInfo(type, lat, lon, time, accuracy, confidence)
+USES: SQLiteReaderPlugin
+
+NAME: AndroidCallHistoryAnalyzerPlugin
 # input : List{String deviceRoot}
 # output: List<List<String>> locationInfo(type, lat, lon, time, accuracy, confidence)
 USES: SQLiteReaderPlugin

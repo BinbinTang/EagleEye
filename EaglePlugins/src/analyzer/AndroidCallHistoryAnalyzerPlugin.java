@@ -10,6 +10,7 @@ import java.util.Map;
 import eagleeye.pluginmanager.Plugin;
 import reader.SQLiteReaderPlugin;
 import eagleeye.pluginmanager.Plugin;
+import eagleeye.pluginmanager.Plugin.Type;
 
 public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 		
@@ -39,12 +40,14 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 		
 		public String timestampToDate(String timestamp){
 		
+			System.out.println(timestamp);
 			if(timestamp.equals("")) return timestamp;
 			SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 			timestamp = timestamp.substring(0, 10);
 			
 			Long time=new Long(Integer.parseInt(timestamp));
 			time = time*1000;
+			System.out.println(format.format(time));
 			return format.format(time);
 		}
 		
@@ -81,6 +84,8 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 		
 		for(List<String> i: callHistoryItems ){
 			
+			if(i.get(durationIndex).equals("duration")) continue;
+			
 			String duration = i.get(durationIndex);
 			if(duration==null) duration="";
 			
@@ -94,7 +99,12 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 			if(date==null) date = "";
 			
 			String type = i.get(callTypeIndex);
-			int callType = Integer.parseInt(type);
+			if(type==null) type = "";
+			
+			int callType = -1;
+			
+			if(!type.equals(""))
+				callType = Integer.parseInt(type);
 			
 			callHistory.add(new Calls(callType, duration, name, number, date));
 		}
@@ -161,8 +171,8 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 
 	@Override
 	public Type getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return Type.ANALYZER;
+	
 	}
 
 	@Override
@@ -200,12 +210,14 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 	
 	public static void main(String[] args) { 
 		
+		
+		//Used for individual testing
 		AndroidCallHistoryAnalyzerPlugin cp = new AndroidCallHistoryAnalyzerPlugin();
 		List<Plugin> pls = new ArrayList<Plugin>();
 		pls.add(new SQLiteReaderPlugin());
 		cp.setAvailablePlugins(pls);
 		List paths = new ArrayList();
-		String root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
+		String root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"Nothing"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
 		paths.add(root);
 		String out = "analysis";
 		paths.add(out);
