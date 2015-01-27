@@ -217,7 +217,7 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 		pls.add(new SQLiteReaderPlugin());
 		cp.setAvailablePlugins(pls);
 		List paths = new ArrayList();
-		String root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"Nothing"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
+		String root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"CaiJun"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
 		paths.add(root);
 		String out = "analysis";
 		paths.add(out);
