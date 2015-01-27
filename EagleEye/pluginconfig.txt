@@ -64,4 +64,14 @@ USES:
 NAME: FolderStructureTreePlugin
 # input : DBController
 # output: GUI view
+USES: ImageViewPlugin : TextViewPlugin
+
+NAME: ImageViewPlugin
+# input : List{String filePath}
+# output: GUI PopUp view
+USES: 
+
+NAME: TextViewPlugin
+# input : List{String filePath}
+# output: GUI PopUp view
 USES: 
