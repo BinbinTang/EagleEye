@@ -1,0 +1,67 @@
+# List of plugins & their relationship
+# Syntax: 
+# "#" for comment
+# NAME: <plugin name>
+# USES: <List of useable plugin names separated by ":">
+
+PLUGINDIR : PluginBinaries
+
+NAME: TimelinePlugin # some comment
+# input : DBController
+# output: GUI view
+USES: AndroidCalendarAnalyzerPlugin : AndroidGmailAnalyzerPlugin : IOSCalendarAnalyzerPlugin : TestAnalyzerPlugin : IOSWhatsAppAnalyzerPlugin : AndroidCallHistoryAnalyzerPlugin
+
+NAME: AndroidCalendarAnalyzerPlugin
+# input : List{String deviceRoot, String analysisOutputFolder}
+# output: written file to analysis folder
+USES: SQLiteReaderPlugin
+
+NAME: IOSCalendarAnalyzerPlugin
+# input : List{String deviceRoot, String analysisOutputFolder}
+# output: written file to analysis folder
+USES: SQLiteReaderPlugin
+
+NAME: SQLiteReaderPlugin
+# input : List{String DBFilePath}
+# output: Map<String, List<List<String>>>  DBContent <tableName, Row<Column<content>>>
+USES:
+
+NAME: IOSWhatsAppAnalyzerPlugin
+# input : List{String deviceRoot, String analysisOutputFolder}
+# output: written file to analysis folder
+USES: SQLiteReaderPlugin
+
+NAME: AndroidGmailAnalyzerPlugin
+# input : List{String deviceRoot, String analysisOutputFolder}
+# output: written file to analysis folder
+USES: SQLiteReaderPlugin
+
+NAME: TestAnalyzerPlugin
+# input : List{String deviceRoot, String analysisOutputFolder}
+# output: written file to analysis folder
+USES: SQLiteReaderPlugin
+
+NAME: AndroidLocationAnalyzerPlugin
+# input : List{String deviceRoot}
+# output: List<List<String>> locationInfo(type, lat, lon, time, accuracy, confidence)
+USES: SQLiteReaderPlugin
+
+NAME: AndroidCallHistoryAnalyzerPlugin
+# input : List{String deviceRoot}
+# output: List<List<String>> locationInfo(type, lat, lon, time, accuracy, confidence)
+USES: SQLiteReaderPlugin
+
+NAME: MapPlugin
+# input : DBController
+# output: GUI view
+USES: AndroidLocationAnalyzerPlugin
+
+NAME: ContactHistoryPlugin
+# input : 
+# output: GUI view
+USES: 
+
+NAME: FolderStructureTreePlugin
+# input : DBController
+# output: GUI view
+USES: 
