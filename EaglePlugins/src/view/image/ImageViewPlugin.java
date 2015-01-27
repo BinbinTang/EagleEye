@@ -159,7 +159,27 @@ public class ImageViewPlugin extends Application implements Plugin{
 	public ImageViewPlugin(){
 		
 	}
-
+	private boolean isImage(String path){
+		String[] extList ={
+				"jpg","jpeg",
+				"png"
+				//more to be added
+		};
+		
+		File f = new File(path);
+		if(f.exists()){
+			String n = f.getName();
+			String[] nSplit = n.split("\\.");
+			String ext = nSplit[nSplit.length-1];
+			System.out.println(ext);
+			
+			for(int i=0;i<extList.length;i++){
+				if(ext.equalsIgnoreCase(extList[i]))
+					return true;
+			}
+		}
+		return false;
+	}
 	@Override
 	public Object getResult() {
 		return civ.initView();
@@ -175,8 +195,10 @@ public class ImageViewPlugin extends Application implements Plugin{
 	public int setParameter(List argList) {
 		
 		String imgPath = (String)argList.get(0);
-		double windowWidth = (double)argList.get(1);
-		double windowHeight = (double)argList.get(2);
+		if(!isImage(imgPath)) return 1;
+		
+		double windowWidth = 584.0;//(double)argList.get(1);
+		double windowHeight = 362.0;//(double)argList.get(2);
 		civ = new CustomImageView(imgPath,windowWidth,windowHeight);
 		return 0;
 	}
@@ -197,7 +219,7 @@ public class ImageViewPlugin extends Application implements Plugin{
 		//params
 		//String inputImgPath = "C:/Users/Public/Pictures/Sample Pictures/Chrysanthemum.jpg";
 		//String inputImgPath = ".."+File.separator+"EagleEye"+File.separator+"output2"+File.separator+"JPG"+File.separator+"f0495561.jpg";
-		String inputImgPath = ".."+File.separator+"EagleEye"+File.separator+"output2"+File.separator+"PNG"+File.separator+"f0048755.png";
+		String inputImgPath = ".."+File.separator+"EagleEye"+File.separator+"f0495561.jpg";
 		double WindowWidth = 600;
 		double WindowHeight = 400;
 		double hBorder = 600-584.0;
