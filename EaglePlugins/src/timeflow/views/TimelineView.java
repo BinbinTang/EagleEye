@@ -13,6 +13,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 
+import javafx.scene.image.Image;
+
 import javax.swing.*;
 
 import java.util.*;
@@ -72,7 +74,7 @@ public class TimelineView extends AbstractView {
 		
 		// top part of grid: zoom buttons.
 		ComponentCluster buttons=new ComponentCluster("Zoom");
-		ImageIcon zoomOutIcon=new ImageIcon("images/zoom_out.gif");
+		ImageIcon zoomOutIcon=new ImageIcon(getClass().getResource("../images/zoom_out.gif"));
 		JButton zoomOut=new JButton(zoomOutIcon);
 		buttons.addContent(zoomOut);
 		zoomOut.addActionListener(new ActionListener() {
@@ -82,7 +84,7 @@ public class TimelineView extends AbstractView {
 				moveTime(zoom);
 			}});
 		
-		ImageIcon zoomOut100Icon=new ImageIcon("images/zoom_out_100.gif");
+		ImageIcon zoomOut100Icon=new ImageIcon(getClass().getResource("../images/zoom_out_100.gif"));
 		JButton zoomOutAll=new JButton(zoomOut100Icon);
 		buttons.addContent(zoomOutAll);
 		zoomOutAll.addActionListener(new ActionListener() {
@@ -95,7 +97,7 @@ public class TimelineView extends AbstractView {
 		// UI for zooming to precisely fit the visible selection.
 		// No one seemed to think this was so important, but we may want it again some day.
 		// if you uncomment this, then also uncomment the line in reset().
-		ImageIcon zoomSelection=new ImageIcon("images/zoom_selection.gif");
+		ImageIcon zoomSelection=new ImageIcon(getClass().getResource("../images/zoom_selection.gif"));
 		fit=new JButton(zoomSelection);
 		fit.setBackground(Color.white);
 		buttons.addContent(fit);
@@ -112,23 +114,23 @@ public class TimelineView extends AbstractView {
 		ComponentCluster layoutPanel=new ComponentCluster("Layout");
 		
 		ButtonGroup layoutGroup=new ButtonGroup();
-		ImageIcon looseIcon=new ImageIcon("images/layout_loose.gif");
+		ImageIcon looseIcon=new ImageIcon(getClass().getResource("../images/layout_loose.gif"));
 		JRadioButton loose=new JRadioButton(looseIcon, true);
-		loose.setSelectedIcon(new ImageIcon("images/layout_loose_selected.gif"));
+		loose.setSelectedIcon(new ImageIcon(getClass().getResource("../images/layout_loose_selected.gif")));
 		layoutPanel.addContent(loose);
 		loose.addActionListener(new LayoutSetter(TimelineVisuals.Layout.LOOSE));
 		layoutGroup.add(loose);
 		
-		ImageIcon diagonalIcon=new ImageIcon("images/layout_diagonal.gif");
+		ImageIcon diagonalIcon=new ImageIcon(getClass().getResource("../images/layout_diagonal.gif"));
 		JRadioButton diagonal=new JRadioButton(diagonalIcon, false);
-		diagonal.setSelectedIcon(new ImageIcon("images/layout_diagonal_selected.gif"));
+		diagonal.setSelectedIcon(new ImageIcon(getClass().getResource("../images/layout_diagonal_selected.gif")));
 		layoutPanel.addContent(diagonal);
 		diagonal.addActionListener(new LayoutSetter(TimelineVisuals.Layout.TIGHT));
 		layoutGroup.add(diagonal);
 		
-		ImageIcon graphIcon=new ImageIcon("images/layout_graph.gif");
+		ImageIcon graphIcon=new ImageIcon(getClass().getResource("../images/layout_graph.gif"));
 		JRadioButton graph=new JRadioButton(graphIcon, false);
-		graph.setSelectedIcon(new ImageIcon("images/layout_graph_selected.gif"));
+		graph.setSelectedIcon(new ImageIcon(getClass().getResource("../images/layout_graph_selected.gif")));
 		layoutPanel.addContent(graph);
 		graph.addActionListener(new LayoutSetter(TimelineVisuals.Layout.GRAPH));
 		layoutGroup.add(graph);

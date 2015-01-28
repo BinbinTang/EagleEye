@@ -56,7 +56,7 @@ public class StatusPanel extends ModelPanel
 		JPanel clearPanel=new JPanel();
 		clearPanel.setBackground(new Color(245, 245, 245));
 		clearPanel.setLayout(new GridLayout(1,1));
-		JButton clear=new JButton(new ImageIcon("images/button_clear_all.gif"));
+		JButton clear=new JButton(new ImageIcon(getClass().getResource("../../images/button_clear_all.gif")));
 		clear.setBorder(null);
 		clear.addActionListener(new ActionListener() {
 			@Override

@@ -62,20 +62,20 @@ public class CalendarView extends AbstractView {
 		
 		ButtonGroup unitGroup=new ButtonGroup();
 		
-		JRadioButton days=new JRadioButton(new ImageIcon("images/button_days.gif"),true);
-		days.setSelectedIcon(new ImageIcon("images/button_days_selected.gif"));
+		JRadioButton days=new JRadioButton(new ImageIcon(getClass().getResource("../images/button_days.gif")),true);
+		days.setSelectedIcon(new ImageIcon(getClass().getResource("../images/button_days_selected.gif")));
 		units.addContent(days);
 		days.addActionListener(new LayoutSetter(CalendarVisuals.Layout.DAY));
 		unitGroup.add(days);
 
-		JRadioButton months=new JRadioButton(new ImageIcon("images/button_months.gif"),false);
-		months.setSelectedIcon(new ImageIcon("images/button_months_selected.gif"));
+		JRadioButton months=new JRadioButton(new ImageIcon(getClass().getResource("../images/button_months.gif")),false);
+		months.setSelectedIcon(new ImageIcon(getClass().getResource("../images/button_months_selected.gif")));
 		units.addContent(months);
 		months.addActionListener(new LayoutSetter(CalendarVisuals.Layout.MONTH));
 		unitGroup.add(months);
 		
-		JRadioButton years=new JRadioButton(new ImageIcon("images/button_years.gif"),false);
-		years.setSelectedIcon(new ImageIcon("images/button_years_selected.gif"));
+		JRadioButton years=new JRadioButton(new ImageIcon(getClass().getResource("../images/button_years.gif")),false);
+		years.setSelectedIcon(new ImageIcon(getClass().getResource("../images/button_years_selected.gif")));
 		units.addContent(years);
 		years.addActionListener(new LayoutSetter(CalendarVisuals.Layout.YEAR));	
 		unitGroup.add(years);
@@ -85,14 +85,14 @@ public class CalendarView extends AbstractView {
 		controls.add(showCluster, BorderLayout.CENTER);
 		
 		ButtonGroup group=new ButtonGroup();
-		JRadioButton icon=new JRadioButton(new ImageIcon("images/button_dots.gif"),true);
-		icon.setSelectedIcon(new ImageIcon("images/button_dots_selected.gif"));
+		JRadioButton icon=new JRadioButton(new ImageIcon(getClass().getResource("../images/button_dots.gif")),true);
+		icon.setSelectedIcon(new ImageIcon(getClass().getResource("../images/button_dots_selected.gif")));
 		showCluster.addContent(icon);
 		icon.addActionListener(new DrawStyleSetter(CalendarVisuals.DrawStyle.ICON));
 		group.add(icon);
 		
-		JRadioButton label=new JRadioButton(new ImageIcon("images/button_labels.gif"),false);
-		label.setSelectedIcon(new ImageIcon("images/button_labels_selected.gif"));
+		JRadioButton label=new JRadioButton(new ImageIcon(getClass().getResource("../images/button_labels.gif")),false);
+		label.setSelectedIcon(new ImageIcon(getClass().getResource("../images/button_labels_selected.gif")));
 		showCluster.addContent(label);
 		label.addActionListener(new DrawStyleSetter(CalendarVisuals.DrawStyle.LABEL));						
 		group.add(label);
@@ -101,14 +101,14 @@ public class CalendarView extends AbstractView {
 		controls.add(layout, BorderLayout.SOUTH);
 		
 		ButtonGroup layoutGroup=new ButtonGroup();
-		JRadioButton loose=new JRadioButton(new ImageIcon("images/button_expanded.gif"),true);
-		loose.setSelectedIcon(new ImageIcon("images/button_expanded_selected.gif"));
+		JRadioButton loose=new JRadioButton(new ImageIcon(getClass().getResource("../images/button_expanded.gif")),true);
+		loose.setSelectedIcon(new ImageIcon(getClass().getResource("../images/button_expanded_selected.gif")));
 		layout.addContent(loose);
 		loose.addActionListener(new FitStyleSetter(CalendarVisuals.FitStyle.LOOSE));
 		layoutGroup.add(loose);
 		
-		JRadioButton tight=new JRadioButton(new ImageIcon("images/button_compressed.gif"),false);
-		tight.setSelectedIcon(new ImageIcon("images/button_compressed_selected.gif"));
+		JRadioButton tight=new JRadioButton(new ImageIcon(getClass().getResource("../images/button_compressed.gif")),false);
+		tight.setSelectedIcon(new ImageIcon(getClass().getResource("../images/button_compressed_selected.gif")));
 		layout.addContent(tight);
 		tight.addActionListener(new FitStyleSetter(CalendarVisuals.FitStyle.TIGHT));
 		layoutGroup.add(tight);

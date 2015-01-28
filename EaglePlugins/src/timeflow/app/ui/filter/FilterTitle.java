@@ -32,7 +32,7 @@ public class FilterTitle extends JPanel {
 		
 		if (parent instanceof FilterControlPanel)
 		{
-			ImageIcon redX=new ImageIcon("images/red_circle.gif");
+			ImageIcon redX=new ImageIcon(getClass().getResource("../images/red_circle.gif"));
 			JLabel close=new JLabel(redX);
 			close.setBackground(Color.white);
 			top.add(close, BorderLayout.EAST);

@@ -69,12 +69,12 @@ public class AnalyzerView extends AbstractView {
 			sb.append("<br>"+p.getName());
 		}
 		controls=new HtmlControls(sb.toString());
-		makeHtml();
+		//makeHtml();
 		
 		//creat app buttons
 		Btns = new ArrayList<JButton>();	
 		for(Plugin p: analyzers){
-			ImageIcon ic = new ImageIcon("f0495561.jpg"); //TODO: use app icon
+			ImageIcon ic = new ImageIcon(getClass().getResource("../images/f0495561.jpg")); //TODO: use app icon
 			JButton b = new JButton(p.getName(),ic);
 			b.addMouseListener(new MouseListener(){
 
@@ -146,7 +146,7 @@ public class AnalyzerView extends AbstractView {
 		
 	}
 	
-	void makeHtml()
+	/*void makeHtml()
 	{
 		try
 		{
@@ -157,7 +157,7 @@ public class AnalyzerView extends AbstractView {
 		{
 			e.printStackTrace(System.out);
 		}
-	}
+	}*/
 	
 	public void loadData(String data){
 		load(data, FileExtensionCatalog.get(data), false); //set read only
