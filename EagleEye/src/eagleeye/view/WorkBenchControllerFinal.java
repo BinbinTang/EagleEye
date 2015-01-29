@@ -76,6 +76,7 @@ import eagleeye.pluginmanager.*;
 import eagleeye.utils.FileFormatIdentifier;
 
 public class WorkBenchControllerFinal {	
+	
 	// DataBase
 	private DBController dbController;
 	
