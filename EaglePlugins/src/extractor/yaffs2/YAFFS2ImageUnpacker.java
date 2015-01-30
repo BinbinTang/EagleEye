@@ -203,12 +203,19 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 		FileOutputStream fileStream = new FileOutputStream(file);
 		
 		//System.out.println(String.format("Writing to %s", file.getCanonicalPath()));
+		int MAX_PATH_LENGTH = 50;
 		String name = file.getName();
 		String absPath = file.getCanonicalPath();
 		String parentPath = absPath.substring(0,absPath.length()-name.length());
+		if(name.length()>=MAX_PATH_LENGTH) name = name.substring(0,(int)(MAX_PATH_LENGTH*0.5))+"...";
 		int cutoff = 50-name.length();
 		if(parentPath.length()>cutoff){
-			parentPath=parentPath.substring(0,cutoff)+"..."+file.separator;
+			try{
+				parentPath=parentPath.substring(0,cutoff)+"..."+file.separator;
+			}catch(Exception e){
+				System.out.println("erroneous parent path = "+ parentPath);
+				System.out.println("erroneous name = "+ name);
+			}
 		}
 		name = parentPath+name;
 		
@@ -240,7 +247,7 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 				YAFFS2ImageUnpacker.this.fileInputStream = new FileInputStream(file);
 				YAFFS2ImageUnpacker.this.inputStream = new DataInputStream(YAFFS2ImageUnpacker.this.fileInputStream);
 				
-				System.out.println(String.format("Data carving started for %s...%n", file.getName()));
+//				System.out.println(String.format("Data carving started for %s...%n", file.getName()));
 				
 				int totalChunkSize = YAFFS2ImageUnpacker.this.chunkSize + YAFFS2ImageUnpacker.this.oobSize;
 				
@@ -295,7 +302,7 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 					YAFFS2ImageUnpacker.this.byteBuffer = ByteBuffer.wrap(chunk);
 					YAFFS2ImageUnpacker.this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
-					System.out.println(String.format("Scanning chunk %s. ", chunkCount));
+//					System.out.println(String.format("Scanning chunk %s. ", chunkCount));
 
 					YAFFS2ImageUnpacker.this.byteBuffer.position(YAFFS2ImageUnpacker.this.chunkSize); 
 
@@ -304,26 +311,26 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 
 					if (validMarker != (byte)0xFFFF)
 					{
-						System.out.println("Invalid chunk.");
+//						System.out.println("Invalid chunk.");
 					    updateProgress(chunkCount + 1, chunks.size());
 						continue;
 					}
 					
 					if(blockSequence == 0xFFFFFFFF)
 					{
-						System.out.println("Empty chunk.");
+//						System.out.println("Empty chunk.");
 					    updateProgress(chunkCount + 1, chunks.size());
 						continue;
 					}
 
-					System.out.println(String.format("Block Sequence: %s ", blockSequence));
+//					System.out.println(String.format("Block Sequence: %s ", blockSequence));
 
 					YAFFS2ImageUnpacker.this.inputBytes = new byte[3];
 					YAFFS2ImageUnpacker.this.byteBuffer.get(YAFFS2ImageUnpacker.this.inputBytes);
 					
 				    int objectId = (YAFFS2ImageUnpacker.this.inputBytes[2] & 0xFF) << 8 | (YAFFS2ImageUnpacker.this.inputBytes[1] & 0xFF) << 8 | (YAFFS2ImageUnpacker.this.inputBytes[0] & 0xFF);
 
-				    System.out.println(String.format("Object Id: %s %n", objectId));
+//				    System.out.println(String.format("Object Id: %s %n", objectId));
 				    
 				    if(!objects.containsKey(objectId))
 				    {
@@ -364,7 +371,7 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 					
 					int objectId = object.getKey();
 					
-					System.out.println(String.format("Carving object %s%n", objectId));
+//					System.out.println(String.format("Carving object %s%n", objectId));
 					YAFFS2Object yaffs2Object = new YAFFS2Object();
 					yaffs2Object.setId(objectId);
 					yaffs2Object.setChunkSize(chunkSize);
@@ -376,7 +383,7 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 					{
 						int blockSequence = blockChunks.getKey();
 
-						System.out.println(String.format("Analyzing block. Block Sequence: %s%n", blockSequence));
+//						System.out.println(String.format("Analyzing block. Block Sequence: %s%n", blockSequence));
 						
 						boolean isDeleted = false;
 						boolean isUnlinked = false;
@@ -386,7 +393,7 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 							YAFFS2ImageUnpacker.this.byteBuffer = ByteBuffer.wrap(chunk);
 							YAFFS2ImageUnpacker.this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
-							System.out.println("Carving chunk");
+//							System.out.println("Carving chunk");
 							
 							YAFFS2ImageUnpacker.this.byteBuffer.position(YAFFS2ImageUnpacker.this.chunkSize); 
 				
@@ -394,7 +401,7 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 
 							if (validMarker != (byte)0xFFFF)
 							{
-								System.out.println("Invalid chunk.");
+//								System.out.println("Invalid chunk.");
 								continue;
 							}
 							
@@ -419,7 +426,7 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 							YAFFS2ImageUnpacker.this.byteBuffer.get(); // Status
 							int nBytes = YAFFS2ImageUnpacker.this.byteBuffer.getInt();				
 							
-							System.out.println(String.format("Parent Id or Chunk Id: %s, Bytes in block: %s. ", parentIdOrChunkId, nBytes));
+//							System.out.println(String.format("Parent Id or Chunk Id: %s, Bytes in block: %s. ", parentIdOrChunkId, nBytes));
 							
 							YAFFS2ImageUnpacker.this.byteBuffer.position(0);
 							
@@ -437,14 +444,14 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 								if(header.getName().equals("deleted") && header.getParentObjectId() == 4)
 								{
 									isDeleted = true;
-									System.out.println("Found delete header.\n");
+//									System.out.println("Found delete header.\n");
 									continue;
 								}
 								
 								if(header.getName().equals("unlinked") && header.getParentObjectId() == 3)
 								{
 									isUnlinked = true;
-									System.out.println("Found unlink header.\n");
+//									System.out.println("Found unlink header.\n");
 									continue;
 								}
 								
@@ -469,12 +476,12 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 									yaffs2Objects.add(yaffs2Object);
 								}
 								
-								System.out.println("Found object header.\n");
+//								System.out.println("Found object header.\n");
 								continue;
 							}
 							
 							// Block is data
-							System.out.println("Found data chunk.\n");
+//							System.out.println("Found data chunk.\n");
 							yaffs2Object.addDataChunk(parentIdOrChunkId, Arrays.copyOf(chunk, nBytes));
 						}
 					}
@@ -651,6 +658,7 @@ public class YAFFS2ImageUnpacker extends Service<ArrayList<EagleFile>>
 					updateProgress(objectsProcessed, yaffs2Objects.size());
 				}
 				
+				updateMessage("Finished.");
 				return files;
 			}
 		};
