@@ -75,3 +75,8 @@ NAME: TextViewPlugin
 # input : List{String filePath}
 # output: GUI PopUp view
 USES: 
+
+NAME: AndroidYaffs2ImageExtractorPlugin
+# input : List{String diskImgFolderPath}
+# output: List<List<EagleFile>> entityList(partition(files))
+USES: 
