@@ -1,9 +1,10 @@
+/META-INF/
 /Test/
 /analyzer/
 /com/
-/db/
 /extractor/
+/html/
 /reader/
+/tempDBcontroller/
 /timeflow/
 /view/
-/tempDBcontroller/
