@@ -87,6 +87,15 @@ public class PluginManager {
 		}
 		return ls;
 	}
+	public List<Plugin> getExtractorPlugins(){
+		List<Plugin> pls = new ArrayList<Plugin>();
+		for(Plugin p : plugins){
+			if(p.getType()==Plugin.Type.EXTRACTOR){
+				pls.add(p);
+			}
+		}
+		return pls;
+	}
 	public void readConfig(){
 		configList = new HashMap<String,List<String>>();
 		try {

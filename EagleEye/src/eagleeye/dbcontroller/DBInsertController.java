@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 
+import eagleeye.api.entities.EagleFile;
 import eagleeye.entities.Device;
 import eagleeye.entities.FileEntity;
 
@@ -52,9 +53,9 @@ public class DBInsertController {
 		stmt.execute();
 	}
 	
-	public void insertNewDirectory(ArrayList<FileEntity> listOfDirectory, PreparedStatement stmt) throws Exception{
+	public void insertNewDirectory(ArrayList<EagleFile> listOfDirectory, PreparedStatement stmt) throws Exception{
 			
-		for(FileEntity newDirectory : listOfDirectory){
+		for(EagleFile newDirectory : listOfDirectory){
 			
 			stmt.setString(1, newDirectory.getFileName());
 			stmt.setInt(2, newDirectory.getFileID());
@@ -81,7 +82,7 @@ public class DBInsertController {
 		
 	}
 	
-	public void insertNewFileExt(ArrayList<FileEntity> listOfFiles, PreparedStatement stmt) throws Exception {
+	public void insertNewFileExt(ArrayList<EagleFile> listOfFiles, PreparedStatement stmt) throws Exception {
 		
 		ArrayList<String> extList = getAllFileExt(listOfFiles);
 		int newExtTypeID = OTHER_EXT_TYPE_ID;
@@ -97,9 +98,9 @@ public class DBInsertController {
 		stmt.clearBatch();
 	}
 	
-	public void insertNewFile(ArrayList<FileEntity> listOfFiles, PreparedStatement stmt) throws Exception {
+	public void insertNewFile(ArrayList<EagleFile> listOfFiles, PreparedStatement stmt) throws Exception {
 		
-		for(FileEntity newFile : listOfFiles) {
+		for(EagleFile newFile : listOfFiles) {
 			
 			stmt.setString(1, newFile.getFileName());
 			stmt.setString(2, newFile.getFileExt());
@@ -150,12 +151,12 @@ public class DBInsertController {
 
 	
 	//Helper method
-	public ArrayList<String> getAllFileExt(ArrayList<FileEntity> listOfFiles) {
+	public ArrayList<String> getAllFileExt(ArrayList<EagleFile> listOfFiles) {
 		
 		ArrayList<String> extList = new ArrayList<String> ();
 		boolean isExtAdded = false;
 		
-		for(FileEntity newFile : listOfFiles){
+		for(EagleFile newFile : listOfFiles){
 			
 			isExtAdded = false;
 			String fileExt = newFile.getFileExt();

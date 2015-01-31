@@ -6,28 +6,30 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import eagleeye.entities.*;
+import eagleeye.api.entities.*;
 
 public class DBInsertTransaction {
 
 	protected int deviceID;
 	protected DBInsertController controller;
 	protected DBInsertQueries queryMaker;
-	protected ArrayList<FileEntity> listOfDirectory;
-	protected ArrayList<FileEntity> listOfFiles;
+	protected ArrayList<EagleFile> listOfDirectory;
+	protected ArrayList<EagleFile> listOfFiles;
 	
 	public DBInsertTransaction(){
 		
-		listOfDirectory = new ArrayList<FileEntity>();
-		listOfFiles = new ArrayList<FileEntity>();
+		listOfDirectory = new ArrayList<EagleFile>();
+		listOfFiles = new ArrayList<EagleFile>();
 		deviceID = -1;
 		controller = new DBInsertController();
 		queryMaker = new DBInsertQueries();
 		
 	}
 	
-	public boolean insertNewDeviceData(Device newDevice, ArrayList<ArrayList<FileEntity>> filesLists) {
+	public boolean insertNewDeviceData(Device newDevice, List<List<EagleFile>> filesLists) {
 	
 		Connection conn = DBConnection.dbConnector();
 		PreparedStatement stmt = null;
@@ -65,7 +67,7 @@ public class DBInsertTransaction {
 			}
 		}
 		
-		for(ArrayList<FileEntity> filesList : filesLists) {
+		for(List<EagleFile> filesList : filesLists) {
 			
 			separateFilesAndDirectory(filesList);
 		
@@ -147,21 +149,21 @@ public class DBInsertTransaction {
 	}
 	
 	//Helper Methods
-	public void separateFilesAndDirectory(ArrayList<FileEntity> FilesList) {
+	public void separateFilesAndDirectory(List<EagleFile> FilesList) {
 		
-		listOfDirectory = new ArrayList<FileEntity>();
-		listOfFiles = new ArrayList<FileEntity>();
+		listOfDirectory = new ArrayList<EagleFile>();
+		listOfFiles = new ArrayList<EagleFile>();
 		
-		for(FileEntity file : FilesList){
+		for(EagleFile file : FilesList){
 			
 			if(file.getIsDirectory()) {
 				
-				FileEntity newDirectory = file;
+				EagleFile newDirectory = file;
 				listOfDirectory.add(newDirectory);
 				
 			} else {
 				
-				FileEntity newFile = file;
+				EagleFile newFile = file;
 				listOfFiles.add(newFile);
 				
 			}

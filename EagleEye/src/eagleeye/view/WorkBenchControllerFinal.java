@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JOptionPane;
 
@@ -61,6 +62,7 @@ import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import eagleeye.api.dbcontroller.DBController;
 import eagleeye.api.entities.EagleDevice;
+import eagleeye.api.entities.EagleFile;
 import eagleeye.controller.MainAppFinal;
 import eagleeye.datacarving.unpack.FileSystemFormatDescriptorService;
 import eagleeye.datacarving.unpack.UnpackDirectoryService;
@@ -332,9 +334,67 @@ public class WorkBenchControllerFinal {
 		{
 			return;
 		}
-
-		Stage dialog = this.createProgressDialog();
 		
+		String diskImgFolder = newDevice.getDeviceImageFolder().toString();
+		String deviceName = newDevice.getDeviceName();
+		System.out.println("new device folder = "+diskImgFolder);
+		List params = new ArrayList<String>();
+		params.add(diskImgFolder);
+		params.add(deviceName);
+		
+
+		List<Plugin> extractors = pm.getExtractorPlugins();
+		for(Plugin p: extractors){	
+			int status = p.setParameter(params);
+			if(status==0){
+				
+				Task<Integer> task = new Task<Integer>() {
+				    @Override 
+				    protected Integer call() {
+				    	//extract
+				    	List<List<EagleFile>> entityList = (List<List<EagleFile>>) p.getResult();
+				    	System.out.println("partition written = "+entityList.size());
+				    	
+				    	//insert to db
+				    	if(entityList.size() > 0)
+						{
+							DBInsertTransaction transaction = new DBInsertTransaction();
+							transaction.insertNewDeviceData(newDevice, entityList);
+							System.out.println("inserted new device to db");
+							return transaction.getDeviceID();
+						}
+				    	
+						return -1;
+				    }
+				};
+				task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			        @Override
+			        public void handle(WorkerStateEvent t)
+			        {
+			            try {
+			            	refreshCase(task.get());
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+			        }
+			    });
+				Thread th = new Thread(task);
+		        th.setDaemon(true);
+		        th.start();
+		        
+				
+				break;
+			}
+		}
+		
+
+		
+		/*Stage dialog = this.createProgressDialog();
+	
 		Service<?> fsService = new FileSystemFormatDescriptorService(newDevice.getDeviceImageFolder(),newDevice.getDeviceName());
 		
 		ChangeListener<State> handleServiceChange = new ChangeListener<State>()
@@ -522,9 +582,9 @@ public class WorkBenchControllerFinal {
 		fsService.setOnSucceeded(handleFSServiceSucceed);
 		updateProgress("Analysing file system on disk images...");
 		fsService.start();
-		dialog.show();
+		dialog.show();*/
 	}
-	
+/*	
 	private Stage createProgressDialog()
 	{
 		Stage dialog = new Stage();
@@ -561,7 +621,7 @@ public class WorkBenchControllerFinal {
 
 		return dialog;
 	}
-	
+	*/
 	public boolean validationOfFilters () {
 		
 		return true;
