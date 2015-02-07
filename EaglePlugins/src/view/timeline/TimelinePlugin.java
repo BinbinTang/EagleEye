@@ -328,5 +328,15 @@ public class TimelinePlugin extends Application implements Plugin{
 	public static void main(String[] args){
 		launch(args); 
 	}
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

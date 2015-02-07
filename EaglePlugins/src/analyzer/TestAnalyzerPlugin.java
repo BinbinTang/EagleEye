@@ -297,6 +297,16 @@ public class TestAnalyzerPlugin implements Plugin{
         	System.out.println(times - time/1000);
         }*/
 	}
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

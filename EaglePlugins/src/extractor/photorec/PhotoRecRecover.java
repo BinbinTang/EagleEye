@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 import eagleeye.api.entities.EagleDirectory;
 import eagleeye.api.entities.EagleFile;
 import eagleeye.pluginmanager.Plugin;
@@ -162,5 +163,17 @@ public class PhotoRecRecover implements Plugin{
 	public int setAvailablePlugins(List<Plugin> arg0) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

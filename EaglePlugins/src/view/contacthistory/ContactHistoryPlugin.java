@@ -103,4 +103,16 @@ public class ContactHistoryPlugin extends Application implements Plugin{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }
