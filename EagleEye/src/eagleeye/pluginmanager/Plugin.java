@@ -24,7 +24,11 @@ public interface Plugin {
 	
 	//execute plugin and get result
 	public Object getResult();
-
+	
+	public Object getMarkedItems();
+	
+	public void setMarkedItems(Object i);
+	
 	//Signals that previous call to the plugin was not successful
 	//check before calling plugin
 	public boolean hasError();

@@ -96,6 +96,32 @@ public class PluginManager {
 		}
 		return pls;
 	}
+	public Map<String, List<List<String>>> getAllPluginMarkedItems(){
+		
+		Map<String, List<List<String>>> pluginsMarkedItems = new HashMap <String, List<List<String>>>();
+		for(Plugin p: plugins){
+			List<List<String>> markedItems = (List<List<String>>) p.getMarkedItems();
+			if(markedItems.size()!=0){
+				String []tokens = p.getClass().getName().split("\\.");
+				String pluginClassName = tokens[tokens.length-1];
+				pluginsMarkedItems.put(pluginClassName, markedItems);
+			}
+		}
+		return pluginsMarkedItems;
+		
+	}
+	public void setAllPluginMarkedItems(Map<String, List<List<String>>> pluginsMarkedItems){
+
+		for(Plugin p: plugins){
+			String []tokens = p.getClass().getName().split("\\.");
+			String pluginClassName = tokens[tokens.length-1];
+			List<List<String>> markedItems = pluginsMarkedItems.get(pluginClassName);
+			if(markedItems!=null){
+				p.setMarkedItems(markedItems);
+			}
+		}
+
+	}
 	public void readConfig(){
 		configList = new HashMap<String,List<String>>();
 		try {
