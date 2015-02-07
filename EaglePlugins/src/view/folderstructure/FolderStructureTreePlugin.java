@@ -1210,4 +1210,16 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		}
 	}
 
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
