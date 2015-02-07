@@ -36,6 +36,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -80,7 +81,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	// Colors
 	private Color originalColor = Color.web("#2e00ff");
 	private Color isRecoveredColor = Color.web("#025013");
-	private Color isModifiedColor = Color.web("#f42929");		
+	private Color isModifiedColor = Color.web("#f42929");	
 	
 	//@FXML dynamically created
 	private ListView resultListView;	
@@ -351,7 +352,16 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					}
 					*/
 					
-					if (mouseEvent.getClickCount() == 2) {
+					if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+						item.setMark(!item.getMark());
+						if(item.getMark()){
+							item.getValue().setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+						}else{
+							item.getValue().setStyle("-fx-background-color: rgba(0, 0, 0, 0.31);");
+						}
+					}
+					
+					else if (mouseEvent.getClickCount() == 2) {
 						// Check if it is a file, and open						
 						if (item.isLeaf()) {
 							String filePath = item.getFileEntity().getFilePath() + File.separator + item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
@@ -1161,8 +1171,17 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	public class MyTreeItem<T> extends TreeItem<T>{
 		
+		private boolean mark = false;
 		private EagleFile file;
 		private EagleDirectory dir;
+		
+		public void setMark(boolean b){
+			mark = b;
+		}
+		
+		public boolean getMark(){
+			return mark;
+		}
 		
 		public void setFileEntity(EagleFile file){
 			this.file = file;
