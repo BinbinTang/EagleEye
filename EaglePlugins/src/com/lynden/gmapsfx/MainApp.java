@@ -150,10 +150,21 @@ public class MainApp extends Application implements MapComponentInitializedListe
                 .visible(true);
 
         Marker myMarker2 = new Marker(markerOptions2);
-
+        map.addUIEventHandler(myMarker2, UIEventType.click, (JSObject obj) -> {
+            LatLong ll = new LatLong((JSObject) obj.getMember("latLng"));
+        	//new Icon((JSObject) obj.getMember("icon"));
+            System.out.println("You clicked the line at LatLong: lat: " + ll.getLatitude() + " lng: " + ll.getLongitude());
+        });
+        map.addUIEventHandler(myMarker, UIEventType.click, (JSObject obj) -> {
+            LatLong ll = new LatLong((JSObject) obj.getMember("latLng"));
+        	//new Icon((JSObject) obj.getMember("icon"));
+            myMarker.setIcon("http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png");
+            System.out.println("You clicked the line at LatLong: lat: " + ll.getLatitude() + " lng: " + ll.getLongitude());
+        });
         map.addMarker(myMarker);
         map.addMarker(myMarker2);
-
+        
+        
         InfoWindowOptions infoOptions = new InfoWindowOptions();
         infoOptions.content("<h2>Here's an info window</h2><h3>with some info</h3>")
                 .position(center);

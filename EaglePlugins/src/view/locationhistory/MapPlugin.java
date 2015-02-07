@@ -1,16 +1,22 @@
 package view.locationhistory;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import netscape.javascript.JSObject;
 import reader.SQLiteReaderPlugin;
+import view.folderstructure.FolderStructureTreePlugin;
 import analyzer.AndroidCalendarAnalyzerPlugin;
 import analyzer.AndroidGmailAnalyzerPlugin;
 import analyzer.AndroidLocationAnalyzerPlugin;
 
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
+import com.lynden.gmapsfx.javascript.event.UIEventHandler;
+import com.lynden.gmapsfx.javascript.event.UIEventType;
+import com.lynden.gmapsfx.javascript.object.Animation;
 import com.lynden.gmapsfx.javascript.object.GoogleMap;
 import com.lynden.gmapsfx.javascript.object.LatLong;
 import com.lynden.gmapsfx.javascript.object.MapOptions;
@@ -29,12 +35,25 @@ import eagleeye.api.dbcontroller.*;
 //import db.DBQueryController;
 
 public class MapPlugin extends Application implements Plugin,MapComponentInitializedListener{
+	public class GeoPoint{
+		public double lat;
+		public double longit;
+		public String time;
+		public String comment;
+		public GeoPoint(){
+			lat=0.0;
+			longit=0.0;
+			time="";
+			comment="";
+		}
+	}
 	private GoogleMapView mapView;
 	private GoogleMap map;
 	private List<Plugin> analyzers;
 	private int chosenAnalyzerIdx;
 	private String deviceType;
-	List<List<String>> geoPoints;
+	List<GeoPoint> geoPoints;
+	List<Integer> markedPtIdx;
 	public MapPlugin(){
 		
 	}
@@ -47,9 +66,21 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	@Override
 	public Object getResult() {
 		if(chosenAnalyzerIdx ==-1){
-			geoPoints = new ArrayList<List<String>>();
+			geoPoints = new ArrayList<GeoPoint>();
 		}else{
-			geoPoints  = (List<List<String>>) analyzers.get(chosenAnalyzerIdx).getResult();
+			markedPtIdx = new ArrayList<Integer>();
+			geoPoints = new ArrayList<GeoPoint>();
+			
+			List<List<String>> result  = (List<List<String>>) analyzers.get(chosenAnalyzerIdx).getResult();
+			for(List<String> pt: result){
+				GeoPoint gp = new GeoPoint();
+				gp.lat = Double.parseDouble(pt.get(1));
+				gp.longit = Double.parseDouble(pt.get(2));
+				gp.time = pt.get(3);
+				geoPoints.add(gp);
+		    }
+			
+			
 		}
 		//for(List<String> pt: geoPoints){
 		//    	System.out.println(Double.parseDouble(pt.get(1))+","+Double.parseDouble(pt.get(2))+","+pt.get(3));
@@ -84,7 +115,7 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 		//Set the initial properties of the map.
 	    MapOptions mapOptions = new MapOptions();
 	    
-	    mapOptions.center(new LatLong(Double.parseDouble(geoPoints.get(0).get(1)), Double.parseDouble(geoPoints.get(0).get(2))))
+	    mapOptions.center(new LatLong(geoPoints.get(0).lat, geoPoints.get(0).longit))
 	            .mapType(MapTypeIdEnum.ROADMAP)
 	            .overviewMapControl(false)
 	            .panControl(false)
@@ -97,12 +128,14 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	    map = mapView.createMap(mapOptions);
 	    //Add markers to the map
 
-	    for(List<String> pt: geoPoints){
-	    	System.out.println(Double.parseDouble(pt.get(1))+","+Double.parseDouble(pt.get(2))+","+pt.get(3));
-	    	markLocations(Double.parseDouble(pt.get(1)),Double.parseDouble(pt.get(2)),pt.get(3));
+	    for(int i=0; i<geoPoints.size(); i++){
+	    	System.out.println(geoPoints.get(i).lat+","+geoPoints.get(i).longit+","+geoPoints.get(i).time);
+	    	markLocations(i, geoPoints.get(i).lat,geoPoints.get(i).longit,geoPoints.get(i).time);
 	    }
 	}
-	public void markLocations(double lat, double longit, String description){
+	public void markLocations(int ptID, double lat, double longit, String description){
+		
+		
 		MarkerOptions markerOptions = new MarkerOptions();
 		
 	    markerOptions.position( new LatLong(lat, longit))
@@ -110,7 +143,39 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	                .title(description);
 
 	    Marker marker = new Marker( markerOptions );
+	    marker.setID(ptID);
+	    
 	    map.addMarker(marker);
+	    
+	    map.addUIEventHandler(marker, UIEventType.click, (JSObject obj) -> {
+	    	String [] iconURLs ={
+					"http://mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png",
+					"http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png"
+			};
+            LatLong ll = new LatLong((JSObject) obj.getMember("latLng"));
+            String prevIcon = marker.getIcon();
+            int idx = marker.getID();
+            
+            if(prevIcon ==null || prevIcon.equals(iconURLs[0])){
+            	marker.setIcon(iconURLs[1]);
+            	markedPtIdx.add(idx);
+            	System.out.println(markedPtIdx.size());
+            	System.out.println("Marked: lat: " + ll.getLatitude() + " lng: " + ll.getLongitude());
+            	System.out.println("Marked: lat: " + geoPoints.get(idx).lat + " lng: " + geoPoints.get(idx).longit);
+
+            }else{
+            	marker.setIcon(iconURLs[0]);
+            	if(markedPtIdx.remove(new Integer(idx))){
+            		System.out.println(markedPtIdx.size());
+            		System.out.println("UnMarked: lat: " + ll.getLatitude() + " lng: " + ll.getLongitude());
+                	System.out.println("UnMarked: lat: " + geoPoints.get(idx).lat + " lng: " + geoPoints.get(idx).longit);
+            	}
+            }
+        });
+	    
+//	    google.maps.event.addListener(map, 'event_type', function(event) {
+//	        document.jsHandlers.handleUIEvent('key', event.latLng);
+//	   });
 	}
 	@Override
 	public int setParameter(List params) {
@@ -144,6 +209,40 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 			}
 		}
 		return 0;
+	}
+	@Override
+	public Object getMarkedItems() {
+
+		List<List<String>> markedItems = new ArrayList<List<String>>();
+		if(markedPtIdx.size()==0) return markedItems;
+		
+		List<String> headers = new ArrayList<String>();
+		headers.add("Timestamp");
+		headers.add("Latitude");
+		headers.add("Longitude");
+		headers.add("Comments");
+		markedItems.add(headers);
+		
+		for(int idx : markedPtIdx){
+			GeoPoint gp = geoPoints.get(idx);
+			List<String> item = new ArrayList<String>();
+			item.add(gp.time);
+			item.add(String.valueOf(gp.lat));
+			item.add(String.valueOf(gp.longit));
+			item.add(gp.comment);
+			markedItems.add(item);
+		}
+		
+		return markedItems;
+	}
+
+	@Override
+	public void setMarkedItems(Object o) {
+		List<List<String>> markedItems = (List<List<String>>) o;
+		//TODO: find index of matching geoPoints, recreate markedPtIdx
+		//TODO: may need db to store previous analysis results tied to device
+		
+		
 	}
 	
 	/**************************for test*******************************/
@@ -184,16 +283,4 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 		launch(args);
 	}
 	/**************************end test*******************************/
-
-	@Override
-	public Object getMarkedItems() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setMarkedItems(Object arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 }

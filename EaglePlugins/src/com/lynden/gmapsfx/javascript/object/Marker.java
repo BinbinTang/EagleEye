@@ -16,6 +16,8 @@
 
 package com.lynden.gmapsfx.javascript.object;
 
+import java.net.URL;
+
 import com.lynden.gmapsfx.javascript.JavascriptObject;
 
 /**
@@ -27,13 +29,13 @@ public class Marker extends JavascriptObject {
 
 
     protected String title;
-    
-    
+    protected String iconURL;
+    protected int ID;
     /**
      * Contructs a new map Marker with the specified options
      * @param markerOptions The options to use when constructing this marker.
      */
-    public Marker(MarkerOptions markerOptions) {
+    public Marker(MarkerOptions markerOptions) { 	
         super(GMapObjectType.MARKER, markerOptions);
     }
     
@@ -66,7 +68,27 @@ public class Marker extends JavascriptObject {
         invokeJavascript("setAnimation", animation);
     }
     
+    //ly
+    //@param set icon
+    public void setIcon( String iconURL ) {
+    	invokeJavascript("setIcon", iconURL);
+    	this.iconURL = iconURL;
+    }
     
+    //ly
+    public String getIcon(){
+    	return this.iconURL;
+    }
+    
+    //ly
+    public void setID(int ID){
+    	this.ID = ID;
+    }
+    
+    //ly
+    public int getID(){
+    	return this.ID;
+    }
     public void setPosition( LatLong latLong ) {
         invokeJavascript( "setPosition", latLong );
     }
