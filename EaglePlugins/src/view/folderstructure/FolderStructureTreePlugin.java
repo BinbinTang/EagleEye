@@ -77,6 +77,10 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
     
     // Node
     private Node myNode;
+    
+    // Marked files
+    private List<List<String>> markedFiles;
+    private ArrayList<MyTreeItem> markedTemp;
 
 	// Colors
 	private Color originalColor = Color.web("#2e00ff");
@@ -214,10 +218,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
                 Platform.exit();
                 System.exit(0);
             }
-        });
-		
-
-	    primaryStage.show();	
+        });	
 	}
 	
 	public FolderStructureTreePlugin(){
@@ -225,6 +226,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
 		popUpViews = new ArrayList<Plugin>();
+		markedFiles = Arrays.asList(Arrays.asList("DeviceID","FileID", "Name","Time"));
+		markedTemp = new ArrayList<MyTreeItem>();
 		System.out.println("Folder Structure Plugin Loaded");
 	}
 	
@@ -232,6 +235,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private void initialize() {
 		initializeCategoryFilter();
 		initializeDateTimePicker();	
+		addDirectoryView(null);
 		setAvailablePlugins(null);
 	}
 	
@@ -354,10 +358,12 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					
 					if (mouseEvent.getButton() == MouseButton.SECONDARY) {
 						item.setMark(!item.getMark());
-						if(item.getMark()){
+						if(!item.getMark()){
 							item.getValue().setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+							markedTemp.remove(item);
 						}else{
 							item.getValue().setStyle("-fx-background-color: rgba(0, 0, 0, 0.31);");
+							markedTemp.add(item);
 						}
 					}
 					
@@ -549,6 +555,13 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						newItem.setGraphic(new ImageView(fileIcon));
 					break;
 					
+				}				
+
+				for(List<String> i : markedFiles){
+					if((newItem.getFileEntity().getDeviceID()+"").equals(i.get(0)) && (newItem.getFileEntity().getFileID()+"").equals(i.get(1))){
+						markedTemp.add(newItem);
+						newItem.setMark(true);
+					}
 				}
 				
 				if(newItem.getFileEntity().getIsRecovered()){		
@@ -1213,13 +1226,18 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	@Override
 	public Object getMarkedItems() {
 		// TODO Auto-generated method stub
-		return null;
+		markedFiles = Arrays.asList(markedFiles.get(0));
+		for(MyTreeItem i:markedTemp){
+			EagleFile file = i.getFileEntity();
+			markedFiles.add(Arrays.asList((file.getDeviceID()+""),(file.getFileID()+""),file.getFileName(),(""+file.getDateModified())));
+		}
+		return (Object)markedFiles;
 	}
 
 	@Override
 	public void setMarkedItems(Object arg0) {
 		// TODO Auto-generated method stub
-		
+		markedFiles = (List<List<String>>) arg0;
 	}
 
 }
