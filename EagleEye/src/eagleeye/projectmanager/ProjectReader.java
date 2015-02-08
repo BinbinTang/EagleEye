@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ProjectReader {
@@ -22,7 +23,7 @@ public class ProjectReader {
 	public HashMap<String, List<List<String>>> readFile() {
 		HashMap<String, List<List<String>>> markedItem = new HashMap<String, List<List<String>>>();
 		
-		File fXmlFile = new File(filePath);
+		File fXmlFile = new File(filePath+File.separator+"markedFile.xml");
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 		try {
@@ -30,7 +31,8 @@ public class ProjectReader {
 			Document doc = dBuilder.parse(fXmlFile);
 			doc.getDocumentElement().normalize();
 			
-			
+			if (doc.hasChildNodes())
+				executeChildNodes(doc.getChildNodes());
 		} catch (ParserConfigurationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -44,5 +46,10 @@ public class ProjectReader {
 		
 		
 		return markedItem;
+	}
+	
+	public void executeChildNodes(NodeList nodeList)
+	{
+		
 	}
 }
