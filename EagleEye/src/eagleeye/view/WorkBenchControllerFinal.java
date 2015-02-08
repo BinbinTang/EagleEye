@@ -75,7 +75,6 @@ import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
 import eagleeye.pluginmanager.*;
-import eagleeye.utils.FileFormatIdentifier;
 
 public class WorkBenchControllerFinal {	
 	
