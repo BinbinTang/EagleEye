@@ -1,7 +1,16 @@
 package eagleeye.projectmanager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 public class ProjectReader {
 	private String filePath;
@@ -10,8 +19,30 @@ public class ProjectReader {
 		filePath = path;
 	}
 	
-	public Map<String, List<List<String>>> readFile(){
-		Map<String, List<List<String>>> markedItem = new Map<String, List<List<String>>>();
-		return 
+	public HashMap<String, List<List<String>>> readFile() {
+		HashMap<String, List<List<String>>> markedItem = new HashMap<String, List<List<String>>>();
+		
+		File fXmlFile = new File(filePath);
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder;
+		try {
+			dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(fXmlFile);
+			doc.getDocumentElement().normalize();
+			
+			
+		} catch (ParserConfigurationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return markedItem;
 	}
 }
