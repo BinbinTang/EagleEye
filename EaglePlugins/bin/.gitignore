@@ -1,8 +1,10 @@
+/view/
+/html/
+/timeflow/
+/extractor/
+/META-INF/
 /Test/
 /analyzer/
 /com/
-/extractor/
 /reader/
 /tempDBcontroller/
-/timeflow/
-/view/
