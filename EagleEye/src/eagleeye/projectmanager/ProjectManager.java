@@ -2,6 +2,7 @@ package eagleeye.projectmanager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,17 +14,19 @@ import eagleeye.pluginmanager.PluginManager;
 public class ProjectManager {
 	PluginManager pm;
 	String projectPath;
-	HashMap<String, List<List<String>>> markedItem;
+	String deviceName;
+	HashMap<String, ArrayList<ArrayList<String>>> markedItem;
 	
-	public ProjectManager(String path)
+	public ProjectManager(String path, String name)
 	{
 		projectPath = path;
+		deviceName = name;
 	}
 	
 	public void writeProjectFile(){
 		System.out.println("writing marked items");
 		
-		ProjectWriter pw = new ProjectWriter(projectPath);
+		ProjectWriter pw = new ProjectWriter(projectPath,deviceName);
 		pw.writeFile(markedItem);
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -40,7 +43,7 @@ public class ProjectManager {
 		System.out.println("marked items read "+dateFormat.format(date));
 	}
 	public static void main(String[] args){
-		ProjectManager projm = new ProjectManager("Path");
+		ProjectManager projm = new ProjectManager("Path","DeviceName");
 		projm.writeProjectFile();
 		projm.readProjectFile();
 	}

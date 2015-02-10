@@ -1,6 +1,7 @@
 package eagleeye.projectmanager;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,26 +19,29 @@ import org.w3c.dom.Node;
 
 public class ProjectWriter {
 	private String filePath;
+	private String deviceName;
 	
-	public ProjectWriter(String path)
+	public ProjectWriter(String path, String name)
 	{
 		filePath = path;
+		deviceName = name;
 	}
 	
-	public void writeFile(HashMap<String, List<List<String>>> markedItem)
+	public void writeFile(HashMap<String, ArrayList<ArrayList<String>>> markedItem)
 	{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder;
 	    try {
 	    	documentBuilder = dbFactory.newDocumentBuilder();
 	        Document doc = documentBuilder.newDocument();
-	        Element mainRootElement = doc.createElement("Plugin Marked Items");
+	        Element mainRootElement = doc.createElement("Plugin-Marked-Items");
+	        mainRootElement.setAttribute("Device-Name", deviceName);
 	        doc.appendChild(mainRootElement);
 	        
 	        Iterator<String> iter = markedItem.keySet().iterator(); 
 	        while (iter.hasNext()) {  
 	            String key = iter.next(); 
-	            List<List<String>> val = markedItem.get(key); 
+	            ArrayList<ArrayList<String>> val = markedItem.get(key); 
 	            mainRootElement.appendChild(getPluginContent(doc,key,val));
 	        }   
 	        
@@ -49,14 +53,12 @@ public class ProjectWriter {
 	    } catch (Exception e) {
 	        	e.printStackTrace();
 	    }   
-	
-	   
 	}
 	
-	public Node getPluginContent (Document doc, String key, List<List<String>> content){
+	public Node getPluginContent (Document doc, String key, ArrayList<ArrayList<String>> content){
 		Element plugin = doc.createElement("Plugin");
+		plugin.setAttribute("Plugin-Name", key);
 		
-		plugin.setAttribute("Plugin Name", key);
 		for (int i=1; i<content.size(); i++)
 		{
 			plugin.appendChild(getFileContent(doc, plugin, i, content.get(0),content.get(i)));
@@ -64,10 +66,10 @@ public class ProjectWriter {
 		return plugin;
 	}
 	
-	public Node getFileContent (Document doc, Element plugin, Integer id, List<String> name, List<String> content )
+	public Node getFileContent (Document doc, Element plugin, Integer id, ArrayList<String> name, ArrayList<String> content )
 	{
 		Element file = doc.createElement("File");
-		plugin.setAttribute("ID", id.toString());
+		file.setAttribute("ID", id.toString());
 		
 		for (int i=0; i<name.size(); i++)
 		{
@@ -81,5 +83,40 @@ public class ProjectWriter {
 		Element node = doc.createElement(attributeName);
 		node.appendChild(doc.createTextNode(attributeContent));
 		return node;
+	}
+	
+	public static void main(String[] args)
+	{
+		ProjectWriter pw = new ProjectWriter("/Users/BinbinTang/Desktop","First");
+		HashMap<String, ArrayList<ArrayList<String>>> markedItem = new HashMap<String, ArrayList<ArrayList<String>>> ();
+		ArrayList<String> attributes = new ArrayList<String>();
+		attributes.add("Name");
+		attributes.add("Content");
+		attributes.add("FileMarked");
+		
+		ArrayList<String> file1 = new ArrayList<String>();
+		file1.add("SMS");
+		file1.add("Text");
+		file1.add("Yes");
+		
+		ArrayList<String> file2 = new ArrayList<String>();
+		file2.add("Call");
+		file2.add("Number");
+		file2.add("Yes");
+		
+		ArrayList<ArrayList<String>> plugin1 = new ArrayList<ArrayList<String>> ();
+		plugin1.add(attributes);
+		plugin1.add(file1);
+		plugin1.add(file2);
+		
+		ArrayList<ArrayList<String>> plugin2 = new ArrayList<ArrayList<String>> ();
+		plugin2.add(attributes);
+		plugin2.add(file1);
+		plugin2.add(file2);
+		
+		markedItem.put("Notes", plugin1);
+		markedItem.put("Notes2", plugin2);
+		
+		pw.writeFile(markedItem);
 	}
 }
