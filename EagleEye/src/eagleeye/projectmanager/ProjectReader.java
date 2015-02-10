@@ -2,6 +2,9 @@ package eagleeye.projectmanager;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
 
@@ -14,6 +17,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ProjectReader {
+	
 	private String filePath;
 	public ProjectReader(String path)
 	{
@@ -32,7 +36,8 @@ public class ProjectReader {
 			doc.getDocumentElement().normalize();
 			
 			if (doc.hasChildNodes())
-				executeChildNodes(doc.getChildNodes());
+				executeChildNodes(doc.getChildNodes(), markedItem);
+			
 		} catch (ParserConfigurationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -48,7 +53,7 @@ public class ProjectReader {
 		return markedItem;
 	}
 	
-	public void executeChildNodes(NodeList nodeList)
+	public void executeChildNodes(NodeList nodeList, HashMap<String, List<List<String>>> markedItem)
 	{
 		
 	}
