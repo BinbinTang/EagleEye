@@ -37,7 +37,7 @@ public class ProjectManager {
 		System.out.println("reading marked items");
 		
 		ProjectReader pr = new ProjectReader(projectPath);
-		markedItem = pr.readFile(projectPath);
+		markedItem = pr.readFile();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		System.out.println("marked items read "+dateFormat.format(date));

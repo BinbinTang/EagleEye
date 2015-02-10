@@ -26,7 +26,7 @@ public class ProjectReader {
 		filePath = path;
 	}
 	
-	public HashMap<String, ArrayList<ArrayList<String>>> readFile(String filePath) {
+	public HashMap<String, ArrayList<ArrayList<String>>> readFile() {
 		HashMap<String, ArrayList<ArrayList<String>>> markedItem = new HashMap<String, ArrayList<ArrayList<String>>>();
 		
 		File fXmlFile = new File(filePath+File.separator+"markedFile.xml");
@@ -62,4 +62,10 @@ public class ProjectReader {
 			Node plugin = nodeList.item(i);
 		}
 	}
+	
+	public static void main(String[] args)
+	{
+		ProjectReader reader = new ProjectReader("/Users/BinbinTang/Desktop");
+		reader.readFile(filePath);
+		}
 }
