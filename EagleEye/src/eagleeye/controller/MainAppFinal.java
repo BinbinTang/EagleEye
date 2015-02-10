@@ -59,6 +59,8 @@ public class MainAppFinal extends Application {
         }
         
         this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        	
+        	//TODO: WRITE PROJECT FILE
             @Override
             public void handle(WindowEvent t) {
                 Platform.exit();
