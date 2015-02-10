@@ -54,7 +54,7 @@ import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.Filter;
 import eagleeye.pluginmanager.Plugin;
 import eagleeye.pluginmanager.PluginManager;
-import eagleeye.utils.FileFormatIdentifier;
+//import eagleeye.utils.FileFormatIdentifier;
 
 public class FolderStructureTreePlugin extends Application implements Plugin{
 	
