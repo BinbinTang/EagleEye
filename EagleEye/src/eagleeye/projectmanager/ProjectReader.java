@@ -24,7 +24,7 @@ public class ProjectReader {
 		filePath = path;
 	}
 	
-	public HashMap<String, List<List<String>>> readFile() {
+	public HashMap<String, List<List<String>>> readFile(String filePath) {
 		HashMap<String, List<List<String>>> markedItem = new HashMap<String, List<List<String>>>();
 		
 		File fXmlFile = new File(filePath+File.separator+"markedFile.xml");
