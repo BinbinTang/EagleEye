@@ -24,15 +24,15 @@ import org.xml.sax.SAXException;
 public class ProjectReader {
 	
 	private String filePath;
-	private HashMap<String, ArrayList<ArrayList<String>>> markedItem;
+	private HashMap<String, List<List<String>>> markedItem;
 	
 	public ProjectReader(String path)
 	{
 		filePath = path;
-		markedItem = new HashMap<String, ArrayList<ArrayList<String>>>();
+		markedItem = new HashMap<String, List<List<String>>>();
 	}
 	
-	public HashMap<String, ArrayList<ArrayList<String>>> readFile() {
+	public HashMap<String, List<List<String>>> readFile() {
 		
 		
 		File fXmlFile = new File(filePath+File.separator+"markedFile.xml");
@@ -70,18 +70,18 @@ public class ProjectReader {
 		{
 			plugin = (Element) nl.item(i);
 			String name = plugin.getAttribute("Plugin-Name");
-			ArrayList<ArrayList<String>> var = executePlugin(plugin);
+			ArrayList<List<String>> var = executePlugin(plugin);
 			markedItem.put(name, var);
 		}
 	}
 	
-	public ArrayList<ArrayList<String>> executePlugin(Element plugin)
+	public ArrayList<List<String>> executePlugin(Element plugin)
 	{
 		NodeList nl = plugin.getChildNodes();
 		Element file;
 		if (nl.getLength() == 0)
 			return null;
-		ArrayList<ArrayList<String>> markedFile = new ArrayList<ArrayList<String>>();
+		ArrayList<List<String>> markedFile = new ArrayList<List<String>>();
 		markedFile.add(retrieveAttributesName((Element) nl.item(0)));
 		for (int i=0; i<nl.getLength();i++)
 		{
@@ -120,13 +120,13 @@ public class ProjectReader {
 	public static void main(String[] args)
 	{
 		ProjectReader reader = new ProjectReader("/Users/BinbinTang/Desktop");
-		HashMap<String, ArrayList<ArrayList<String>>> markedItem = reader.readFile();
+		HashMap<String, List<List<String>>> markedItem = reader.readFile();
 		
 		Iterator<String> iter = markedItem.keySet().iterator(); 
         while (iter.hasNext()) {  
             String key = iter.next(); 
             System.out.println("Key1 = "+key);
-            ArrayList<ArrayList<String>> val = markedItem.get(key);
+            List<List<String>> val = markedItem.get(key);
             System.out.println(val.toString());
         }
 	}

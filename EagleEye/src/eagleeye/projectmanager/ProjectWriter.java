@@ -27,7 +27,7 @@ public class ProjectWriter {
 		deviceName = name;
 	}
 	
-	public void writeFile(HashMap<String, ArrayList<ArrayList<String>>> markedItem)
+	public void writeFile(HashMap<String, List<List<String>>> markedItem)
 	{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder;
@@ -41,7 +41,7 @@ public class ProjectWriter {
 	        Iterator<String> iter = markedItem.keySet().iterator(); 
 	        while (iter.hasNext()) {  
 	            String key = iter.next(); 
-	            ArrayList<ArrayList<String>> val = markedItem.get(key); 
+	            List<List<String>> val = markedItem.get(key); 
 	            mainRootElement.appendChild(getPluginContent(doc,key,val));
 	        }   
 	        
@@ -55,7 +55,7 @@ public class ProjectWriter {
 	    }   
 	}
 	
-	public Node getPluginContent (Document doc, String key, ArrayList<ArrayList<String>> content){
+	public Node getPluginContent (Document doc, String key, List<List<String>> content){
 		Element plugin = doc.createElement("Plugin");
 		plugin.setAttribute("Plugin-Name", key);
 		
@@ -66,7 +66,7 @@ public class ProjectWriter {
 		return plugin;
 	}
 	
-	public Node getFileContent (Document doc, Element plugin, Integer id, ArrayList<String> name, ArrayList<String> content )
+	public Node getFileContent (Document doc, Element plugin, Integer id, List<String> name, List<String> content )
 	{
 		Element file = doc.createElement("File");
 		file.setAttribute("ID", id.toString());
@@ -88,28 +88,28 @@ public class ProjectWriter {
 	public static void main(String[] args)
 	{
 		ProjectWriter pw = new ProjectWriter("/Users/BinbinTang/Desktop","First");
-		HashMap<String, ArrayList<ArrayList<String>>> markedItem = new HashMap<String, ArrayList<ArrayList<String>>> ();
-		ArrayList<String> attributes = new ArrayList<String>();
+		HashMap<String, List<List<String>>> markedItem = new HashMap<String, List<List<String>>> ();
+		List<String> attributes = new ArrayList<String>();
 		attributes.add("Name");
 		attributes.add("Content");
 		attributes.add("FileMarked");
 		
-		ArrayList<String> file1 = new ArrayList<String>();
+		List<String> file1 = new ArrayList<String>();
 		file1.add("SMS");
 		file1.add("Text");
 		file1.add("Yes");
 		
-		ArrayList<String> file2 = new ArrayList<String>();
+		List<String> file2 = new ArrayList<String>();
 		file2.add("Call");
 		file2.add("Number");
 		file2.add("Yes");
 		
-		ArrayList<ArrayList<String>> plugin1 = new ArrayList<ArrayList<String>> ();
+		List<List<String>> plugin1 = new ArrayList<List<String>> ();
 		plugin1.add(attributes);
 		plugin1.add(file1);
 		plugin1.add(file2);
 		
-		ArrayList<ArrayList<String>> plugin2 = new ArrayList<ArrayList<String>> ();
+		List<List<String>> plugin2 = new ArrayList<List<String>> ();
 		plugin2.add(attributes);
 		plugin2.add(file1);
 		plugin2.add(file2);

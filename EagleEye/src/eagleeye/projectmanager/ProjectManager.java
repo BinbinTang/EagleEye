@@ -15,7 +15,7 @@ public class ProjectManager {
 	PluginManager pm;
 	String projectPath;
 	String deviceName;
-	HashMap<String, ArrayList<ArrayList<String>>> markedItem;
+	HashMap<String, List<List<String>>> markedItem;
 	
 	public ProjectManager(String path, String name)
 	{
