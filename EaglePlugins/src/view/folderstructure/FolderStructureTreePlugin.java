@@ -86,6 +86,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private Color originalColor = Color.web("#2e00ff");
 	private Color isRecoveredColor = Color.web("#025013");
 	private Color isModifiedColor = Color.web("#f42929");	
+	private String unMarkedColor = "-fx-background-color: rgba(0, 0, 0, 0);";
+	private String markedColor = "-fx-background-color: rgba(0, 0, 0, 0.31);";
 	
 	//@FXML dynamically created
 	private ListView resultListView;	
@@ -326,10 +328,10 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					if (mouseEvent.getButton() == MouseButton.SECONDARY) {
 						item.setMark(!item.getMark());
 						if(!item.getMark()){
-							item.getValue().setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+							item.getValue().setStyle(unMarkedColor);
 							markedFilesCashe.remove(item);
 						}else{
-							item.getValue().setStyle("-fx-background-color: rgba(0, 0, 0, 0.31);");
+							item.getValue().setStyle(markedColor);
 							markedFilesCashe.add(item);
 						}
 					}else if (mouseEvent.getClickCount() == 2) {
