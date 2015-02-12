@@ -79,8 +79,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
     private Node myNode;
     
     // Marked files
-    private List<List<String>> markedFiles;
-    private ArrayList<MyTreeItem> markedTemp;
+    private List<List<String>> markedFilesResult;
+    private ArrayList<MyTreeItem> markedFilesCashe;
 
 	// Colors
 	private Color originalColor = Color.web("#2e00ff");
@@ -115,14 +115,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			"Icons/unknown.png"), 16, 16, false, false);
 	private final Image dbIcon = new Image(getClass().getResourceAsStream(
 			"Icons/DB.png"), 16, 16, false, false);
-	/*private final Node rootIcon = new ImageView(new Image("file:Icons/folder.png", 16, 16, false, false));
-	private final Image fileIcon = new Image("file:Icons/file.png",16, 16, false, false);
-	private final Image docIcon = new Image("file:Icons/doc.png",16, 16, false, false);
-	private final Image imageIcon = new Image("file:Icons/photo icon.png",16, 16, false, false);
-	private final Image videoIcon = new Image("file:Icons/video icon.png",16, 16, false, false);
-	private final Image audioIcon = new Image("file:Icons/audio icon.png",16, 16, false, false);
-	private final Image othersIcon = new Image("file:Icons/unknown.png",16, 16, false, false);
-	private final Image dbIcon = new Image("file:Icons/DB.png",16, 16, false, false);*/
+	
 	MyTreeItem<Label> rootNode;
 	MyTreeItem<String> rootNodeC;
 	ArrayList<String> categoryList = new ArrayList(Arrays.asList("All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"));
@@ -131,7 +124,6 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	ArrayList<EagleDirectory> TreeStructure;
 	
-	// FXML controls
 	@FXML
 	private AnchorPane treeFilterPane;	
 	@FXML
@@ -157,7 +149,6 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	@FXML
 	private DatePicker endDatePicker;
 
-	// Time
 	private String startHour = "00";
 	private String startMinute = "00";
 	private String endHour = "23";
@@ -197,16 +188,14 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	public void start(Stage stage) throws Exception {
 		System.out.println("folder structure started");
 		this.primaryStage = stage;
-		
-
 
 		// Load the root layout from the fxml file
         //Scene scene = new Scene(rootLayout);
 		Node view = (Node)getResult();
-		BorderPane bp = new BorderPane();
-		bp.setCenter(view);
+		BorderPane viewContainer = new BorderPane();
+		viewContainer.setCenter(view);
 		primaryStage.setTitle(this.getName());
-	    primaryStage.setScene(new Scene(bp)); 
+	    primaryStage.setScene(new Scene(viewContainer)); 
 
         //primaryStage.setScene(scene);
         primaryStage.show();
@@ -226,8 +215,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
 		popUpViews = new ArrayList<Plugin>();
-		markedFiles = Arrays.asList(Arrays.asList("DeviceID","FileID", "Name","Time"));
-		markedTemp = new ArrayList<MyTreeItem>();
+		markedFilesResult = Arrays.asList(Arrays.asList("DeviceID","FileID", "Name","Time"));
+		markedFilesCashe = new ArrayList<MyTreeItem>();
 		System.out.println("Folder Structure Plugin Loaded");
 	}
 	
@@ -262,26 +251,21 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					TreeStructure);
 			TreeView<Label> tree = new TreeView<Label>(rootNode);
 
-			// Force root node ID to be 0
-			//TreeStructure.get(0).modifyDirectoryID(0);
-
 			int rootDirID = TreeStructure.get(0).getDirectoryID();
-			// Whenever a directory found its parent, we remove it from copied
-			// list
+			// Whenever a directory found its parent, we remove it from copied list
 			
 			while (CopyTreeStructure.size() > 0) {
 				int startSize = CopyTreeStructure.size();
 				for (EagleDirectory dir : CopyTreeStructure) {
 					MyTreeItem<Label> targetParent = null;
-					//System.out.println("Current remaining Size: "
-					//		+ CopyTreeStructure.size());
 					// check if it is root
 					if (dir.getDirectoryID() == rootDirID) {
 						casePath = dir.getDirectoryName();
 						this.addFiles(dir, rootNode);
 						CopyTreeStructure.remove(dir);
-						// System.out.println("root met, removed");
 						break;
+					}else{
+						System.out.println("not root");
 					}
 
 					MyTreeItem<Label> newItem = new MyTreeItem<Label>(
@@ -293,11 +277,11 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					if (parent != null) {
 						targetParent = findItem(rootNode,parent.getDirectoryName());
 					} else {
-						//System.out.println("Cannot find parent" + dir.getParentDirectory());
+						System.out.println("Cannot find parent" + dir.getParentDirectory());
 					}
 
 					if (targetParent != null) {
-						// System.out.println("parent found");
+						System.out.println("parent found");
 						targetParent.getChildren().add(newItem);
 
 						// Record current expanded path, such that it wont refresh after filter
@@ -313,12 +297,11 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						CopyTreeStructure.remove(dir);
 						break;
 					} else {
-						//System.out.println("cannot find parent");
+						System.out.println("cannot find parent");
 					}
 				}
 				int endSize = CopyTreeStructure.size();
-				// check if no change in size, then we print out remaining list
-				// and exit
+				// check if no change in size, then we print out remaining list and exit
 				if (startSize == endSize) {
 					System.out.println("Remaining Directories:");
 					for (EagleDirectory dir : CopyTreeStructure) {
@@ -340,43 +323,20 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					}
 					System.out.println("Selected Text : " + item.getValue().getText());
 					
-					// Change Result pane view if a folder
-					/*
-					if (!item.isLeaf()){
-						listItems.clear();
-						for(TreeItem<String> subFile : item.getChildren()){
-							if (subFile.isLeaf()){
-								listItems.add("File:" + subFile.getValue());
-							}else{
-								listItems.add("Folder: " + subFile.getValue());
-							}
-						}
-
-						displayResult(listItems, "tree");
-					}
-					*/
-					
 					if (mouseEvent.getButton() == MouseButton.SECONDARY) {
 						item.setMark(!item.getMark());
 						if(!item.getMark()){
 							item.getValue().setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
-							markedTemp.remove(item);
+							markedFilesCashe.remove(item);
 						}else{
 							item.getValue().setStyle("-fx-background-color: rgba(0, 0, 0, 0.31);");
-							markedTemp.add(item);
+							markedFilesCashe.add(item);
 						}
-					}
-					
-					else if (mouseEvent.getClickCount() == 2) {
+					}else if (mouseEvent.getClickCount() == 2) {
 						// Check if it is a file, and open						
 						if (item.isLeaf()) {
-							String filePath = item.getFileEntity().getFilePath() + File.separator + item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
-							//File currentFile = new File(filePath);
-							//Desktop.getDesktop().open(currentFile);
-							/*
-							fileLoader fd = new fileLoader();
-							fd.start(filePath);
-							*/
+							String filePath = item.getFileEntity().getFilePath() + File.separator + 
+									item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
 							
 							List params = new ArrayList();
 							params.add(filePath);
@@ -387,13 +347,13 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 									double WindowHeight = 400;
 									stage.setWidth(WindowWidth);
 								    stage.setHeight(WindowHeight);
-								  //get display content
-									Node pc = (Node)pl.getResult();
+								   //get display content
+									Node fileContentView = (Node)pl.getResult();
 									
 									//put content in new window
-									ScrollPane sp = new ScrollPane();
-									sp.setContent(pc);
-									stage.setScene(new Scene(sp));
+									ScrollPane container = new ScrollPane();
+									container.setContent(fileContentView);
+									stage.setScene(new Scene(container));
 								    stage.setTitle(new File(filePath).getName());
 								    stage.show();						
 								    
@@ -528,7 +488,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt() + " [" + file.getDateCreated() + "]");
 				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName);
 				newItem.setFileEntity(file);
-				//"All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"
+				//Types are: "All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"
 				switch(file.getCategory()){
 					case("Image"): 
 						newItem.setGraphic(new ImageView(imageIcon));
@@ -557,9 +517,9 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					
 				}				
 
-				for(List<String> i : markedFiles){
+				for(List<String> i : markedFilesResult){
 					if((newItem.getFileEntity().getDeviceID()+"").equals(i.get(0)) && (newItem.getFileEntity().getFileID()+"").equals(i.get(1))){
-						markedTemp.add(newItem);
+						markedFilesCashe.add(newItem);
 						newItem.setMark(true);
 					}
 				}
@@ -573,11 +533,11 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 				}
 			
 				node.getChildren().add(newItem);
-				TreeItem<Label> temp = node;
+				TreeItem<Label> nodeCopy = node;
 				do{
-					temp.setExpanded(true);
-					temp = temp.getParent();
-				}while(temp!= null);
+					nodeCopy.setExpanded(true);
+					nodeCopy = nodeCopy.getParent();
+				}while(nodeCopy!= null);
 				
 			}
 		}
@@ -599,32 +559,23 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	            @Override
 	            public void handle(ActionEvent event) {
 	            	
-	            	if(category.equals("All") && ckb.isSelected())
-	            	{
-	            		for(Node N : categoryViewPane.getChildren())
-	            		{
+	            	if(category.equals("All") && ckb.isSelected()){
+	            		for(Node N : categoryViewPane.getChildren()){
 	            			CheckBox cb = (CheckBox) N;
 	            			cb.setSelected(true);
-	            		}
-	            	
-	            	}else if(category.equals("All") && !ckb.isSelected())
-	            	{
-	            		for(Node N : categoryViewPane.getChildren())
-	            		{
+	            		}	            	
+	            	}else if(category.equals("All") && !ckb.isSelected()){
+	            		for(Node N : categoryViewPane.getChildren()){
 	            			CheckBox cb = (CheckBox) N;
 	            			cb.setSelected(false);
-	            		}
-	            	
-	            	}else if(!ckb.isSelected())
-	            	{
-	            		for(Node N : categoryViewPane.getChildren())
-	            		{
-	            			CheckBox cb = (CheckBox) N;
-	            			if(cb.getText().equals("All")){
-	            				cb.setSelected(false);
+	            		}	            	
+	            	}else if(!ckb.isSelected()){
+	            		for(Node N : categoryViewPane.getChildren()){
+	            			CheckBox categoryCheckBox = (CheckBox) N;
+	            			if(categoryCheckBox.getText().equals("All")){
+	            				categoryCheckBox.setSelected(false);
 	            			}
-	            		}
-	            	
+	            		}	            	
 	            	}
 	            }
 	        });
@@ -645,7 +596,6 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			endDate = endDatePicker.getValue();
 			System.out.println("Selected date: " + endDate);
 		});
-
 
 		// Time, start: 00:00-23:59. end: 00:00-23:59. start <= end check not implemented
 		
@@ -1103,8 +1053,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	//Filters Controller Function
 	@FXML 
-	public void handleFilter() {
-		
+	public void handleFilter() {		
 		this.filter = new Filter();
 		categoryFilter = new ArrayList<String>();
 		
@@ -1138,9 +1087,6 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			if(cb.isSelected())
 				categoryFilter.add(cb.getText());
 		}
-		
-		
-		
 		
 		filter.setCategoryFilter(categoryFilter);
 		//displayResult(listItems,"category");
@@ -1188,8 +1134,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		private EagleFile file;
 		private EagleDirectory dir;
 		
-		public void setMark(boolean b){
-			mark = b;
+		public void setMark(boolean isMark){
+			mark = isMark;
 		}
 		
 		public boolean getMark(){
@@ -1226,18 +1172,18 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	@Override
 	public Object getMarkedItems() {
 		// TODO Auto-generated method stub
-		markedFiles = Arrays.asList(markedFiles.get(0));
-		for(MyTreeItem i:markedTemp){
+		markedFilesResult = Arrays.asList(markedFilesResult.get(0));
+		for(MyTreeItem i:markedFilesCashe){
 			EagleFile file = i.getFileEntity();
-			markedFiles.add(Arrays.asList((file.getDeviceID()+""),(file.getFileID()+""),file.getFileName(),(""+file.getDateModified())));
+			markedFilesResult.add(Arrays.asList((file.getDeviceID()+""),(file.getFileID()+""),file.getFileName(),(""+file.getDateModified())));
 		}
-		return (Object)markedFiles;
+		return (Object)markedFilesResult;
 	}
 
 	@Override
 	public void setMarkedItems(Object arg0) {
 		// TODO Auto-generated method stub
-		markedFiles = (List<List<String>>) arg0;
+		markedFilesResult = (List<List<String>>) arg0;
 	}
 
 }
