@@ -551,25 +551,25 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		categoryViewPane.getChildren().clear();
 		
 		for (String category : categoryList){
-			CheckBox ckb = new CheckBox(category);
-			ckb.setPrefHeight(30);
-			ckb.setSelected(true);
-			ckb.setStyle("-fx-font-size: 14;");
-			ckb.setOnAction(new EventHandler<ActionEvent>() {
+			CheckBox categoryBox = new CheckBox(category);
+			categoryBox.setPrefHeight(30);
+			categoryBox.setSelected(true);
+			categoryBox.setStyle("-fx-font-size: 14;");
+			categoryBox.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
 	            	
-	            	if(category.equals("All") && ckb.isSelected()){
+	            	if(category.equals("All") && categoryBox.isSelected()){
 	            		for(Node N : categoryViewPane.getChildren()){
-	            			CheckBox cb = (CheckBox) N;
-	            			cb.setSelected(true);
+	            			CheckBox checkBoxContainer = (CheckBox) N;
+	            			checkBoxContainer.setSelected(true);
 	            		}	            	
-	            	}else if(category.equals("All") && !ckb.isSelected()){
+	            	}else if(category.equals("All") && !categoryBox.isSelected()){
 	            		for(Node N : categoryViewPane.getChildren()){
 	            			CheckBox cb = (CheckBox) N;
 	            			cb.setSelected(false);
 	            		}	            	
-	            	}else if(!ckb.isSelected()){
+	            	}else if(!categoryBox.isSelected()){
 	            		for(Node N : categoryViewPane.getChildren()){
 	            			CheckBox categoryCheckBox = (CheckBox) N;
 	            			if(categoryCheckBox.getText().equals("All")){
@@ -579,7 +579,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	            	}
 	            }
 	        });
-			categoryViewPane.getChildren().add(ckb);
+			categoryViewPane.getChildren().add(categoryBox);
 		}
 	}
 
@@ -603,11 +603,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!(newValue.matches("[0-9]*"))) {
-					startHourTf.setText(newValue.substring(0,
-							newValue.length() - 1));
-					System.out.println("no match");
-				}
+				checkNumber(newValue,startHourTf);
 			}
 		});
 		
@@ -620,41 +616,19 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check length
-							if (startHourTf.getText().length() > 2) {
-								System.out.println("too long");
-								startHourTf.setText("23");
-							} else if (startHourTf.getText().length() == 1) {
-								System.out.println("1 degit");
-								startHourTf.setText("0" + startHourTf.getText());
-							} else if (startHourTf.getText().length() == 0){
-								System.out.println("no input");
-								startHourTf.setText("00");
-							}
-							// Check range
-							if (Integer.parseInt(startHourTf.getText()) > 23) {
-								System.out.println("too large");
-								startHourTf.setText("23");
-							} else if (Integer.parseInt(startHourTf.getText()) < 0) {
-								System.out.println("too small");
-								startHourTf.setText("0");
-							} 
+							checkHour(startHourTf); 
 							
 							startHour = startHourTf.getText();
 							System.out.println("startHour is " + startHour);
 						}
 					}
-				});
+		});
 
 		startMinuteTf.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!(newValue.matches("[0-9]*"))) {
-					startMinuteTf.setText(newValue.substring(0,
-							newValue.length() - 1));
-					System.out.println("no match");
-				}
+				checkNumber(newValue,startMinuteTf);
 			}
 		});
 		
@@ -667,26 +641,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check length
-							if (startMinuteTf.getText().length() > 2) {
-								System.out.println("too long");
-								startMinuteTf.setText("59");
-							} else if (startMinuteTf.getText().length() == 1) {
-								System.out.println("1 degit");
-								startMinuteTf.setText("0"
-										+ startMinuteTf.getText());
-							} else if (startMinuteTf.getText().length() == 0) {
-								System.out.println("no input");
-								startMinuteTf.setText("00");
-							}
-							// Check range
-							if (Integer.parseInt(startMinuteTf.getText()) > 59) {
-								System.out.println("too large");
-								startMinuteTf.setText("59");
-							} else if (Integer.parseInt(startMinuteTf.getText()) < 0) {
-								System.out.println("too small");
-								startMinuteTf.setText("0");
-							}
+							checkMinute(startMinuteTf);
 							
 							startMinute = startMinuteTf.getText();
 							System.out.println("startMinute is " + startMinute);
@@ -698,11 +653,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!(newValue.matches("[0-9]*"))) {
-					endHourTf.setText(newValue.substring(0,
-							newValue.length() - 1));
-					System.out.println("no match");
-				}
+				checkNumber(newValue, endHourTf);
 			}
 		});
 		
@@ -713,25 +664,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 				if (newPropertyValue) {
 					System.out.println("Textfield on focus");
 				} else {
-					// Check length
-					if (endHourTf.getText().length() > 2) {
-						System.out.println("too long");
-						endHourTf.setText("23");
-					} else if (endHourTf.getText().length() == 1) {
-						System.out.println("1 degit");
-						endHourTf.setText("0" + endHourTf.getText());
-					} else if (endHourTf.getText().length() == 0) {
-						System.out.println("no input");
-						endHourTf.setText("00");
-					}
-					// Check range
-					if (Integer.parseInt(endHourTf.getText()) > 23) {
-						System.out.println("too large");
-						endHourTf.setText("23");
-					} else if (Integer.parseInt(endHourTf.getText()) < 0) {
-						System.out.println("too small");
-						endHourTf.setText("0");
-					}
+					checkHour(endHourTf);
 					endHour = endHourTf.getText();
 					System.out.println("endHour is " + endHour);
 				}
@@ -742,11 +675,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!(newValue.matches("[0-9]*"))) {
-					endMinuteTf.setText(newValue.substring(0,
-							newValue.length() - 1));
-					System.out.println("no match");
-				}
+				checkNumber(newValue,endMinuteTf);
 			}
 		});
 		
@@ -758,25 +687,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check length
-							if (endMinuteTf.getText().length() > 2) {
-								System.out.println("too long");
-								endMinuteTf.setText("59");
-							} else if (endMinuteTf.getText().length() == 1) {
-								System.out.println("1 degit");
-								endMinuteTf.setText("0" + endMinuteTf.getText());
-							} else if (endMinuteTf.getText().length() == 0) {
-								System.out.println("no input");
-								endMinuteTf.setText("00");
-							}
-							// Check range
-							if (Integer.parseInt(endMinuteTf.getText()) > 59) {
-								System.out.println("too large");
-								endMinuteTf.setText("59");
-							} else if (Integer.parseInt(endMinuteTf.getText()) < 0) {
-								System.out.println("too small");
-								endMinuteTf.setText("0");
-							}
+							checkMinute(endMinuteTf);
 							endMinute = endMinuteTf.getText();
 							System.out.println("endMinute is " + endMinute);
 						}
@@ -788,11 +699,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!(newValue.matches("[0-9]*"))) {
-					startHourDailyTf.setText(newValue.substring(0,
-							newValue.length() - 1));
-					System.out.println("no match");
-				}
+				checkNumber(newValue,startHourDailyTf);
 			}
 		});
 		
@@ -805,25 +712,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check length
-							if (startHourDailyTf.getText().length() > 2) {
-								System.out.println("too long");
-								startHourDailyTf.setText("23");
-							} else if (startHourDailyTf.getText().length() == 1) {
-								System.out.println("1 degit");
-								startHourDailyTf.setText("0" + startHourDailyTf.getText());
-							} else if (startHourDailyTf.getText().length() == 0) {
-								System.out.println("no input");
-								startHourDailyTf.setText("00");
-							}
-							// Check range
-							if (Integer.parseInt(startHourDailyTf.getText()) > 23) {
-								System.out.println("too large");
-								startHourDailyTf.setText("23");
-							} else if (Integer.parseInt(startHourDailyTf.getText()) < 0) {
-								System.out.println("too small");
-								startHourDailyTf.setText("0");
-							}
+							checkHour(startHourDailyTf);
 							startHourDaily = startHourDailyTf.getText();
 							System.out.println("startHourDaily is " + startHourDaily);
 						}
@@ -834,11 +723,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!(newValue.matches("[0-9]*"))) {
-					startMinuteDailyTf.setText(newValue.substring(0,
-							newValue.length() - 1));
-					System.out.println("no match");
-				}
+				checkNumber(newValue,startMinuteDailyTf);
 			}
 		});
 		
@@ -851,26 +736,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check length
-							if (startMinuteDailyTf.getText().length() > 2) {
-								System.out.println("too long");
-								startMinuteDailyTf.setText("59");
-							} else if (startMinuteDailyTf.getText().length() == 1) {
-								System.out.println("1 degit");
-								startMinuteDailyTf.setText("0"
-										+ startMinuteDailyTf.getText());
-							} else if (startMinuteDailyTf.getText().length() == 0) {
-								System.out.println("no input");
-								startMinuteDailyTf.setText("00");
-							}
-							// Check range
-							if (Integer.parseInt(startMinuteDailyTf.getText()) > 59) {
-								System.out.println("too large");
-								startMinuteDailyTf.setText("59");
-							} else if (Integer.parseInt(startMinuteDailyTf.getText()) < 0) {
-								System.out.println("too small");
-								startMinuteDailyTf.setText("0");
-							}
+							checkMinute(startMinuteDailyTf);
 							startMinuteDaily = startMinuteDailyTf.getText();
 							System.out.println("startMinuteDaily is " + startMinuteDaily);
 						}
@@ -881,11 +747,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!(newValue.matches("[0-9]*"))) {
-					endHourDailyTf.setText(newValue.substring(0,
-							newValue.length() - 1));
-					System.out.println("no match");
-				}
+				checkNumber(newValue,endHourDailyTf);
 			}
 		});
 		
@@ -896,25 +758,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 				if (newPropertyValue) {
 					System.out.println("Textfield on focus");
 				} else {
-					// Check length
-					if (endHourDailyTf.getText().length() > 2) {
-						System.out.println("too long");
-						endHourDailyTf.setText("23");
-					} else if (endHourDailyTf.getText().length() == 1) {
-						System.out.println("1 degit");
-						endHourDailyTf.setText("0" + endHourDailyTf.getText());
-					} else if (endHourDailyTf.getText().length() == 0) {
-						System.out.println("no input");
-						endHourDailyTf.setText("00");
-					}
-					// Check range
-					if (Integer.parseInt(endHourDailyTf.getText()) > 23) {
-						System.out.println("too large");
-						endHourDailyTf.setText("23");
-					} else if (Integer.parseInt(endHourDailyTf.getText()) < 0) {
-						System.out.println("too small");
-						endHourDailyTf.setText("0");
-					}
+					checkHour(endHourDailyTf);
 					endHourDaily = endHourDailyTf.getText();
 					System.out.println("endHourDaily is " + endHourDaily);
 				}
@@ -925,11 +769,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!(newValue.matches("[0-9]*"))) {
-					endMinuteDailyTf.setText(newValue.substring(0,
-							newValue.length() - 1));
-					System.out.println("no match");
-				}
+				checkNumber(newValue,endMinuteDailyTf);
 			}
 		});
 		
@@ -941,25 +781,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						if (newPropertyValue) {
 							System.out.println("Textfield on focus");
 						} else {
-							// Check length
-							if (endMinuteDailyTf.getText().length() > 2) {
-								System.out.println("too long");
-								endMinuteDailyTf.setText("59");
-							} else if (endMinuteDailyTf.getText().length() == 1) {
-								System.out.println("1 degit");
-								endMinuteDailyTf.setText("0" + endMinuteDailyTf.getText());
-							} else if (endMinuteDailyTf.getText().length() == 0) {
-								System.out.println("no input");
-								endMinuteDailyTf.setText("00");
-							}
-							// Check range
-							if (Integer.parseInt(endMinuteDailyTf.getText()) > 59) {
-								System.out.println("too large");
-								endMinuteDailyTf.setText("59");
-							} else if (Integer.parseInt(endMinuteDailyTf.getText()) < 0) {
-								System.out.println("too small");
-								endMinuteDailyTf.setText("0");
-							}
+							checkMinute(endMinuteDailyTf);
 							endMinuteDaily = endMinuteDailyTf.getText();
 							System.out.println("endMinuteDaily is " + endMinuteDaily);
 						}
@@ -1126,6 +948,59 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		dbController.setDeviceID(deviceID);
 		TreeStructure = dbController.getAllDirectoriesAndFiles();
 		allFiles = dbController.getAllFiles();
+	}
+	
+	private void checkNumber(String newValue, TextField input){
+		if (!(newValue.matches("[0-9]*"))) {
+			input.setText(newValue.substring(0,
+					newValue.length() - 1));
+			System.out.println("no match");
+		}
+	}
+	
+	private void checkHour(TextField hourInput){
+		// Check length
+		if (hourInput.getText().length() > 2) {
+			System.out.println("too long");
+			hourInput.setText("23");
+		} else if (hourInput.getText().length() == 1) {
+			System.out.println("1 degit");
+			hourInput.setText("0" + hourInput.getText());
+		} else if (hourInput.getText().length() == 0){
+			System.out.println("no input");
+			hourInput.setText("00");
+		}
+		// Check range
+		if (Integer.parseInt(hourInput.getText()) > 23) {
+			System.out.println("too large");
+			hourInput.setText("23");
+		} else if (Integer.parseInt(hourInput.getText()) < 0) {
+			System.out.println("too small");
+			hourInput.setText("0");
+		} 
+	}
+	
+	private void checkMinute(TextField minuteInput){
+		// Check length
+		if (minuteInput.getText().length() > 2) {
+			System.out.println("too long");
+			minuteInput.setText("59");
+		} else if (minuteInput.getText().length() == 1) {
+			System.out.println("1 degit");
+			minuteInput.setText("0"
+					+ minuteInput.getText());
+		} else if (minuteInput.getText().length() == 0) {
+			System.out.println("no input");
+			minuteInput.setText("00");
+		}
+		// Check range
+		if (Integer.parseInt(minuteInput.getText()) > 59) {
+			System.out.println("too large");
+			minuteInput.setText("59");
+		} else if (Integer.parseInt(minuteInput.getText()) < 0) {
+			System.out.println("too small");
+			minuteInput.setText("0");
+		}
 	}
 	
 	public class MyTreeItem<T> extends TreeItem<T>{
