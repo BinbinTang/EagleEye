@@ -288,12 +288,12 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 						// Record current expanded path, such that it wont refresh after filter
 						if(currentDirID == newItem.getDirectory().getDirectoryID()){
-							MyTreeItem<Label> temp = newItem;
-							while(temp.getParent() != null){
-								temp.setExpanded(true);
-								temp = (MyTreeItem<Label>) temp.getParent();
+							MyTreeItem<Label> tempItem = newItem;
+							while(tempItem.getParent() != null){
+								tempItem.setExpanded(true);
+								tempItem = (MyTreeItem<Label>) tempItem.getParent();
 							}
-							temp.setExpanded(true);
+							tempItem.setExpanded(true);
 						}
 						this.addFiles(dir, newItem);
 						CopyTreeStructure.remove(dir);
@@ -554,9 +554,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		
 		for (String category : categoryList){
 			CheckBox categoryBox = new CheckBox(category);
-			categoryBox.setPrefHeight(30);
 			categoryBox.setSelected(true);
-			categoryBox.setStyle("-fx-font-size: 14;");
 			categoryBox.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
