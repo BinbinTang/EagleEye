@@ -440,19 +440,19 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	// Filters 
 	private ObservableList<String> filterResult(){
 
-		ObservableList<String> resultList = FXCollections.observableArrayList(); 
+		ObservableList<String> localResultList = FXCollections.observableArrayList(); 
 		
-        ArrayList<EagleFile> results = dbController.getFilteredFiles(filter);
+        ArrayList<EagleFile> dbFilteredResult = dbController.getFilteredFiles(filter);
         System.out.println("now: " + dbController.getDeviceID());
-        System.out.println("filtered result size: " + results.size());
+        System.out.println("filtered result size: " + dbFilteredResult.size());
         
-        for (EagleFile resultFile : results){
-        	String name = resultFile.getFileName();
-        	String ext = resultFile.getFileExt();
-        	resultList.add(name + "." + ext);
+        for (EagleFile file : dbFilteredResult){
+        	String name = file.getFileName();
+        	String ext = file.getFileExt();
+        	localResultList.add(name + "." + ext);
         }
         
-		return resultList;
+		return localResultList;
 	}
 
 	// Find whether a target is inside the tree of root, by recursion
