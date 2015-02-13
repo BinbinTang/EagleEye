@@ -36,7 +36,7 @@ public class DBQueryController implements DBController {
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllDevices());
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllDevicesQuery());
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
@@ -73,7 +73,7 @@ public class DBQueryController implements DBController {
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllDeviceNames());
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllDeviceNamesQuery());
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
@@ -119,7 +119,7 @@ public class DBQueryController implements DBController {
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllDirectories());
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllDirectoriesQuery());
 			stmt.setInt(1, deviceID);
 			
 			ResultSet rs = stmt.executeQuery();
@@ -160,7 +160,7 @@ public class DBQueryController implements DBController {
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllFiles());
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllFilesQuery());
 			stmt.setInt(1, deviceID);
 			
 			ResultSet rs = stmt.executeQuery();
@@ -219,7 +219,7 @@ public class DBQueryController implements DBController {
 		Connection conn = DBConnection.dbConnector();
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(queryMaker.getFilteredFiles(isKeywordPresent, filter));
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getFilteredFilesQuery(isKeywordPresent, filter));
 			stmt = setFieldsForFilter(stmt,isKeywordPresent,filter);
 			System.out.println("query is " + stmt.getMetaData());
 			
@@ -280,7 +280,7 @@ public class DBQueryController implements DBController {
 		
 		try {
 			
-			PreparedStatement stmt = conn.prepareStatement(queryMaker.getDeviceRoot());
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getDeviceRootQuery());
 			stmt.setInt(1, deviceID);
 			
 			ResultSet rs = stmt.executeQuery();

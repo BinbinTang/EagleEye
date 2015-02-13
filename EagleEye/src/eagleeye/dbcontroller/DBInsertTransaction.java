@@ -41,7 +41,7 @@ public class DBInsertTransaction {
 		try {
 			conn.setAutoCommit(false);
 			qstmt = conn.createStatement();
-			stmt = conn.prepareStatement(queryMaker.insertNewDevice());
+			stmt = conn.prepareStatement(queryMaker.getInsertNewDeviceQuery());
 			deviceID = controller.insertNewDevice(newDevice, stmt, qstmt);
 			System.out.println("Device insert success");
 			
@@ -49,7 +49,7 @@ public class DBInsertTransaction {
 			markerLower = controller.getDirectoryAutoIncrementMarker(stmt);
 			conn.commit();
 		
-			stmt = conn.prepareStatement(queryMaker.insertNewRootDirectory());
+			stmt = conn.prepareStatement(queryMaker.getInsertNewRootDirectoryQuery());
 			controller.insertNewRootDirectory(stmt);
 			System.out.println("Root Directory insert success");
 		
@@ -78,32 +78,32 @@ public class DBInsertTransaction {
 			try {
 
 				markerUpper = markerLower + listOfDirectory.size();
-				stmt = conn.prepareStatement(queryMaker.insertNewDirectory());
+				stmt = conn.prepareStatement(queryMaker.getInsertNewDirectoryQuery());
 				controller.insertNewDirectory(listOfDirectory, stmt);
 				conn.commit();
 				System.out.println("All Directories insert success");
 			
-				stmt = conn.prepareStatement(queryMaker.updateDirectoryRoute());
+				stmt = conn.prepareStatement(queryMaker.getUpdateDirectoryRouteQuery());
 				controller.updateDirectoryRoute(stmt, markerLower, markerUpper);
 				conn.commit();
 				System.out.println("Directories route success");
 						
-				stmt = conn.prepareStatement(queryMaker.insertNewExt());
+				stmt = conn.prepareStatement(queryMaker.getInsertNewExtQuery());
 				controller.insertNewFileExt(listOfFiles,stmt);
 				conn.commit();
 				System.out.println("All fileExt insert success");
 			
-				stmt = conn.prepareStatement(queryMaker.insertNewFile());
+				stmt = conn.prepareStatement(queryMaker.getInsertNewFileQuery());
 				controller.insertNewFile(listOfFiles, stmt);
 				conn.commit();
 				System.out.println("All Files insert success");
 							
-				stmt = conn.prepareStatement(queryMaker.updateFileExtID());
+				stmt = conn.prepareStatement(queryMaker.getUpdateFileExtIDQuery());
 				controller.updateFileExtID(stmt);
 				conn.commit();
 				System.out.println("All fileExtID updated");
 			
-				stmt = conn.prepareStatement(queryMaker.updateFileDirectoryID());
+				stmt = conn.prepareStatement(queryMaker.getUpdateFileDirectoryIDQuery());
 				controller.updateFileDirectoryID(stmt, markerLower, markerUpper);
 				conn.commit();
 				System.out.println("All Files' directoryID updated");

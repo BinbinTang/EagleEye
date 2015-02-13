@@ -9,26 +9,26 @@ import eagleeye.entities.Filter;
 
 public class DBQueries {
 
-	public String getAllDevices() {
+	public String getAllDevicesQuery() {
 		
 		String query = "SELECT * FROM Device";
 		return query;
 	}
 	
-	public String getAllDeviceNames() {
+	public String getAllDeviceNamesQuery() {
 		
 		String query = "SELECT DeviceName FROM Device";
 		return query;
 	}
 	
-	public String getAllDirectories() {
+	public String getAllDirectoriesQuery() {
 		
 		String query = "SELECT * FROM Directory WHERE DeviceID = ?";
 		return query;
 		
 	}
 	
-	public String getAllFiles() {
+	public String getAllFilesQuery() {
 		
 		String query = "SELECT FileID, FileName, File.DirectoryID, DirectoryName, FileExt,"
 					   +"FileExtID,File.DateCreated,File.DateAccessed,File.DateModified,"
@@ -43,7 +43,7 @@ public class DBQueries {
 		
 	}
 	
-	public String getFilteredFiles(boolean isKeywordPresent, EagleFilter filter) {
+	public String getFilteredFilesQuery(boolean isKeywordPresent, EagleFilter filter) {
 		
 		String query;
 		
@@ -136,7 +136,7 @@ public class DBQueries {
 		return query;
 	}
 	
-	public String getDeviceRoot () {
+	public String getDeviceRootQuery () {
 		
 		String query = "SELECT DeviceFolderPath FROM Device WHERE DeviceID = ?";
 		

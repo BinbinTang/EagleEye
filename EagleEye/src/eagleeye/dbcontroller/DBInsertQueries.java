@@ -9,7 +9,7 @@ public class DBInsertQueries {
 		return script;
 	}
 	
-	public String insertNewDevice() {
+	public String getInsertNewDeviceQuery() {
 		
 		String script = "INSERT INTO Device(DeviceName, DeviceOwner, ContentSize, DateCreated, LastViewedOn, DeviceFolderPath) "
 						+ "VALUES(?,?,?,datetime('now'),datetime('now'), ?)";
@@ -17,14 +17,14 @@ public class DBInsertQueries {
 		return script;
 	}
 	
-	public String insertNewRootDirectory() {
+	public String getInsertNewRootDirectoryQuery() {
 		
 		String script = "INSERT INTO Directory(DirectoryName, DeviceID, ParentObjectID, ObjectID) "
 						+ "VALUES (?,?,?,?)";
 		return script;
 	}
 	
-	public String insertNewDirectory(){
+	public String getInsertNewDirectoryQuery(){
 		
 		String script = "INSERT INTO Directory(DirectoryName, ObjectID, ParentObjectID, DeviceID, DateCreated, DateAccessed, DateModified, IsRecovered)"
 					 	+ "VALUES (?,?,?,?,?,?,?,?)";
@@ -32,7 +32,7 @@ public class DBInsertQueries {
 		return script;
 	}
 	
-	public String updateDirectoryRoute(){
+	public String getUpdateDirectoryRouteQuery(){
 		
 		String script = "UPDATE Directory Set ParentDirectoryID = (SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = Directory.ParentObjectID AND e.DeviceID = Directory.DeviceID AND e.DeviceID = ? AND ((e.DirectoryID > ? AND e.DirectoryID <= ?) OR e.DirectoryName ='root')) WHERE DeviceID = ? "
 						+ "AND Directory.ParentDirectoryID IS NULL";
@@ -40,7 +40,7 @@ public class DBInsertQueries {
 		return script;
 	}
 	
-	public String insertNewExt() {
+	public String getInsertNewExtQuery() {
 		
 		String script = "INSERT OR IGNORE INTO Extension(ExtName,ExtTypeID) "
 						+ "VALUES (?,?)";
@@ -48,7 +48,7 @@ public class DBInsertQueries {
 		return script;		
 	}
 	
-	public String insertNewFile(){
+	public String getInsertNewFileQuery(){
 				
 		String script = "INSERT INTO File(FileName,FileExt,DateCreated,DateAccessed,DateModified,IsModified,ContentType,IsRecovered,"
 						+"FilePath,ObjectID,ParentObjectID) "
@@ -57,14 +57,14 @@ public class DBInsertQueries {
 		return script;
 	}
 	
-	public String updateFileExtID() {
+	public String getUpdateFileExtIDQuery() {
 		
 		String script = "UPDATE File SET FileExtID = (Select ExtID FROM Extension WHERE File.FileExt = Extension.ExtName)";
 		
 		return script;
 	}
 	
-	public String updateFileDirectoryID() {
+	public String getUpdateFileDirectoryIDQuery() {
 		
 		String script = "UPDATE File SET DirectoryID = " +
 						"(SELECT e.DirectoryID FROM Directory e WHERE e.ObjectID = File.ParentObjectID AND e.DeviceID = ? AND e.DirectoryID > ? AND e.DirectoryID <= ?) " +
