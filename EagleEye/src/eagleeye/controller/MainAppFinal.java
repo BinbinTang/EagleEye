@@ -63,6 +63,7 @@ public class MainAppFinal extends Application {
         	//TODO: WRITE PROJECT FILE
             @Override
             public void handle(WindowEvent t) {
+            	System.out.println("exit");
                 Platform.exit();
                 System.exit(0);
             }

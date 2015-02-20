@@ -6,25 +6,36 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import eagleeye.api.dbcontroller.DBController;
+import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.projectmanager.ProjectReader;
 import eagleeye.projectmanager.ProjectWriter;
 import eagleeye.pluginmanager.PluginManager;
 
 public class ProjectManager {
 	PluginManager pm;
-	String projectPath;
-	String deviceName;
-	HashMap<String, List<List<String>>> markedItem;
+	DBController dbc;
 	
-	public ProjectManager(String path, String name)
-	{
-		projectPath = path;
-		deviceName = name;
+	
+	public ProjectManager(){
+		
 	}
-	
+	public void setPluginManager(PluginManager pm){
+		this.pm=pm;
+	}
+	public void setDBController(DBController dbc){
+		this.dbc = dbc;
+	}
 	public void writeProjectFile(){
+		System.out.println("collecting marked items");
+		Map<String, List<List<String>>> markedItem = pm.getAllPluginMarkedItems();
+		
 		System.out.println("writing marked items");
+		String projectPath = dbc.getDeviceRootPath(); //"D:\\MyFolder\\y4\\CS3283_MediaTech_Project\\code\\EagleEye\\EagleEye\\output\\PLUG";
+		System.out.println(projectPath);
+		String deviceName = "deviceName"; //TODO: add getDeviceName from dbcontroller
 		
 		ProjectWriter pw = new ProjectWriter(projectPath,deviceName);
 		pw.writeFile(markedItem);
@@ -35,15 +46,25 @@ public class ProjectManager {
 	}
 	public void readProjectFile(){
 		System.out.println("reading marked items");
+		String projectPath = dbc.getDeviceRootPath(); //"D:\\MyFolder\\y4\\CS3283_MediaTech_Project\\code\\EagleEye\\EagleEye\\output\\PLUG";
+		System.out.println(projectPath);
 		
 		ProjectReader pr = new ProjectReader(projectPath);
-		markedItem = pr.readFile();
+		Map<String, List<List<String>>> markedItems = pr.readFile();
+		System.out.println(markedItems.size());
+		pm.setAllPluginMarkedItems(markedItems);
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		System.out.println("marked items read "+dateFormat.format(date));
 	}
 	public static void main(String[] args){
-		ProjectManager projm = new ProjectManager("Path","DeviceName");
+		PluginManager pm = new PluginManager("PluginBinaries");
+		DBController dbc = new DBQueryController();
+		ProjectManager projm = new ProjectManager();
+		projm.setDBController(dbc);
+		projm.setPluginManager(pm);
+		
 		projm.writeProjectFile();
 		projm.readProjectFile();
 	}

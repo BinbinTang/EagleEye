@@ -100,11 +100,20 @@ public class PluginManager {
 		
 		Map<String, List<List<String>>> pluginsMarkedItems = new HashMap <String, List<List<String>>>();
 		for(Plugin p: plugins){
-			List<List<String>> markedItems = (List<List<String>>) p.getMarkedItems();
-			if(markedItems.size()!=0){
-				String []tokens = p.getClass().getName().split("\\.");
-				String pluginClassName = tokens[tokens.length-1];
-				pluginsMarkedItems.put(pluginClassName, markedItems);
+			
+			Object o = p.getMarkedItems();
+			if(o!=null){
+				try{
+					List<List<String>> markedItems = (List<List<String>>) o;
+					if(markedItems!=null && markedItems.size()!=0){
+						String []tokens = p.getClass().getName().split("\\.");
+						String pluginClassName = tokens[tokens.length-1];
+						pluginsMarkedItems.put(pluginClassName, markedItems);
+						System.out.println("collected: "+p.getName()+" "+markedItems.size()+" items");
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
 		return pluginsMarkedItems;
@@ -118,6 +127,7 @@ public class PluginManager {
 			List<List<String>> markedItems = pluginsMarkedItems.get(pluginClassName);
 			if(markedItems!=null){
 				p.setMarkedItems(markedItems);
+				System.out.println("distributed: "+p.getName()+" "+markedItems.size()+" items");
 			}
 		}
 

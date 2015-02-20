@@ -36,6 +36,7 @@ public class ProjectReader {
 		
 		
 		File fXmlFile = new File(filePath+File.separator+"markedFile.xml");
+		if(!fXmlFile.exists()) return markedItem;
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 		try {

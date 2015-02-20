@@ -75,6 +75,7 @@ import eagleeye.filesystem.format.FormatDescription;
 import eagleeye.model.RequestHandler;
 import eagleeye.model.UIRequestHandler;
 import eagleeye.pluginmanager.*;
+import eagleeye.projectmanager.ProjectManager;
 
 public class WorkBenchControllerFinal {	
 	
@@ -122,13 +123,16 @@ public class WorkBenchControllerFinal {
 	//plugin manager
 	private PluginManager pm;
 	
+	//project manager
+	private ProjectManager projm;
+	
 	private ProgressBar importProgressIndicator;
 	
 	/**
 	 * The constructor.
 	 */
 	public WorkBenchControllerFinal() {
-		pm = new PluginManager("PluginBinaries");
+		
 		functionList = new ArrayList<String>();
 	}
 
@@ -137,7 +141,13 @@ public class WorkBenchControllerFinal {
 	 */
 
 	@FXML
-	private void initialize() {		
+	private void initialize() {	
+		pm = new PluginManager("PluginBinaries");
+		dbController = new DBQueryController();
+		projm = new ProjectManager();
+		projm.setPluginManager(pm);
+		projm.setDBController(dbController);
+		
 		//add pluginsnames to functionList
 		List<String> plnames=pm.getGUIViewPluginNames();
 		System.out.println(plnames.size());
@@ -146,8 +156,8 @@ public class WorkBenchControllerFinal {
 			functionList.add(s);
 		}
 		
-		// Initialize DB
-		dbController = new DBQueryController();
+		
+		
 		
 		// Check device ID
 		if(dbController.getDeviceID() == -1){
@@ -240,6 +250,8 @@ public class WorkBenchControllerFinal {
 		exitClick.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+				System.out.println("on exit");
+				projm.writeProjectFile();
 				Platform.exit();
 				System.exit(0);
 			}
@@ -304,8 +316,12 @@ public class WorkBenchControllerFinal {
 			openMenu.getItems().add(newItem);
 			newItem.setOnAction(new EventHandler<ActionEvent>() {
 				@Override public void handle(ActionEvent e) {
+					if(currentCaseID!=-1){
+						projm.writeProjectFile();
+					}
 					currentCaseID = ID;
 	                refreshCase(ID);
+	                projm.readProjectFile();
 	            }
 			});
 		}

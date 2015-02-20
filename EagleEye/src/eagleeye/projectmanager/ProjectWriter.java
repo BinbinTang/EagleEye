@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,7 +28,7 @@ public class ProjectWriter {
 		deviceName = name;
 	}
 	
-	public void writeFile(HashMap<String, List<List<String>>> markedItem)
+	public void writeFile(Map<String, List<List<String>>> markedItem)
 	{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder;
