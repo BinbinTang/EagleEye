@@ -217,7 +217,13 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
 		popUpViews = new ArrayList<Plugin>();
-		markedFilesResult = Arrays.asList(Arrays.asList("DeviceID","FileID", "Name","Time"));
+		markedFilesResult = new ArrayList<List<String>>();
+		List<String> headers = new ArrayList<String>();
+		headers.add("DeviceID");
+		headers.add("FileID");
+		headers.add("Name");
+		headers.add("Time");
+		markedFilesResult.add(headers);
 		markedFilesCashe = new ArrayList<MyTreeItem>();
 		System.out.println("Folder Structure Plugin Loaded");
 	}
@@ -267,7 +273,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						CopyTreeStructure.remove(dir);
 						break;
 					}else{
-						System.out.println("not root");
+						//System.out.println("not root");
 					}
 
 					MyTreeItem<Label> newItem = new MyTreeItem<Label>(
@@ -279,11 +285,11 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					if (parent != null) {
 						targetParent = findItem(rootNode,parent.getDirectoryName());
 					} else {
-						System.out.println("Cannot find parent" + dir.getParentDirectory());
+						//System.out.println("Cannot find parent" + dir.getParentDirectory());
 					}
 
 					if (targetParent != null) {
-						System.out.println("parent found");
+						//System.out.println("parent found");
 						targetParent.getChildren().add(newItem);
 
 						// Record current expanded path, such that it wont refresh after filter
@@ -299,7 +305,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						CopyTreeStructure.remove(dir);
 						break;
 					} else {
-						System.out.println("cannot find parent");
+						//System.out.println("cannot find parent");
 					}
 				}
 				int endSize = CopyTreeStructure.size();
@@ -333,6 +339,10 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						}else{
 							item.getValue().setStyle(markedColor);
 							markedFilesCashe.add(item);
+						}
+						System.out.println("number of files marked = "+markedFilesCashe.size());
+						for(MyTreeItem i : markedFilesCashe){
+							System.out.println(i.file.getFileName()+" "+i.mark);
 						}
 					}else if (mouseEvent.getClickCount() == 2) {
 						// Check if it is a file, and open						
@@ -518,11 +528,13 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					break;
 					
 				}				
-
+				
 				for(List<String> i : markedFilesResult){
 					if((newItem.getFileEntity().getDeviceID()+"").equals(i.get(0)) && (newItem.getFileEntity().getFileID()+"").equals(i.get(1))){
-						markedFilesCashe.add(newItem);
+						System.out.println("["+getName()+"] mark:"+i.get(0)+" "+i.get(1));
 						newItem.setMark(true);
+						newItem.getValue().setStyle(markedColor);
+						markedFilesCashe.add(newItem);
 					}
 				}
 				
@@ -1047,10 +1059,24 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	@Override
 	public Object getMarkedItems() {
 		// TODO Auto-generated method stub
-		markedFilesResult = Arrays.asList(markedFilesResult.get(0));
+		List<String> header = new ArrayList<String>();
+		System.out.println(markedFilesResult.size());
+		for(String h : markedFilesResult.get(0)){
+			header.add(h);
+		}
+		markedFilesResult.clear();
+		markedFilesResult.add(header);
+		//markedFilesResult = Arrays.asList(markedFilesResult.get(0));
+		//System.out.println(markedFilesResult.getClass().toString());
 		for(MyTreeItem i:markedFilesCashe){
 			EagleFile file = i.getFileEntity();
-			markedFilesResult.add(Arrays.asList((file.getDeviceID()+""),(file.getFileID()+""),file.getFileName(),(""+file.getDateModified())));
+			List<String> mark = new ArrayList<String>();
+			mark.add(file.getDeviceID()+"");
+			mark.add(file.getFileID()+"");
+			mark.add(file.getFileName());
+			mark.add(""+file.getDateModified());
+			markedFilesResult.add(mark);
+			//markedFilesResult.add(Arrays.asList((file.getDeviceID()+""),(file.getFileID()+""),file.getFileName(),(""+file.getDateModified())));
 		}
 		return (Object)markedFilesResult;
 	}

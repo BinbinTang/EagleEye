@@ -214,7 +214,7 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	public Object getMarkedItems() {
 
 		List<List<String>> markedItems = new ArrayList<List<String>>();
-		if(markedPtIdx.size()==0) return markedItems;
+		if(markedPtIdx == null || markedPtIdx.size()==0) return markedItems;
 		
 		List<String> headers = new ArrayList<String>();
 		headers.add("Timestamp");
