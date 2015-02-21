@@ -367,7 +367,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			                commentInput.autosize();
 			                
 			                if(item.getValue().getTooltip() != null){
-			                	commentInput.setText(item.getValue().getText());
+			                	commentInput.setText(item.getValue().getTooltip().getText());
 			                }
 			                dialogVbox.getChildren().add(commentInputContainer);
 			                
@@ -380,7 +380,9 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			                	//TODO: WRITE PROJECT FILE
 			                    @Override
 			                    public void handle(WindowEvent t) {
-			                    	item.getValue().setTooltip(new Tooltip(commentInput.getText()));
+			                    	if(!commentInput.getText().equals("")){
+				                    	item.getValue().setTooltip(new Tooltip(commentInput.getText()));			                    		
+			                    	}
 			                    }
 			                });
 						}
@@ -575,7 +577,9 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 						System.out.println("["+getName()+"] mark:"+i.get(0)+" "+i.get(1));
 						newItem.setMark(true);
 						newItem.getValue().setStyle(markedColor);
-						newItem.getValue().setTooltip(new Tooltip(i.get(i.size()-1)));
+						if(!i.get(i.size()-1).equals("")){
+							newItem.getValue().setTooltip(new Tooltip(i.get(i.size()-1)));
+						}
 						markedFilesCashe.add(newItem);
 					}
 				}
@@ -1117,7 +1121,11 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			mark.add(file.getFileID()+"");
 			mark.add(file.getFileName());
 			mark.add(""+file.getDateModified());
-			mark.add(treeItem.getValue().getTooltip().getText());
+			if(treeItem.getValue().getTooltip()!=null){
+				mark.add(treeItem.getValue().getTooltip().getText());
+			}else{
+				mark.add("");
+			}
 			markedFilesResult.add(mark);
 			//markedFilesResult.add(Arrays.asList((file.getDeviceID()+""),(file.getFileID()+""),file.getFileName(),(""+file.getDateModified())));
 		}
