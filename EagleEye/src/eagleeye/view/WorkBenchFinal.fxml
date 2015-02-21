@@ -30,7 +30,7 @@
 											<items>
 												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New Device Folder" />
                               <Menu fx:id="openMenu" mnemonicParsing="false" text="Open Device" />
-												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Exit" />
+												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Save &amp; Exit" />
 											</items>
 										</Menu>
 										<Menu fx:id="analysisMenu" mnemonicParsing="false" style="-fx-font-size: 18;" text="Tools" />

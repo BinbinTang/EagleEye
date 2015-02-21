@@ -77,8 +77,7 @@ import eagleeye.model.UIRequestHandler;
 import eagleeye.pluginmanager.*;
 import eagleeye.projectmanager.ProjectManager;
 
-public class WorkBenchControllerFinal {	
-	
+public class WorkBenchControllerFinal {		
 	// DataBase
 	private DBController dbController;
 	
