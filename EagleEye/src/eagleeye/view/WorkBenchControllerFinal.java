@@ -63,7 +63,6 @@ import javafx.stage.WindowEvent;
 import eagleeye.api.dbcontroller.DBController;
 import eagleeye.api.entities.EagleDevice;
 import eagleeye.api.entities.EagleFile;
-import eagleeye.controller.MainAppFinal;
 import eagleeye.datacarving.unpack.FileSystemFormatDescriptorService;
 import eagleeye.datacarving.unpack.UnpackDirectoryService;
 import eagleeye.dbcontroller.DBInsertTransaction;
@@ -72,8 +71,9 @@ import eagleeye.entities.Device;
 import eagleeye.entities.FileEntity;
 //import eagleeye.fileReader.fileReader;
 import eagleeye.filesystem.format.FormatDescription;
-import eagleeye.model.RequestHandler;
-import eagleeye.model.UIRequestHandler;
+import eagleeye.main.MainApp;
+//import eagleeye.model.RequestHandler;
+//import eagleeye.model.UIRequestHandler;
 import eagleeye.pluginmanager.*;
 import eagleeye.projectmanager.ProjectManager;
 
@@ -117,7 +117,7 @@ public class WorkBenchControllerFinal {
 	@FXML private Label progressLabel;
 
 	// Reference to the main application.
-	private MainAppFinal mainAppFinal;
+	private MainApp mainAppFinal;
 		
 	//plugin manager
 	private PluginManager pm;
@@ -275,10 +275,11 @@ public class WorkBenchControllerFinal {
 	 * Methods of workbench
 	 */
 	//retrieve device list from db through RequestHandler
-	private ArrayList<Device> getExisitingDevices(){
-		ArrayList<Device> DeviceList;
-		RequestHandler rh= new UIRequestHandler();
-		DeviceList = rh.getExistingDevices();
+	private ArrayList<EagleDevice> getExisitingDevices(){
+		ArrayList<EagleDevice> DeviceList;
+		//RequestHandler rh= new UIRequestHandler();
+		
+		DeviceList = dbController.getAllDevices();
 		return DeviceList;
 		
 	}
@@ -333,7 +334,7 @@ public class WorkBenchControllerFinal {
 
 	// private void handleStartDateClick
 
-	public void setMainApp(MainAppFinal mainAppFinal) {
+	public void setMainApp(MainApp mainAppFinal) {
 		this.mainAppFinal = mainAppFinal;
 
 		// obtain current case path

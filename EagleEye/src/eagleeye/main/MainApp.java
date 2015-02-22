@@ -1,4 +1,4 @@
-package eagleeye.controller;
+package eagleeye.main;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class MainAppFinal extends Application {
+public class MainApp extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
@@ -43,7 +43,7 @@ public class MainAppFinal extends Application {
         
         try {
             // Load the root layout from the fxml file
-            FXMLLoader mainLoader = new FXMLLoader(MainAppFinal.class.getResource("../view/WorkBenchRootLayout.fxml"));
+            FXMLLoader mainLoader = new FXMLLoader(MainApp.class.getResource("../view/WorkBenchRootLayout.fxml"));
             rootLayout = (BorderPane) mainLoader.load();
             final double rem = Math.rint(new Text(" ").getLayoutBounds().getHeight());
             Scene scene = new Scene(rootLayout, 50 * rem, 40 * rem);
@@ -87,7 +87,7 @@ public class MainAppFinal extends Application {
     public void showWorkBench() {
         try {
             // Load the fxml file and set into the center of the main layout
-            FXMLLoader loader = new FXMLLoader(MainAppFinal.class.getResource("../view/WorkBenchFinal.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("../view/WorkBenchFinal.fxml"));
             AnchorPane overviewPage = (AnchorPane) loader.load();
             rootLayout.setCenter(overviewPage);
             WorkBenchControllerFinal controller = loader.getController();
@@ -102,7 +102,7 @@ public class MainAppFinal extends Application {
     public Device showNewDeviceDialogDialog() {
     	  try {
     		  
-    	    FXMLLoader loader = new FXMLLoader(MainAppFinal.class.getResource("../view/NewDeviceDialog.fxml"));
+    	    FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("../view/NewDeviceDialog.fxml"));
     	    AnchorPane page = (AnchorPane) loader.load();
     	    Stage dialogStage = new Stage();
     	    dialogStage.setTitle("Import a New Device Image");
