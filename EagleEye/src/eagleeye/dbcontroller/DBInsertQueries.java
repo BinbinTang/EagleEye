@@ -82,5 +82,19 @@ public class DBInsertQueries {
 		return script;
 		
 	}
+	
+	public String getInsertLocationEventsQuery() {
+		
+		String script = "INSERT INTO LocationEvents(Longitude, Latitude, Details, DeviceID) VALUES (?,?,?,?)";
+		
+		return script;
+	}
+	
+	public String getInsertTimeEventsQuery() {
+		
+		String script = "INSERT INTO TimeEvents(Time, Details, DeviceID) VALUES (?,?,?)";
+		
+		return script;
+	}
 }
 
