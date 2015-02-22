@@ -8,9 +8,9 @@ import eagleeye.api.entities.EagleFile;
 import eagleeye.entities.Device;
 import eagleeye.entities.FileEntity;
 import eagleeye.entities.LocationEvent;
-import eagleeye.entities.LocationEvents;
+//import eagleeye.entities.LocationEvents;
 import eagleeye.entities.TimeEvent;
-import eagleeye.entities.TimeEvents;
+//import eagleeye.entities.TimeEvents;
 
 public class DBInsertController {
 
