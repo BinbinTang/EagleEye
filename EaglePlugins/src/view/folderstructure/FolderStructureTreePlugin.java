@@ -220,15 +220,6 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
 		popUpViews = new ArrayList<Plugin>();
-		markedFilesResult = new ArrayList<List<String>>();
-		List<String> headers = new ArrayList<String>();
-		headers.add("DeviceID");
-		headers.add("FileID");
-		headers.add("Name");
-		headers.add("Time");
-		headers.add("Comment");
-		markedFilesResult.add(headers);
-		markedFilesCashe = new ArrayList<MyTreeItem>();
 		System.out.println("Folder Structure Plugin Loaded");
 	}
 	
@@ -414,63 +405,6 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 								    
 								}
 							}
-							
-							/*
-							Stage stage = new Stage();
-							double WindowWidth = 600;
-							double WindowHeight = 400;
-							double hBorder = 600-584.0;
-							double vBorder = 400-362.0;	//TODO: automate to be platform-independent
-							stage.setWidth(WindowWidth);
-						    stage.setHeight(WindowHeight);
-						    
-							FileFormatIdentifier fi = new FileFormatIdentifier();
-							if(fi.checkFormat(filePath)==FileFormatIdentifier.Format.IMAGE){
-								Plugin pl = null;
-								for(Plugin p: readers){
-									if(p.getName().equals("Image View")){
-										pl = p;
-									};
-								}
-								
-								//set plugin input params
-								List params = new ArrayList();
-								params.add(filePath);
-								params.add(WindowWidth-hBorder);
-								params.add(WindowHeight-vBorder);
-								pl.setParameter (params);
-								
-								//get display content
-								Node pc = (Node)pl.getResult();
-								
-								//put content in new window
-								StackPane sp = new StackPane();
-								sp.getChildren().add(pc);
-								stage.setScene(new Scene(sp));
-							    stage.setTitle(new File(filePath).getName());
-							    stage.show();						
-							}else if(fi.checkFormat(filePath)==FileFormatIdentifier.Format.TEXT){
-								Plugin pl = null;
-								for(Plugin p: readers){
-									if(p.getName().equals("Text View")){
-										pl = p;
-									};
-								}
-								//set plugin input params
-								List params = new ArrayList();
-								params.add(filePath);
-								pl.setParameter (params);
-								
-								//get display content
-								Node pc = (Node)pl.getResult();
-								
-								//put content in new window
-								ScrollPane sp = new ScrollPane();
-								sp.setContent(pc);
-								stage.setScene(new Scene(sp));
-							    stage.setTitle(new File(filePath).getName());
-							    stage.show();						
-							}	*/
 						}	
 					}
 				}
@@ -1104,16 +1038,17 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	@Override
 	public Object getMarkedItems() {
-		// TODO Auto-generated method stub
-		List<String> header = new ArrayList<String>();
-		System.out.println(markedFilesResult.size());
-		for(String h : markedFilesResult.get(0)){
-			header.add(h);
-		}
-		markedFilesResult.clear();
-		markedFilesResult.add(header);
-		//markedFilesResult = Arrays.asList(markedFilesResult.get(0));
-		//System.out.println(markedFilesResult.getClass().toString());
+		if(markedFilesCashe.size()==0) return null;
+		
+		markedFilesResult = new ArrayList<List<String>>();
+		List<String> headers = new ArrayList<String>();
+		headers.add("DeviceID");
+		headers.add("FileID");
+		headers.add("Name");
+		headers.add("Time");
+		headers.add("Comment");
+		markedFilesResult.add(headers);
+		
 		for(MyTreeItem<Label> treeItem:markedFilesCashe){
 			EagleFile file = treeItem.getFileEntity();
 			List<String> mark = new ArrayList<String>();
@@ -1133,9 +1068,16 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	}
 
 	@Override
-	public void setMarkedItems(Object arg0) {
-		// TODO Auto-generated method stub
-		markedFilesResult = (List<List<String>>) arg0;
+	public void setMarkedItems(Object items) {
+			markedFilesResult = new ArrayList<List<String>>();
+			markedFilesCashe = new ArrayList<MyTreeItem>();
+			if(items!=null){
+				System.out.println(markedFilesResult.getClass().getName()+ " vs "+items.getClass().getName());
+				if(items.getClass().equals(markedFilesResult.getClass()))
+					markedFilesResult = (List<List<String>>) items;
+			}
+				
+
 	}
 
 }

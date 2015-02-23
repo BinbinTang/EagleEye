@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -24,29 +25,36 @@ import org.xml.sax.SAXException;
 public class ProjectReader {
 	
 	private String filePath;
-	private HashMap<String, List<List<String>>> markedItem;
+	private int deviceID;
+	private Map<String, List<List<String>>> markedItem;
 	
 	public ProjectReader(String path)
 	{
 		filePath = path;
+		deviceID = -1;
 		markedItem = new HashMap<String, List<List<String>>>();
 	}
 	
-	public HashMap<String, List<List<String>>> readFile() {
+	public Project readFile() {
 		
 		
-		File fXmlFile = new File(filePath+File.separator+"markedFile.xml");
-		if(!fXmlFile.exists()) return markedItem;
+		//File fXmlFile = new File(filePath+File.separator+"markedFile.xml");
+		Project proj = null;
+		File fXmlFile = new File(filePath);
+		if(!fXmlFile.exists()) return proj;
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
 			doc.getDocumentElement().normalize();
+			Node root = doc.getChildNodes().item(0);
 			
-			NodeList nl = doc.getElementsByTagName("Plugin-Name");
+			readDeviceID(root); 
+			
 			if (doc.hasChildNodes())
-				executeRootNodes(doc.getChildNodes().item(0));
+				executeRootNodes(root);
+			proj = new Project(filePath, deviceID, markedItem);
 			
 		} catch (ParserConfigurationException e1) {
 			// TODO Auto-generated catch block
@@ -60,9 +68,13 @@ public class ProjectReader {
 		}
 		
 		
-		return markedItem;
+		return proj;
 	}
-	
+	public void readDeviceID(Node root){
+		String s = ((Element) root).getAttribute("Device-Name");
+		//System.out.println("[ProjectReader] Device ID = "+s);
+		deviceID = Integer.parseInt(s);
+	}
 	public void executeRootNodes(Node root)
 	{
 		NodeList nl = root.getChildNodes();
@@ -118,10 +130,12 @@ public class ProjectReader {
 		return fileContent;
 	}
 	
+
 	public static void main(String[] args)
 	{
-		ProjectReader reader = new ProjectReader("/Users/BinbinTang/Desktop");
-		HashMap<String, List<List<String>>> markedItem = reader.readFile();
+		ProjectReader reader = new ProjectReader("output/PLUG/markedFile.xml");
+		Project proj = reader.readFile();
+		Map<String, List<List<String>>> markedItem = proj.getMarkedItems();
 		
 		Iterator<String> iter = markedItem.keySet().iterator(); 
         while (iter.hasNext()) {  

@@ -109,7 +109,7 @@ public class PluginManager {
 						String []tokens = p.getClass().getName().split("\\.");
 						String pluginClassName = tokens[tokens.length-1];
 						pluginsMarkedItems.put(pluginClassName, markedItems);
-						System.out.println("collected: "+p.getName()+" "+markedItems.size()+" items");
+						System.out.println("[Plugin Manager] collected: "+p.getName()+" "+markedItems.size()+" item(s)");
 					}
 				}catch(Exception e){
 					e.printStackTrace();
@@ -124,10 +124,14 @@ public class PluginManager {
 		for(Plugin p: plugins){
 			String []tokens = p.getClass().getName().split("\\.");
 			String pluginClassName = tokens[tokens.length-1];
-			List<List<String>> markedItems = pluginsMarkedItems.get(pluginClassName);
+			List<List<String>> markedItems = null;
+			if(pluginsMarkedItems!=null){
+				markedItems = pluginsMarkedItems.get(pluginClassName);
+			}
+			p.setMarkedItems(markedItems);
+			
 			if(markedItems!=null){
-				p.setMarkedItems(markedItems);
-				System.out.println("distributed: "+p.getName()+" "+markedItems.size()+" items");
+				System.out.println("[Plugin Manager] distributed: "+p.getName()+" "+markedItems.size()+" items");
 			}
 		}
 

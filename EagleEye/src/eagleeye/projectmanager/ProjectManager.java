@@ -15,57 +15,102 @@ import eagleeye.projectmanager.ProjectWriter;
 import eagleeye.pluginmanager.PluginManager;
 
 public class ProjectManager {
-	PluginManager pm;
-	DBController dbc;
-	
+
+	Project openedProject;
 	
 	public ProjectManager(){
-		
+		openedProject = null;
 	}
-	public void setPluginManager(PluginManager pm){
-		this.pm=pm;
+	
+	public void setProject(Project p){
+		openedProject = p;
 	}
-	public void setDBController(DBController dbc){
-		this.dbc = dbc;
+	public Project getProject(){
+		return openedProject;
 	}
-	public void writeProjectFile(){
-		System.out.println("collecting marked items");
-		Map<String, List<List<String>>> markedItem = pm.getAllPluginMarkedItems();
+	public void writeProjectFile(String path, Map<String, List<List<String>>> markedItems){
+		if(openedProject == null){
+			System.out.println("[Project Manager] no opened project");
+			return;
+		}
 		
-		System.out.println("writing marked items");
-		String projectPath = dbc.getDeviceRootPath(); //"D:\\MyFolder\\y4\\CS3283_MediaTech_Project\\code\\EagleEye\\EagleEye\\output\\PLUG";
-		System.out.println(projectPath);
-		String deviceName = "deviceName"; //TODO: add getDeviceName from dbcontroller
+		openedProject.setMarkedItems(markedItems);
 		
-		ProjectWriter pw = new ProjectWriter(projectPath,deviceName);
-		pw.writeFile(markedItem);
+		System.out.println("[Project Manager] writing project ... ");
 		
+		String projectPath; 
+		if(path==null){
+			projectPath = openedProject.getProjectPath();
+		}else{
+			projectPath = path;
+		}
+		
+		String deviceID = ""+openedProject.getDeviceID(); 
+		
+		ProjectWriter pw = new ProjectWriter(projectPath,deviceID);
+		pw.writeFile(openedProject.getMarkedItems());
+		
+		System.out.println(openedProject);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
-		System.out.println("marked items written "+dateFormat.format(date));
+		System.out.println("[Project Manager] project written successfully "+dateFormat.format(date));
 	}
-	public void readProjectFile(){
-		System.out.println("reading marked items");
-		String projectPath = dbc.getDeviceRootPath(); //"D:\\MyFolder\\y4\\CS3283_MediaTech_Project\\code\\EagleEye\\EagleEye\\output\\PLUG";
-		System.out.println(projectPath);
+	public Project readProjectFile(String path){
 		
-		ProjectReader pr = new ProjectReader(projectPath);
-		Map<String, List<List<String>>> markedItems = pr.readFile();
-		System.out.println(markedItems.size());
-		pm.setAllPluginMarkedItems(markedItems);
+		System.out.println("[Project Manager] reading project ...");
+		ProjectReader pr = new ProjectReader(path);
+		openedProject = pr.readFile();
 		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Date date = new Date();
-		System.out.println("marked items read "+dateFormat.format(date));
+		
+		if(openedProject==null){
+			System.out.println("[Project Manager] FAILED project read");
+		}else{
+			System.out.println(openedProject);
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			System.out.println("[Project Manager] project read successfully "+dateFormat.format(date));
+		}
+		
+		return openedProject;
 	}
 	public static void main(String[] args){
-		PluginManager pm = new PluginManager("PluginBinaries");
-		DBController dbc = new DBQueryController();
+
 		ProjectManager projm = new ProjectManager();
-		projm.setDBController(dbc);
-		projm.setPluginManager(pm);
 		
-		projm.writeProjectFile();
-		projm.readProjectFile();
+		
+		
+		projm.readProjectFile("output/PLUG/markedFile.xml");
+		
+		HashMap<String, List<List<String>>> markedItem = new HashMap<String, List<List<String>>> ();
+		List<String> attributes = new ArrayList<String>();
+		attributes.add("Name");
+		attributes.add("Content");
+		attributes.add("FileMarked");
+		
+		List<String> file1 = new ArrayList<String>();
+		file1.add("SMS");
+		file1.add("Text");
+		file1.add("Yes");
+		
+		List<String> file2 = new ArrayList<String>();
+		file2.add("Call");
+		file2.add("Number");
+		file2.add("Yes");
+		
+		List<List<String>> plugin1 = new ArrayList<List<String>> ();
+		plugin1.add(attributes);
+		plugin1.add(file1);
+		plugin1.add(file2);
+		
+		List<List<String>> plugin2 = new ArrayList<List<String>> ();
+		plugin2.add(attributes);
+		plugin2.add(file1);
+		plugin2.add(file2);
+		
+		markedItem.put("Notes", plugin1);
+		markedItem.put("Notes2", plugin2);
+		
+		projm.writeProjectFile("output/test.xml",markedItem);
+		
 	}
 }

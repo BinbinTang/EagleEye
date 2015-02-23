@@ -48,7 +48,7 @@ public class ProjectWriter {
 	        
 	        Transformer transformer = TransformerFactory.newInstance().newTransformer(); 
 	        DOMSource source = new DOMSource(doc);
-	        StreamResult result = new StreamResult(new File(filePath+File.separator+"markedFile.xml"));
+	        StreamResult result = new StreamResult(new File(filePath));
 	        transformer.transform(source, result);
 	        
 	    } catch (Exception e) {
@@ -88,7 +88,7 @@ public class ProjectWriter {
 	
 	public static void main(String[] args)
 	{
-		ProjectWriter pw = new ProjectWriter("/Users/BinbinTang/Desktop","First");
+		ProjectWriter pw = new ProjectWriter("/Users/BinbinTang/Desktop/result.xml","First");
 		HashMap<String, List<List<String>>> markedItem = new HashMap<String, List<List<String>>> ();
 		List<String> attributes = new ArrayList<String>();
 		attributes.add("Name");

@@ -23,6 +23,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import eagleeye.api.dbcontroller.DBController;
 import eagleeye.api.entities.EagleDevice;
@@ -32,6 +33,7 @@ import eagleeye.dbcontroller.DBQueryController;
 import eagleeye.entities.Device;
 import eagleeye.main.MainApp;
 import eagleeye.pluginmanager.*;
+import eagleeye.projectmanager.Project;
 import eagleeye.projectmanager.ProjectManager;
 
 public class WorkBenchControllerFinal {		
@@ -49,6 +51,7 @@ public class WorkBenchControllerFinal {
 	private int currentCaseID = -1;
 	private int currentDirID = 0;
 	private String currentDir = "";	
+	private Project currentProject = null;
 	
 	@FXML
 	private ScrollPane MainResultPane;	
@@ -57,12 +60,14 @@ public class WorkBenchControllerFinal {
 
 	// Menubar
 	ArrayList<String> functionList;
+	@FXML MenuItem openProject;
+	@FXML MenuItem saveProject;
+	@FXML MenuItem saveAsProject;
+	
 	@FXML
-	private MenuItem newClick;
+	private MenuItem newDevice;
 	@FXML
-	private Menu openMenu;
-	@FXML
-	private MenuItem exitClick;
+	private Menu existDeviceMenu;
 	@FXML 
 	private Menu analysisMenu;
 	
@@ -101,14 +106,11 @@ public class WorkBenchControllerFinal {
 		pm = new PluginManager("PluginBinaries");
 		dbController = new DBQueryController();
 		projm = new ProjectManager();
-		projm.setPluginManager(pm);
-		projm.setDBController(dbController);
 		
 		//add pluginsnames to functionList
 		List<String> plnames=pm.getGUIViewPluginNames();
-		System.out.println(plnames.size());
 		for(String s : plnames){
-			System.out.println("PLUG: "+ s);
+			System.out.println("TOOL: "+ s);
 			functionList.add(s);
 		}
 		
@@ -183,9 +185,72 @@ public class WorkBenchControllerFinal {
 				}
 			});
 		}
-		// menubar new/open device 
+		// menu bar
+		//open Project
+		openProject.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				
+				FileChooser projFileChooser = new FileChooser();
+				projFileChooser.setTitle("Select Project File");
+				projFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+				File projFile = projFileChooser.showOpenDialog(null);
+
+				if(projFile!=null){
+					//TODO: read proj file
+					System.out.println(projFile.getName());
+					currentProject = projm.readProjectFile(projFile.getAbsolutePath());
+					refreshCase(currentProject.getDeviceID());
+					pm.setAllPluginMarkedItems(currentProject.getMarkedItems());
+					
+				}
+				else
+					System.out.println("No project file chosen");
+			}
+		});
+
+		//save Project
+		saveProject.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Project p = projm.getProject();
+				if(p.getProjectPath()==null){
+					FileChooser projFileChooser = new FileChooser();
+					projFileChooser.setTitle("Save Project File As");
+					projFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+					File projFile = projFileChooser.showSaveDialog(null);
+					
+					if(projFile!=null){
+						projm.writeProjectFile(projFile.getAbsolutePath(),pm.getAllPluginMarkedItems());
+					}else{
+						System.out.println("no save file path specified");
+					}
+				}else{
+					projm.writeProjectFile(null,pm.getAllPluginMarkedItems());
+				}
+			}
+		});
+		//save as Project
+		saveAsProject.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				
+				FileChooser projFileChooser = new FileChooser();
+				projFileChooser.setTitle("Save Project File As");
+				projFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+				File projFile = projFileChooser.showSaveDialog(null);
+				
+				if(projFile!=null){
+					projm.writeProjectFile(projFile.getAbsolutePath(),pm.getAllPluginMarkedItems());
+				}else{
+					System.out.println("no save file path specified");
+				}
+				
+			}
+		});
+		
 		// new device
-		newClick.setOnAction(new EventHandler<ActionEvent>() {
+		newDevice.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				FileChooser fileChooser = new FileChooser();
@@ -197,21 +262,11 @@ public class WorkBenchControllerFinal {
 			}
 		});
 
-		newClick.setOnAction(this::handleNewDirectory);
+		newDevice.setOnAction(this::handleNewDirectory);
 		
 		// open
 		refreshDeviceList();
 
-		// exit
-		exitClick.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				System.out.println("on exit");
-				projm.writeProjectFile();
-				Platform.exit();
-				System.exit(0);
-			}
-		});
 	}
 
 	/*
@@ -247,6 +302,7 @@ public class WorkBenchControllerFinal {
 	
 	// Refresh Case that Loaded in View
 	private void refreshCase(int deviceID){
+		System.out.println("refreshCase "+deviceID);
 		//dbController = new DBQueryController();
 		if(functionHBox.getChildren().size() != 0){
 			Label noDevice = new Label("No function has been chosen.");
@@ -266,19 +322,20 @@ public class WorkBenchControllerFinal {
 		System.out.println("refreshDeviceList");
 		//dbController = new DBQueryController();
 		ArrayList<EagleDevice> devices = dbController.getAllDevices();
-		openMenu.getItems().clear();
+		existDeviceMenu.getItems().clear();
 		for (EagleDevice device : devices){
 			int ID = device.getDeviceID();
 			MenuItem newItem = new MenuItem(device.getDeviceName() + " [" + device.getDeviceOwner() + "]");
-			openMenu.getItems().add(newItem);
+			existDeviceMenu.getItems().add(newItem);
 			newItem.setOnAction(new EventHandler<ActionEvent>() {
 				@Override public void handle(ActionEvent e) {
-					if(currentCaseID!=-1){
-						projm.writeProjectFile();
-					}
 					currentCaseID = ID;
-	                refreshCase(ID);
-	                projm.readProjectFile();
+					refreshCase(currentCaseID);
+					
+					Project p = new Project(null, currentCaseID, null);
+					projm.setProject(p);
+					pm.setAllPluginMarkedItems(null);
+
 	            }
 			});
 		}

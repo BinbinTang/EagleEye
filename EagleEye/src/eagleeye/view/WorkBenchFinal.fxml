@@ -28,9 +28,15 @@
 									<menus>
 										<Menu mnemonicParsing="false" style="-fx-font-size: 18;" text="Device">
 											<items>
-												<MenuItem fx:id="newClick" mnemonicParsing="false" text="New Device Folder" />
-                              <Menu fx:id="openMenu" mnemonicParsing="false" text="Open Device" />
-												<MenuItem fx:id="exitClick" mnemonicParsing="false" text="Save &amp; Exit" />
+												<Menu fx:id="newProject" mnemonicParsing="false" text="New Project">
+													<items>
+														<MenuItem fx:id="newDevice" mnemonicParsing="false" text="New Device" />
+														<Menu fx:id="existDeviceMenu" mnemonicParsing="false" text="Existing Device" />
+													</items>
+												</Menu>
+												<MenuItem fx:id="openProject" mnemonicParsing="false" text="Open Project" />
+												<MenuItem fx:id="saveProject" mnemonicParsing="false" text="Save" />
+												<MenuItem fx:id="saveAsProject" mnemonicParsing="false" text="Save as" />
 											</items>
 										</Menu>
 										<Menu fx:id="analysisMenu" mnemonicParsing="false" style="-fx-font-size: 18;" text="Tools" />
