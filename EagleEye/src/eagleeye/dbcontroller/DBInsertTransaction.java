@@ -148,63 +148,35 @@ public class DBInsertTransaction {
 		
 	}
 	
-	public ArrayList<LocationEvent> insertLocationEvents (ArrayList<LocationEvent> locationEventList) {
+	public void insertNewEvents(List<Event> eventsList) {
 		
 		Connection conn = DBConnection.dbConnector();
 		PreparedStatement stmt = null;
-		Statement qstmt = null;
-		int locationEventID = -1;
 		
 		try {
-		
-			qstmt = conn.createStatement();
-			stmt = conn.prepareStatement(queryMaker.getInsertLocationEventsQuery());
 			
-			for(LocationEvent locationEvent : locationEventList) {
+			conn.setAutoCommit(false);
+			stmt = conn.prepareStatement(queryMaker.getInsertEventsQuery());
+			controller.insertNewEvent(stmt, eventsList);
 			
-				locationEventID = controller.insertLocationEvent(stmt, qstmt, locationEvent);
-				
-				locationEvent.setEventID(locationEventID);
-				
-			}
+			conn.commit();
+
 		} catch (Exception e) {
 			
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-		}
 		
-		return locationEventList;
-				
+			try {
+				conn.rollback();
+				conn.close();
+			
+			} catch (SQLException e2) {
+			
+				System.out.println("conn Rollback Failed");
+			}
+		}
 	}
 	
-	public ArrayList<TimeEvent> insertTimeEvents (ArrayList<TimeEvent> timeEventList) {
-		
-		Connection conn = DBConnection.dbConnector();
-		PreparedStatement stmt = null;
-		Statement qstmt = null;
-		int timeEventID = -1;
-		
-		try {
-		
-			qstmt = conn.createStatement();
-			stmt = conn.prepareStatement(queryMaker.getInsertTimeEventsQuery());
-			
-			for(TimeEvent timeEvent : timeEventList) {
-			
-				timeEventID = controller.insertTimeEvent(stmt, qstmt, timeEvent);
-				
-				timeEvent.setEventID(timeEventID);
-				
-			}
-		} catch (Exception e) {
-			
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-		
-		return timeEventList;
-				
-	}
 	
 	//Helper Methods
 	public void separateFilesAndDirectory(List<EagleFile> FilesList) {

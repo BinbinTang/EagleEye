@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 
 
+import java.util.List;
+
 import eagleeye.api.entities.EagleFilter;
 import eagleeye.entities.Filter;
+import eagleeye.entities.Event;
 
 public class DBQueries {
 
@@ -143,4 +146,42 @@ public class DBQueries {
 		return query;
 		
 	}
+	
+	//Getting Query Scripts for Event
+	
+	public String getAllEventsQuery() {
+		
+		String query = "SELECT * FROM Event WHERE DeviceID = ?";
+		
+		return query;
+	}
+	
+	public String getAllEventsWithTimeRangeQuery() {
+		
+		String query = "SELECT * FROM Event WHERE DeviceID = ? AND StartTime >= ? AND EndTime <= ?";
+		
+		return query;
+	}
+	
+	public String getEventsByPluginNameQuery() {
+		
+		String query = "SELECT * FROM Event WHERE DeviceID = ? AND PluginName LIKE ?";
+		
+		return query;
+	}
+	
+	public String getEventsByPluginNameWithTimeRangeQuery() {
+		
+		String query = "SELECT * FROM Event WHERE DeviceID = ? AND PluginName LIKE ? AND StartTime >= ? AND EndTime <= ?";
+		
+		return query;
+	}
+	
+	public String getIsAnalyzedEventPresentQuery() {
+		
+		String query = "SELECT COUNT(*) FROM Event WHERE DeviceID = ? AND PluginName LIKE ?";
+		
+		return query;
+	}
+	
 }
