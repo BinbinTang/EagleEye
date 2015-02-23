@@ -3,8 +3,10 @@ package eagleeye.dbcontroller;
 import eagleeye.entities.*;
 import eagleeye.api.dbcontroller.*;
 import eagleeye.api.entities.*;
+
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DBQueryController implements DBController {
 
@@ -305,6 +307,204 @@ public class DBQueryController implements DBController {
 		}
 		
 		return deviceRootPath;
+		
+	}
+	
+	//EVENTS QUERY SECTION
+	
+	public List<Event> getAllEvents(int deviceID) {
+		
+		List<Event> eventsList = new ArrayList<Event>();
+		Connection conn = DBConnection.dbConnector();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllEventsQuery());
+			stmt.setInt(1, deviceID);
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				Event newEvent = new Event();
+				newEvent.setEventID(rs.getInt("EventID"));
+				newEvent.setPluginName(rs.getString("PluginName"));
+				newEvent.setStartTime(rs.getString("StartTime"));
+				newEvent.setEndTime(rs.getString("EndTime"));
+				newEvent.setDetails(rs.getString("Details"));
+				newEvent.setDeviceID(rs.getInt("DeviceID"));
+				
+				eventsList.add(newEvent);
+			}
+		
+			conn.close();
+		
+		} catch (Exception e) {
+			
+			System.out.println("Query Failed");
+			System.out.println(e.getMessage());
+			try {
+				conn.close();
+			} catch (Exception e2) {
+				
+			}
+		}	
+		
+		return eventsList;
+	}
+	
+	public List<Event> getAllEventsWithTimeRange(int deviceID, String startTime, String endTime) {
+		
+		List<Event> eventsList = new ArrayList<Event>();
+		Connection conn = DBConnection.dbConnector();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getAllEventsWithTimeRangeQuery());
+			stmt.setInt(1, deviceID);
+			stmt.setString(2, startTime);
+			stmt.setString(3, endTime);
+
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				Event newEvent = new Event();
+				newEvent.setEventID(rs.getInt("EventID"));
+				newEvent.setPluginName(rs.getString("PluginName"));
+				newEvent.setStartTime(rs.getString("StartTime"));
+				newEvent.setEndTime(rs.getString("EndTime"));
+				newEvent.setDetails(rs.getString("Details"));
+				newEvent.setDeviceID(rs.getInt("DeviceID"));
+				
+				eventsList.add(newEvent);
+			}
+		
+			conn.close();
+		
+		} catch (Exception e) {
+			
+			System.out.println("Query Failed");
+			System.out.println(e.getMessage());
+			try {
+				conn.close();
+			} catch (Exception e2) {
+				
+			}
+		}	
+		
+		return eventsList;
+	}
+	
+	public List<Event> getEventsByPluginName(int deviceID, String pluginName) {
+	
+		List<Event> eventsList = new ArrayList<Event>();
+		Connection conn = DBConnection.dbConnector();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getEventsByPluginNameQuery());
+			stmt.setInt(1, deviceID);
+			stmt.setString(2, pluginName);
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				Event newEvent = new Event();
+				newEvent.setEventID(rs.getInt("EventID"));
+				newEvent.setPluginName(rs.getString("PluginName"));
+				newEvent.setStartTime(rs.getString("StartTime"));
+				newEvent.setEndTime(rs.getString("EndTime"));
+				newEvent.setDetails(rs.getString("Details"));
+				newEvent.setDeviceID(rs.getInt("DeviceID"));
+				
+				eventsList.add(newEvent);
+			}
+		
+			conn.close();
+		
+		} catch (Exception e) {
+			
+			System.out.println("Query Failed");
+			System.out.println(e.getMessage());
+			try {
+				conn.close();
+			} catch (Exception e2) {
+				
+			}
+		}	
+		
+		return eventsList;
+	}
+	
+	public List<Event> getEventsByPluginNameWithTimeRange(int deviceID, String pluginName, String startTime, String endTime) {
+		
+		List<Event> eventsList = new ArrayList<Event>();
+		Connection conn = DBConnection.dbConnector();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getEventsByPluginNameWithTimeRangeQuery());
+			stmt.setInt(1, deviceID);
+			stmt.setString(2, pluginName);
+			stmt.setString(3, startTime);
+			stmt.setString(4, endTime);
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				Event newEvent = new Event();
+				newEvent.setEventID(rs.getInt("EventID"));
+				newEvent.setPluginName(rs.getString("PluginName"));
+				newEvent.setStartTime(rs.getString("StartTime"));
+				newEvent.setEndTime(rs.getString("EndTime"));
+				newEvent.setDetails(rs.getString("Details"));
+				newEvent.setDeviceID(rs.getInt("DeviceID"));
+				
+				eventsList.add(newEvent);
+			}
+		
+			conn.close();
+		
+		} catch (Exception e) {
+			
+			System.out.println("Query Failed");
+			System.out.println(e.getMessage());
+			try {
+				conn.close();
+			} catch (Exception e2) {
+				
+			}
+		}	
+		
+		return eventsList;
+	}
+	
+	public boolean isAnalyzedDataPresent(int deviceID, String pluginName) {
+		
+		List<Event> eventsList = new ArrayList<Event>();
+		Connection conn = DBConnection.dbConnector();
+		int count = 0;
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(queryMaker.getIsAnalyzedEventPresentQuery());
+			stmt.setInt(1, deviceID);
+			stmt.setString(2, pluginName);
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				
+				count = rs.getInt(1);
+			}
+		
+			conn.close();
+		
+		} catch (Exception e) {
+			
+			System.out.println("Query Failed");
+			System.out.println(e.getMessage());
+			try {
+				conn.close();
+			} catch (Exception e2) {
+				
+			}
+		}	
+		
+		if(count == 0)
+			return false;
+		else
+			return true;
 		
 	}
 	

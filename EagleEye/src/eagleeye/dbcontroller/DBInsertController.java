@@ -3,14 +3,13 @@ package eagleeye.dbcontroller;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import eagleeye.api.entities.EagleFile;
 import eagleeye.entities.Device;
+import eagleeye.entities.Event;
 import eagleeye.entities.FileEntity;
-import eagleeye.entities.LocationEvent;
-//import eagleeye.entities.LocationEvents;
-import eagleeye.entities.TimeEvent;
-//import eagleeye.entities.TimeEvents;
+
 
 public class DBInsertController {
 
@@ -153,47 +152,24 @@ public class DBInsertController {
 		return marker;
 	}
 	
-	public int insertLocationEvent(PreparedStatement stmt, Statement qstmt, LocationEvent event) throws Exception {
+	public void insertNewEvent(PreparedStatement stmt, List<Event> eventsList) throws Exception {
 		
-		int locationEventID = -1;
-		stmt.setString(1, event.getLongitude());
-		stmt.setString(2, event.getLatitude());
-		stmt.setString(3, event.getDetails());
-		stmt.setInt(4, event.getDeviceID());
-		
-		stmt.execute();
-		
-		String getKey = queryMaker.getKey();
-		ResultSet resultKey = qstmt.executeQuery(getKey);
+		for(Event event : eventsList) {
 			
-		while(resultKey.next()){
-				
-			locationEventID = resultKey.getInt(1);					
-		}
-				
-		return locationEventID;
-	}
-
-	public int insertTimeEvent(PreparedStatement stmt, Statement qstmt, TimeEvent event) throws Exception {
-		
-		int timeEventID = -1;
-		stmt.setString(1, event.getEventTime());
-		stmt.setString(2, event.getDetails());
-		stmt.setInt(3, event.getDeviceID());
-		
-		stmt.execute();
-		
-		String getKey = queryMaker.getKey();
-		ResultSet resultKey = qstmt.executeQuery(getKey);
+			stmt.setString(1, event.getPluginName());
+			stmt.setString(2, event.getStartTime());
+			stmt.setString(3, event.getEndTime());
+			stmt.setString(4, event.getDetails());
+			stmt.setInt(5, event.getDeviceID());
 			
-		while(resultKey.next()){
-				
-			timeEventID = resultKey.getInt(1);					
+			stmt.addBatch();
 		}
-				
-		return timeEventID;
+		
+		stmt.executeBatch();
+		stmt.clearBatch();
 	}
 	
+		
 	//Helper method
 	public ArrayList<String> getAllFileExt(ArrayList<EagleFile> listOfFiles) {
 		

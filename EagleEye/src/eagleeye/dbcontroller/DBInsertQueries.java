@@ -83,18 +83,12 @@ public class DBInsertQueries {
 		
 	}
 	
-	public String getInsertLocationEventsQuery() {
+	public String getInsertEventsQuery() {
 		
-		String script = "INSERT INTO LocationEvents(Longitude, Latitude, Details, DeviceID) VALUES (?,?,?,?)";
+		String script = "INSERT INTO Event(PluginName,StartTime,EndTime,Details,DeviceID) VALUES (?,?,?,?,?)";
 		
 		return script;
 	}
 	
-	public String getInsertTimeEventsQuery() {
-		
-		String script = "INSERT INTO TimeEvents(Time, Details, DeviceID) VALUES (?,?,?)";
-		
-		return script;
-	}
 }
 
