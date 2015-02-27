@@ -2,7 +2,6 @@ package eagleeye.pluginmanager;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -15,11 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import eagleeye.api.*;
-import eagleeye.api.entities.EagleFile;
-import eagleeye.dbcontroller.DBInsertTransaction;
-import eagleeye.entities.Device;
+import eagleeye.api.plugin.Plugin;
 
 public class PluginManager {
 	protected String pluginsDir;
@@ -33,6 +28,7 @@ public class PluginManager {
 			pluginsDir = "PluginBinaries";
 
 		plugins = new ArrayList<Plugin>();
+		configList = null;
 		loadPlugins();
 
 		//System.setSecurityManager(new PluginSecurityManager(pluginsDir));
@@ -231,7 +227,6 @@ public class PluginManager {
 				}
 			}
 		}
-		
 		
 		connectPlugins();
 	}

@@ -12,9 +12,13 @@ public class Event implements EagleEvent {
 	private String details;
 	
 	public Event() {
-		
+		this.deviceID = -1;
+		this.pluginName = "";
+		this.startTime = "";
+		this.endTime = "";
+		this.details = "";
 	}
-	
+
 	public Event(int deviceID, String pluginName, String startTime, String endTime, String details) {
 		
 		this.deviceID = deviceID;

@@ -19,8 +19,14 @@ public class Directory implements EagleDirectory {
 	protected ArrayList<EagleFile> fileList;
 	
 	public Directory(){
-		
-		isRecovered = false;
+		modifyDeviceID			(-1);	
+		modifyDirectoryID		(-1);	
+		modifyParentDirectory	(-1);	
+		modifyDirectoryName		("");	
+		modifyDateCreated		("");	
+		modifyDateAccessed		("");	
+		modifyDateModified		("");	
+		modifyIsRecovered		(false);	
 		fileList = new ArrayList<EagleFile>();
 	}
 

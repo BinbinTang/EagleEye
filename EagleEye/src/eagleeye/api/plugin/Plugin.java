@@ -1,4 +1,4 @@
-package eagleeye.pluginmanager;
+package eagleeye.api.plugin;
 
 import java.util.List;
 
@@ -29,7 +29,6 @@ public interface Plugin {
 	
 	public void setMarkedItems(Object i);
 	
-	//Signals that previous call to the plugin was not successful
-	//check before calling plugin
+	//Temporarily not in use
 	public boolean hasError();
 }

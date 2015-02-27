@@ -16,15 +16,23 @@ public class Device implements EagleDevice{
 	protected String deviceFolderPath;
 	
 	public Device() {
-		
-		
+		modifiyDeviceImageFolder	(null);
+		modifyDeviceID				(-1);
+		modifyDeviceName			(""); 
+		modifyContentSize			("");
+		modifyLastViewedOn			("");
+		modifyDateCreated			("");
+		modifyDeviceOwner			("");
 	}
 	
 	public Device(String deviceName, String contentSize, String deviceOwner){
-		
-		this.deviceName = deviceName;
-		this.contentSize = contentSize;
-		this.deviceOwner = deviceOwner;
+		modifiyDeviceImageFolder	(null);
+		modifyDeviceID				(-1);
+		modifyDeviceName			(deviceName); 
+		modifyContentSize			(contentSize);
+		modifyLastViewedOn			("");
+		modifyDateCreated			("");
+		modifyDeviceOwner			(deviceOwner);
 	}
 	
 	public String getDeviceFolderPath() {

@@ -15,30 +15,32 @@ public class FileEntity implements EagleFile {
 	//Can be a filename or a directory name 
 	protected String fileName;
 	protected String filePath;
-	protected String fileExt; 		// example gif, jpg without .
-	protected int fileExtID; 		
+	protected String fileExt; 		
+	protected int fileExtID; 		//temporarily not used
 	protected String contentType;
 	protected String dateCreated;
 	protected String dateAccessed;
 	protected String dateModified;
 	protected String category;
-	protected String directoryName;
+	protected String directoryName;	//temporarily not used
 		
 	public FileEntity() {
-		
-		isRecovered = false;
-		isModified = false;
-		isDirectory = false;
-		fileName = "";
-		filePath = "";
-		fileExt = "";
-		contentType = "";
-		dateCreated = "";
-		dateAccessed = "";
-		dateModified = "";
-		category = "";
+		modifyDeviceID		(-1);
+		modifyDirectoryID	(-1);
+		modifyFileID		(-1);
+		modifyIsRecovered	(false);
+		modifyIsModified	(false);
+		modifyIsDirectory	(false); 
+		modifyFileName 		("");
+		modifyFilePath 		("");
+		modifyFileExt 		("");
+		modifyContentType 	("");
+		modifyDateCreated 	("");
+		modifyDateAccessed 	("");
+		modifyDateModified 	("");
+		modifyCategory		("");
 	}
-	/*new*/
+
 	public FileEntity(int _deviceID,
 	 			int _directoryID,
 	 			int _fileID,
