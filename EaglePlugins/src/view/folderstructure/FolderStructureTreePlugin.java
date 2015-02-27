@@ -55,7 +55,7 @@ import eagleeye.dbcontroller.DBQueryController;
 //import eagleeye.entities.Directory;
 //import eagleeye.entities.FileEntity;
 import eagleeye.entities.Filter;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 import eagleeye.pluginmanager.PluginManager;
 //import eagleeye.utils.FileFormatIdentifier;
 

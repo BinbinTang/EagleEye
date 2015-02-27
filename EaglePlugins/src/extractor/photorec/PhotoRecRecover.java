@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 import eagleeye.api.entities.EagleDirectory;
 import eagleeye.api.entities.EagleFile;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class PhotoRecRecover implements Plugin{
 	private String PhotorecBinaryPath = "PluginBinaries\\PhotoRec\\photorec_win.exe";

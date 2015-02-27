@@ -74,7 +74,7 @@ import timeflow.views.SummaryView;
 import timeflow.views.TableView;
 import timeflow.views.TimelineView;
 import eagleeye.api.dbcontroller.DBController;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class TimelinePlugin extends Application implements Plugin{
 	//timeline view attributes
@@ -251,9 +251,11 @@ public class TimelinePlugin extends Application implements Plugin{
 	@Override
 	public int setParameter(List params) {
 		showAnalyzers = new ArrayList<Plugin>();
+		if(params.size()!=1){
+			return 1;
+		}	
 		Object p = params.get(0);
 		Class[] interfaces = p.getClass().getInterfaces();
-		System.out.println("Timeline input interface = "+interfaces[0].getName());
 		if(interfaces[0].equals(DBController.class)){
 			DBController dbc = (DBController) p;
 			String deviceRoot = dbc.getDeviceRootPath();
@@ -294,16 +296,28 @@ public class TimelinePlugin extends Application implements Plugin{
 	}
 	
 	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/***********************start of test ************************/
+	@Override
 	public void start(Stage stage) throws Exception {
 		TimelinePlugin tp = new TimelinePlugin();
 		List<Plugin> pls = new ArrayList<Plugin>();
 		pls.add(tp);
-		pls.add(new IOSWhatsAppAnalyzerPlugin());
-		pls.add(new TestAnalyzerPlugin());
+		//pls.add(new IOSWhatsAppAnalyzerPlugin());
+		//pls.add(new TestAnalyzerPlugin());
 		pls.add(new SQLiteReaderPlugin());
-		pls.add(new IOSCalendarAnalyzerPlugin());
+		//pls.add(new IOSCalendarAnalyzerPlugin());
 		pls.add(new AndroidCalendarAnalyzerPlugin());
-		pls.add(new AndroidGmailAnalyzerPlugin());
+		//pls.add(new AndroidGmailAnalyzerPlugin());
 		for(Plugin pl: pls){
 			pl.setAvailablePlugins(pls);
 		}
@@ -328,15 +342,6 @@ public class TimelinePlugin extends Application implements Plugin{
 	public static void main(String[] args){
 		launch(args); 
 	}
-	@Override
-	public Object getMarkedItems() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void setMarkedItems(Object arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	/***********************end of test ************************/
 	
 }

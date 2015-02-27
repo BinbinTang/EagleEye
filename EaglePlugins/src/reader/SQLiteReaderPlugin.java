@@ -9,12 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class SQLiteReaderPlugin implements Plugin{
 	
@@ -24,6 +21,7 @@ public class SQLiteReaderPlugin implements Plugin{
 		private Connection dbConn;
 		private DBReader(String _path){
 			path = _path;
+			dbConn = null;
 		}
 		private Map<String, List<List<String>>> read()
 		{
@@ -93,7 +91,9 @@ public class SQLiteReaderPlugin implements Plugin{
 		}
 	}
 	private DBReader dbr;
-	
+	public SQLiteReaderPlugin(){
+		dbr = null;
+	}
 	@Override
 	public String getName() {
 		return "SQLite Reader";
@@ -101,6 +101,10 @@ public class SQLiteReaderPlugin implements Plugin{
 
 	@Override
 	public Object getResult() {
+		if(dbr==null) {
+			System.out.println("[SQLiteReaderPlugin] DBReader has not been initialized");
+			return null;
+		}
 		return dbr.read();
 	}
 
@@ -108,19 +112,42 @@ public class SQLiteReaderPlugin implements Plugin{
 	public Type getType() {
 		return Type.READER;
 	}
+	@Override
+	//return 0 on success
+	public int setParameter(List argList) {
+		dbr=null;
+		if(argList.size()!=1){
+			return 1;
+		}
+		Object o = argList.get(0);
+		if(o.getClass().equals(String.class)){
+			String path = (String) o;
+			dbr = new DBReader(path);
+			return 0;
+		}
+		
+		return 1;
+	}
+	@Override
+	public int setAvailablePlugins(List<Plugin> pls) {
+		return 0;
+	}
 
+	@Override
+	public Object getMarkedItems() {
+		return null;
+	}
+
+	@Override
+	public void setMarkedItems(Object arg0) {
+	}
 	@Override
 	public boolean hasError() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public int setParameter(List argList) {
-		String path = (String) argList.get(0);
-		dbr = new DBReader(path);
-		return 0;
-	}
+	
+/********************* start of test ***************************/	
 	public static void main(String[] args) { 
 		SQLiteReaderPlugin sp = new SQLiteReaderPlugin();
 		List paths = new ArrayList();
@@ -132,29 +159,12 @@ public class SQLiteReaderPlugin implements Plugin{
 		//paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Library"+File.separator+"Safari"+File.separator+"Bookmarks.db");
 		//paths.add(root+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Applications"+File.separator+"00CAE5F5-CA3E-45D2-91F2-33E3F2FB12E1"+File.separator+"Documents"+File.separator+"ChatStorage.sqlite");
 		
-		root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
+		root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"PLUG"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
 		//paths.add(root+File.separator+"data"+File.separator+"com.android.providers.calendar"+File.separator+"databases"+File.separator+"calendar.db");
 		paths.add(root+File.separator+"data"+File.separator+"com.google.android.providers.gmail"+File.separator+"databases"+File.separator+"mailstore.yobtaog@gmail.com.db");
 		sp.setParameter(paths);
 		sp.getResult();
 	}
-
-	@Override
-	public int setAvailablePlugins(List<Plugin> pls) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public Object getMarkedItems() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setMarkedItems(Object arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+/********************* end of test ***************************/	
 
 }

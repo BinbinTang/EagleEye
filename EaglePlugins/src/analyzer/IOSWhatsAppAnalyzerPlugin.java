@@ -2,16 +2,14 @@ package analyzer;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import reader.SQLiteReaderPlugin;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class IOSWhatsAppAnalyzerPlugin implements Plugin{
 	private class WAMessage{
@@ -65,9 +63,19 @@ public class IOSWhatsAppAnalyzerPlugin implements Plugin{
 	private String outputPath;
 	private Plugin sqlreader;
 	private List<Chat> chats;
+	private boolean error;
 	public IOSWhatsAppAnalyzerPlugin(){
-		
+		sqlreader=null;
+		reset();
 	}
+	public void reset(){
+		deviceRoot="";
+		WAChatHistoryPath="";
+		outputPath="";
+		chats = null;
+		error = false;
+	}
+	
 	public void getAllChats(){
 		//read DB & get tables
 		List paths = new ArrayList();
@@ -221,9 +229,15 @@ public class IOSWhatsAppAnalyzerPlugin implements Plugin{
 
 	@Override
 	public Object getResult() {
+		if(hasError()){
+			return null;
+		}
 		String fPath = outputPath+File.separator+"whatsapp.time";
 		File f = new File(fPath); 
-		if(f.exists()) return fPath;
+		if(f.exists()){
+			System.out.println("["+getName()+"] uses previous analysis result at: "+outputPath);
+			return fPath;
+		}
 		
 		getAllChats();
 		//analyzeChatsByContact();
@@ -238,21 +252,39 @@ public class IOSWhatsAppAnalyzerPlugin implements Plugin{
 
 	@Override
 	public boolean hasError() {
-		// TODO Auto-generated method stub
-		return false;
+		return error;
 	}
 
 	@Override
 	public int setParameter(List argList) {
-		deviceRoot = (String) argList.get(0);
+		reset();
+		if(argList.size()!=2){
+			error = true;
+			return 2;
+		}
+		
+		Object o1 = argList.get(0);
+		Object o2 = argList.get(1);
+		if(!(o1.getClass().equals(String.class) && o2.getClass().equals(String.class))){
+			error = true;
+			return 2;
+		}
+		
+		deviceRoot = (String) o1;
+		outputPath = (String) o2;
 		WAChatHistoryPath = deviceRoot+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Applications"+File.separator+"00CAE5F5-CA3E-45D2-91F2-33E3F2FB12E1"+File.separator+"Documents"+File.separator+"ChatStorage.sqlite";
-		File f = new File(WAChatHistoryPath);
-		if(!f.exists()){
+		if(!(new File(outputPath)).exists()){
+			error = true;
+			return 2;
+		}
+		
+		if(!(new File(WAChatHistoryPath)).exists()){
 			System.out.println("["+getName()+"] test analyze fail");
+			error = true;
 			return 1;
 		}
+		
 		System.out.println("["+getName()+"] test analyze successful");
-		outputPath = (String) argList.get(1);
 		return 0;
 	}
 	

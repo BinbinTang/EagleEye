@@ -2,16 +2,14 @@ package analyzer;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import reader.SQLiteReaderPlugin;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class IOSCalendarAnalyzerPlugin implements Plugin{
 	private class Event{
@@ -51,8 +49,17 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 	private String outputPath;
 	private Plugin sqlreader;
 	private List<Event> events;
+	private boolean error;
 	public IOSCalendarAnalyzerPlugin(){
-		
+		sqlreader=null;
+		reset();
+	}
+	public void reset(){
+		deviceRoot="";
+		calendarPath="";
+		outputPath="";
+		events = null;
+		error = false;
 	}
 	public void getAllEvents(){
 		//read DB & get tables
@@ -151,9 +158,15 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 
 	@Override
 	public Object getResult() {
+		if(hasError()){
+			return null;
+		}
 		String fPath = outputPath+File.separator+"calendar.time";
 		File f = new File(fPath); 
-		if(f.exists()) return fPath;
+		if(f.exists()){
+			System.out.println("["+getName()+"] uses previous analysis result at: "+outputPath);
+			return fPath;
+		}
 		
 		getAllEvents();
 		
@@ -167,21 +180,39 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 
 	@Override
 	public boolean hasError() {
-		// TODO Auto-generated method stub
-		return false;
+		return error;
 	}
 
 	@Override
 	public int setParameter(List argList) {
-		deviceRoot = (String) argList.get(0);
-		calendarPath = deviceRoot+File.separator+"private"+File.separator+"var"+File.separator+"mobile"+File.separator+"Library"+File.separator+"Calendar"+File.separator+"Calendar.sqlitedb";
-		File f = new File(calendarPath);
-		if(!f.exists()){
+		reset();
+		if(argList.size()!=2){
+			error = true;
+			return 2;
+		}
+		
+		Object o1 = argList.get(0);
+		Object o2 = argList.get(1);
+		if(!(o1.getClass().equals(String.class) && o2.getClass().equals(String.class))){
+			error = true;
+			return 2;
+		}
+		
+		deviceRoot = (String) o1;
+		outputPath = (String) o2;
+		calendarPath = deviceRoot+File.separator+"data"+File.separator+"com.android.providers.calendar"+File.separator+"databases"+File.separator+"calendar.db";
+		if(!(new File(outputPath)).exists()){
+			error = true;
+			return 2;
+		}
+		
+		if(!(new File(calendarPath)).exists()){
 			System.out.println("["+getName()+"] test analyze fail");
+			error = true;
 			return 1;
 		}
+		
 		System.out.println("["+getName()+"] test analyze successful");
-		outputPath = (String) argList.get(1);
 		return 0;
 	}
 	
@@ -195,7 +226,16 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
 		}
 		return 0;
 	} 
-	
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 	public static void main(String[] args) { 
 		
 		IOSCalendarAnalyzerPlugin cp = new IOSCalendarAnalyzerPlugin();
@@ -231,16 +271,7 @@ public class IOSCalendarAnalyzerPlugin implements Plugin{
         	System.out.println(times - time/1000);
         }*/
 	}
-	@Override
-	public Object getMarkedItems() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void setMarkedItems(Object arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 
 }

@@ -9,20 +9,14 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Popup;
-import javafx.stage.PopupBuilder;
 import javafx.stage.Stage;
 import eagleeye.api.entities.EagleFile;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 //extends Service<ArrayList<ArrayList<EagleFile>>>
 public class AndroidYaffs2ImageExtractorPlugin extends Application implements Plugin{

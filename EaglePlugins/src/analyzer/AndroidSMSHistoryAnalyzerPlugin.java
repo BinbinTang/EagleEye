@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import eagleeye.pluginmanager.Plugin;
 import reader.SQLiteReaderPlugin;
-import eagleeye.pluginmanager.Plugin.Type;
+import eagleeye.api.plugin.Plugin;
 
 public class AndroidSMSHistoryAnalyzerPlugin implements Plugin {
 	
@@ -58,7 +57,19 @@ public class AndroidSMSHistoryAnalyzerPlugin implements Plugin {
 	private String outputPath;
 	private String SMSHistoryPath;
 	private List<SMSs> SMSHistory;
-
+	private boolean error;
+	
+	public AndroidSMSHistoryAnalyzerPlugin(){
+		sqlReader = null;
+		reset();
+	}
+	public void reset(){
+		deviceRoot="";
+		SMSHistoryPath="";
+		outputPath="";
+		SMSHistory = null;
+		error = false;
+	}
 	public void getAllSMSs(){
 		
 		return;
@@ -75,7 +86,9 @@ public class AndroidSMSHistoryAnalyzerPlugin implements Plugin {
 
 	@Override
 	public Object getResult() {
-		// TODO Auto-generated method stub
+		if(hasError()){
+			return null;
+		}
 		String fPath = outputPath+File.separator+"android_smss_history.time";
 		File f = new File(fPath); 
 		
@@ -96,7 +109,7 @@ public class AndroidSMSHistoryAnalyzerPlugin implements Plugin {
 	@Override
 	public boolean hasError() {
 		// TODO Auto-generated method stub
-		return false;
+		return error;
 	}
 
 	@Override
@@ -112,20 +125,52 @@ public class AndroidSMSHistoryAnalyzerPlugin implements Plugin {
 
 	@Override
 	public int setParameter(List argList) {
-		// TODO Auto-generated method stub
-		deviceRoot = (String) argList.get(0);
+		
+		reset();
+		
+		if(argList.size()!=2){
+			error = true;
+			return 2;
+		}
+		
+		Object o1 = argList.get(0);
+		Object o2 = argList.get(1);
+		if(!(o1.getClass().equals(String.class) && o2.getClass().equals(String.class))){
+			error = true;
+			return 2;
+		}
+		
+		deviceRoot = (String) o1;
+		outputPath = (String) o2;
 		SMSHistoryPath = deviceRoot+File.separator+"data"+File.separator+"com.android.providers.telephony"+File.separator+"databases"+File.separator+"mmssms.db";
-		File f = new File(SMSHistoryPath);
-		if(!f.exists()){
+		if(!(new File(outputPath)).exists()){
+			error = true;
+			return 2;
+		}
+		
+		if(!(new File(SMSHistoryPath)).exists()){
 			System.out.println("["+getName()+"] test analyze fail");
+			error = true;
 			return 1;
 		}
+		
 		System.out.println("["+getName()+"] test analyze successful");
-		outputPath = (String) argList.get(1);
 		return 0;
 	
 	}
-	
+
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	/****************** start of test *******************/
 	public static void main(String[] args)
 	{
 		// For individual testing
@@ -141,17 +186,5 @@ public class AndroidSMSHistoryAnalyzerPlugin implements Plugin {
 		cp.setParameter(paths);
 		cp.getResult();
 	}
-
-	@Override
-	public Object getMarkedItems() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setMarkedItems(Object arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	/****************** end of test *******************/
 }

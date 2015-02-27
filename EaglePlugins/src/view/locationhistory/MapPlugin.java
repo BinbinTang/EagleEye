@@ -29,7 +29,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 import eagleeye.api.dbcontroller.*;
 
 //import db.DBQueryController;

@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import eagleeye.pluginmanager.Plugin;
 import reader.SQLiteReaderPlugin;
-import eagleeye.pluginmanager.Plugin;
-import eagleeye.pluginmanager.Plugin.Type;
+import eagleeye.api.plugin.Plugin;
 
 public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 		
@@ -59,9 +57,17 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 	private String outputPath;
 	private String callHistoryPath;
 	private List<Calls> callHistory;
-	
+	private boolean error;
 	public AndroidCallHistoryAnalyzerPlugin() {
-
+		sqlReader = null;
+		reset();
+	}
+	public void reset(){
+		deviceRoot="";
+		callHistoryPath="";
+		outputPath="";
+		callHistory = null;
+		error = false;
 	}
 	
 	public void getAllCalls() {
@@ -157,7 +163,9 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 
 	@Override
 	public Object getResult() {
-		
+		if(hasError()){
+			return null;
+		}
 		String fPath = outputPath+File.separator+"android_calls_history.time";
 		File f = new File(fPath); 
 		
@@ -177,8 +185,7 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 
 	@Override
 	public boolean hasError() {
-		// TODO Auto-generated method stub
-		return false;
+		return error;
 	}
 
 	@Override
@@ -195,19 +202,49 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
 
 	@Override
 	public int setParameter(List argList) {
+		reset();
 		
-		deviceRoot = (String) argList.get(0);
+		if(argList.size()!=2){
+			error = true;
+			return 2;
+		}
+		
+		Object o1 = argList.get(0);
+		Object o2 = argList.get(1);
+		if(!(o1.getClass().equals(String.class) && o2.getClass().equals(String.class))){
+			error = true;
+			return 2;
+		}
+		
+		deviceRoot = (String) o1;
+		outputPath = (String) o2;
 		callHistoryPath = deviceRoot+File.separator+"data"+File.separator+"com.android.providers.contacts"+File.separator+"databases"+File.separator+"contacts2.db";
-		File f = new File(callHistoryPath);
-		if(!f.exists()){
+		if(!(new File(outputPath)).exists()){
+			error = true;
+			return 2;
+		}
+		
+		if(!(new File(callHistoryPath)).exists()){
 			System.out.println("["+getName()+"] test analyze fail");
+			error = true;
 			return 1;
 		}
+		
 		System.out.println("["+getName()+"] test analyze successful");
-		outputPath = (String) argList.get(1);
 		return 0;
 	}
-	
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	/****************** start of test *******************/
 	public static void main(String[] args) { 
 		
 		
@@ -245,21 +282,6 @@ public class AndroidCallHistoryAnalyzerPlugin implements Plugin {
         }else{
         	System.out.println(times - time/1000);
         }*/
-	}
-
-	@Override
-	public Object getMarkedItems() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setMarkedItems(Object arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
-	
-	
+	}	
+	/****************** end of test *******************/
 }

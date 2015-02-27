@@ -3,18 +3,13 @@ package analyzer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import reader.SQLiteReaderPlugin;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class AndroidLocationAnalyzerPlugin implements Plugin{
 	private class LocationInformation implements Comparable<LocationInformation> {

@@ -12,7 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class TextViewPlugin extends Application implements Plugin{
 	private class CustomTextView{

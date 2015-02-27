@@ -42,7 +42,7 @@ import javax.swing.text.html.StyleSheet;
 import analyzer.IOSWhatsAppAnalyzerPlugin;
 import timeflow.util.*;
 import view.timeline.TimelinePlugin;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class AnalyzerView extends AbstractView {
 	
@@ -82,9 +82,16 @@ public class AnalyzerView extends AbstractView {
 				public void mouseClicked(MouseEvent ev) {
 					// TODO Auto-generated method stub
 					System.out.println("clicked");
-					String outputFilePath = (String)p.getResult();
-					//System.out.println(outputFilePath);
-					loadData(outputFilePath);
+					Object o = p.getResult();
+					if(o!=null && o.getClass().equals(String.class)){
+						String outputFilePath = (String) o;
+						if((new File(outputFilePath)).exists())
+							loadData(outputFilePath);
+						else
+							System.out.println("output timeline file does not exist");
+					}else{
+						System.out.println("analyzer error");
+					}
 				}
 
 				@Override

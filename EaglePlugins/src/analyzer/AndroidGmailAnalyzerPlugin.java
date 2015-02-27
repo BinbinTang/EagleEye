@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import reader.SQLiteReaderPlugin;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class AndroidGmailAnalyzerPlugin implements Plugin{
 	private class Email{
@@ -52,8 +52,17 @@ public class AndroidGmailAnalyzerPlugin implements Plugin{
 	private String outputPath;
 	private Plugin sqlreader;
 	private List<Email> mails;
+	private boolean error;
 	public AndroidGmailAnalyzerPlugin(){
-		
+		sqlreader = null;
+		reset();
+	}
+	public void reset(){
+		deviceRoot="";
+		dbFolderPath="";
+		outputPath="";
+		mails = null;
+		error = false;
 	}
 	public List<String> getDBFiles(){
 		File dbFolder = new File(dbFolderPath);
@@ -172,6 +181,9 @@ public class AndroidGmailAnalyzerPlugin implements Plugin{
 
 	@Override
 	public Object getResult() {
+		if(hasError()){
+			return null;
+		}
 		String fPath = outputPath+File.separator+"android_gmail.time";
 		File f = new File(fPath); 
 		if(f.exists()) return fPath;
@@ -188,23 +200,42 @@ public class AndroidGmailAnalyzerPlugin implements Plugin{
 
 	@Override
 	public boolean hasError() {
-		// TODO Auto-generated method stub
-		return false;
+		return error;
 	}
 
 	@Override
 	public int setParameter(List argList) {
-		deviceRoot = (String) argList.get(0);
-		//System.out.println(deviceRoot);
+		reset();
+		
+		if(argList.size()!=2){
+			error = true;
+			return 2;
+		}
+		
+		Object o1 = argList.get(0);
+		Object o2 = argList.get(1);
+		if(!(o1.getClass().equals(String.class) && o2.getClass().equals(String.class))){
+			error = true;
+			return 2;
+		}
+		
+		deviceRoot = (String) o1;
+		outputPath = (String) o2;
 		dbFolderPath = deviceRoot+File.separator+"data"+File.separator+"com.google.android.providers.gmail"+File.separator+"databases";
-		File f = new File(dbFolderPath);
-		if(!f.exists()){
+		if(!(new File(outputPath)).exists()){
+			error = true;
+			return 2;
+		}
+		
+		if(!(new File(dbFolderPath)).exists()){
 			System.out.println("["+getName()+"] test analyze fail");
+			error = true;
 			return 1;
 		}
+		
 		System.out.println("["+getName()+"] test analyze successful");
-		outputPath = (String) argList.get(1);
 		return 0;
+
 	}
 	
 	@Override
@@ -217,7 +248,17 @@ public class AndroidGmailAnalyzerPlugin implements Plugin{
 		}
 		return 0;
 	} 
-	
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	/****************** start of test *******************/
 	public static void main(String[] args) { 
 		
 		AndroidGmailAnalyzerPlugin cp = new AndroidGmailAnalyzerPlugin();
@@ -254,16 +295,8 @@ public class AndroidGmailAnalyzerPlugin implements Plugin{
         	System.out.println(times - time/1000);
         }*/
 	}
-	@Override
-	public Object getMarkedItems() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void setMarkedItems(Object arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	/****************** end of test *******************/
+
 	
 
 }

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import reader.SQLiteReaderPlugin;
-import eagleeye.pluginmanager.Plugin;
+import eagleeye.api.plugin.Plugin;
 
 public class AndroidCalendarAnalyzerPlugin implements Plugin{
 	private class Event{
@@ -50,13 +50,23 @@ public class AndroidCalendarAnalyzerPlugin implements Plugin{
 	private String outputPath;
 	private Plugin sqlreader;
 	private List<Event> events;
+	private boolean error;
 	public AndroidCalendarAnalyzerPlugin(){
-		
+		sqlreader=null;
+		reset();
+	}
+	public void reset(){
+		deviceRoot="";
+		calendarPath="";
+		outputPath="";
+		events = null;
+		error = false;
 	}
 	public void getAllEvents(){
 		//read DB & get tables
 		List paths = new ArrayList();
 		paths.add(calendarPath);
+		System.out.println(sqlreader);
 		sqlreader.setParameter(paths);
 		Map<String, List<List<String>>> calendar = (Map<String, List<List<String>>>) sqlreader.getResult();
 		
@@ -109,7 +119,7 @@ public class AndroidCalendarAnalyzerPlugin implements Plugin{
 	public String writeResultToFile(){
 		String fPath = outputPath+File.separator+"android_calendar.time";
 		try{
-			FileWriter fw = new FileWriter(fPath,true);
+			FileWriter fw = new FileWriter(fPath);
 			StringBuilder sb = new StringBuilder();
 			sb.append("#TIMEFLOW\tformat version\t1\n");
 			sb.append("#TIMEFLOW\tsource\tEagleEye Developers\n");
@@ -150,9 +160,16 @@ public class AndroidCalendarAnalyzerPlugin implements Plugin{
 
 	@Override
 	public Object getResult() {
+		if(hasError()){
+			return null;
+		}
+		
 		String fPath = outputPath+File.separator+"android_calendar.time";
 		File f = new File(fPath); 
-		if(f.exists()) return fPath;
+		if(f.exists()){
+			System.out.println("["+getName()+"] uses previous analysis result at: "+outputPath);
+			return fPath;
+		}
 		
 		getAllEvents();
 		
@@ -163,25 +180,39 @@ public class AndroidCalendarAnalyzerPlugin implements Plugin{
 	public Type getType() {
 		return Type.ANALYZER;
 	}
-
-	@Override
-	public boolean hasError() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	
 	@Override
 	public int setParameter(List argList) {
-		deviceRoot = (String) argList.get(0);
+		reset();
+		if(argList.size()!=2){
+			error = true;
+			return 2;
+		}
+		
+		Object o1 = argList.get(0);
+		Object o2 = argList.get(1);
+		if(!(o1.getClass().equals(String.class) && o2.getClass().equals(String.class))){
+			error = true;
+			return 2;
+		}
+		
+		deviceRoot = (String) o1;
+		outputPath = (String) o2;
 		calendarPath = deviceRoot+File.separator+"data"+File.separator+"com.android.providers.calendar"+File.separator+"databases"+File.separator+"calendar.db";
-		File f = new File(calendarPath);
-		if(!f.exists()){
+		if(!(new File(outputPath)).exists()){
+			error = true;
+			return 2;
+		}
+		
+		if(!(new File(calendarPath)).exists()){
 			System.out.println("["+getName()+"] test analyze fail");
+			error = true;
 			return 1;
 		}
+		
 		System.out.println("["+getName()+"] test analyze successful");
-		outputPath = (String) argList.get(1);
 		return 0;
+
 	}
 	
 	@Override
@@ -194,7 +225,23 @@ public class AndroidCalendarAnalyzerPlugin implements Plugin{
 		}
 		return 0;
 	} 
+	@Override
+	public Object getMarkedItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setMarkedItems(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 	
+	@Override
+	public boolean hasError() {
+		return error;
+	}
+	
+	/****************** start of test *******************/
 	public static void main(String[] args) { 
 		
 		AndroidCalendarAnalyzerPlugin cp = new AndroidCalendarAnalyzerPlugin();
@@ -202,7 +249,7 @@ public class AndroidCalendarAnalyzerPlugin implements Plugin{
 		pls.add(new SQLiteReaderPlugin());
 		cp.setAvailablePlugins(pls);
 		List paths = new ArrayList();
-		String root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
+		String root = ".."+File.separator+"EagleEye"+File.separator+"output"+File.separator+"PLUG"+File.separator+"mtd8.dd"+File.separator+"mtd8.dd";
 		paths.add(root);
 		String out = "analysis";
 		paths.add(out);
@@ -231,16 +278,5 @@ public class AndroidCalendarAnalyzerPlugin implements Plugin{
         	System.out.println(times - time/1000);
         }*/
 	}
-	@Override
-	public Object getMarkedItems() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void setMarkedItems(Object arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
+	/****************** end of test *******************/
 }

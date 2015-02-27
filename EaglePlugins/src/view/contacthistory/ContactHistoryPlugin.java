@@ -8,8 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
-import eagleeye.pluginmanager.Plugin;
-
+import eagleeye.api.plugin.Plugin;
 
 
 public class ContactHistoryPlugin extends Application implements Plugin{
