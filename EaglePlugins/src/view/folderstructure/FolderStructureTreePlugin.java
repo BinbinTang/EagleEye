@@ -183,6 +183,8 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
 		popUpViews = new ArrayList<Plugin>();
+		markedFilesResult = new ArrayList<List<String>> ();
+	    markedFilesCashe = new ArrayList<MyTreeItem> ();
 		System.out.println("Folder Structure Plugin Loaded");
 	}
 	
@@ -496,16 +498,17 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					break;
 					
 				}				
-				
-				for(List<String> i : markedFilesResult){
-					if((newItem.getFileEntity().getDeviceID()+"").equals(i.get(0)) && (newItem.getFileEntity().getFileID()+"").equals(i.get(1))){
-						System.out.println("["+getName()+"] mark:"+i.get(0)+" "+i.get(1));
-						newItem.setMark(true);
-						newItem.getValue().setStyle(markedColor);
-						if(!i.get(i.size()-1).equals("")){
-							newItem.getValue().setTooltip(new Tooltip(i.get(i.size()-1)));
+				if(markedFilesResult!=null){
+					for(List<String> i : markedFilesResult){
+						if((newItem.getFileEntity().getDeviceID()+"").equals(i.get(0)) && (newItem.getFileEntity().getFileID()+"").equals(i.get(1))){
+							System.out.println("["+getName()+"] mark:"+i.get(0)+" "+i.get(1));
+							newItem.setMark(true);
+							newItem.getValue().setStyle(markedColor);
+							if(!i.get(i.size()-1).equals("")){
+								newItem.getValue().setTooltip(new Tooltip(i.get(i.size()-1)));
+							}
+							markedFilesCashe.add(newItem);
 						}
-						markedFilesCashe.add(newItem);
 					}
 				}
 				
@@ -1037,7 +1040,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	@Override
 	public Object getMarkedItems() {
-		if(markedFilesCashe.size()==0) return null;
+		if(markedFilesCashe==null || markedFilesCashe.size()==0) return null;
 		
 		markedFilesResult = new ArrayList<List<String>>();
 		List<String> headers = new ArrayList<String>();
