@@ -51,7 +51,7 @@ NAME: AndroidCallHistoryAnalyzerPlugin
 # output: List<List<String>> locationInfo(type, lat, lon, time, accuracy, confidence)
 USES: SQLiteReaderPlugin
 
-NAME: MapPlugin
+NAME: LocationHistoryPlugin
 # input : DBController
 # output: GUI view
 USES: AndroidLocationAnalyzerPlugin
