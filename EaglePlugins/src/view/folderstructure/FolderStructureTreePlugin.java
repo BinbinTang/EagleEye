@@ -1,15 +1,11 @@
 package view.folderstructure;
+
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.JComponent;
-import javax.swing.JRootPane;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -42,7 +38,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -51,13 +46,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import eagleeye.api.dbcontroller.DBController;
 import eagleeye.api.entities.*;
-import eagleeye.dbcontroller.DBQueryController;
-//import eagleeye.entities.Directory;
-//import eagleeye.entities.FileEntity;
 import eagleeye.entities.Filter;
 import eagleeye.api.plugin.Plugin;
-import eagleeye.pluginmanager.PluginManager;
-//import eagleeye.utils.FileFormatIdentifier;
 
 public class FolderStructureTreePlugin extends Application implements Plugin{
 	
@@ -187,7 +177,14 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private CheckBox isModifiedCheckBox;
 	@FXML
 	private CheckBox isOriginalCheckBox;
-		
+	
+	public FolderStructureTreePlugin(){
+		myNode = new SwingNode();
+		resultListView = new ListView();
+		readers = new ArrayList<Plugin>();
+		popUpViews = new ArrayList<Plugin>();
+		System.out.println("Folder Structure Plugin Loaded");
+	}
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -215,13 +212,6 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
         });	
 	}
 	
-	public FolderStructureTreePlugin(){
-		myNode = new SwingNode();
-		resultListView = new ListView();
-		readers = new ArrayList<Plugin>();
-		popUpViews = new ArrayList<Plugin>();
-		System.out.println("Folder Structure Plugin Loaded");
-	}
 	
 	@FXML
 	private void initialize() {
@@ -472,6 +462,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	// Add files into directory
 	private void addFiles(EagleDirectory dir, MyTreeItem<Label> node) {
+		//System.out.println("["+getName()+"] file device ID = " + allFiles.get(11).getDeviceID());
 		for (EagleFile file : allFiles) {
 			if(file.getDirectoryID() == dir.getDirectoryID()){
 				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt() + " [" + file.getDateCreated() + "]");
@@ -834,8 +825,15 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	}
 
 	@Override
-	public int setParameter(List arg0) {
-		dbController = (DBController) arg0.get(0);
+	public int setParameter(List params) {
+		if(params.size()!=1)
+			return 1;
+		Object o = params.get(0);
+		Class[] interfaces = o.getClass().getInterfaces();
+		if(interfaces[0].equals(DBController.class)){
+			dbController = (DBController) o;
+			return 0;
+		}
 		//dbc.getDeviceRootPath();
 		// TODO Get List of Files and Directories from host application
 		// Avoid getting DB as the parameter
@@ -852,7 +850,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		
 		//tmp create dummy folders and files
 
-		return 0;
+		return 1;
 	}	
 	
 	// Add files into directory
@@ -936,12 +934,13 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	}
 	
 	// Refresh Case that Loaded in View
-	private void refreshCase(int deviceID){
+/*	private void refreshCase(int deviceID){
+		System.out.println("Device ID = "+deviceID);
 		dbController.setDeviceID(deviceID);
 		TreeStructure = dbController.getAllDirectoriesAndFiles();
 		allFiles = dbController.getAllFiles();
 	}
-	
+*/	
 	private void checkNumber(String newValue, TextField input){
 		if (!(newValue.matches("[0-9]*"))) {
 			input.setText(newValue.substring(0,
@@ -1071,6 +1070,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	public void setMarkedItems(Object items) {
 			markedFilesResult = new ArrayList<List<String>>();
 			markedFilesCashe = new ArrayList<MyTreeItem>();
+			System.out.println("["+getName()+"] items = "+items);
 			if(items!=null){
 				System.out.println(markedFilesResult.getClass().getName()+ " vs "+items.getClass().getName());
 				if(items.getClass().equals(markedFilesResult.getClass()))
