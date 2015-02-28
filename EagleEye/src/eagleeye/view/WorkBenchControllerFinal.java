@@ -196,12 +196,10 @@ public class WorkBenchControllerFinal {
 				File projFile = projFileChooser.showOpenDialog(null);
 
 				if(projFile!=null){
-					//TODO: read proj file
 					System.out.println(projFile.getName());
 					currentProject = projm.readProjectFile(projFile.getAbsolutePath());
+					pm.setAllPluginMarkedItems(currentProject.getMarkedItems());	
 					refreshCase(currentProject.getDeviceID());
-					pm.setAllPluginMarkedItems(currentProject.getMarkedItems());
-					
 				}
 				else
 					System.out.println("No project file chosen");
@@ -263,7 +261,7 @@ public class WorkBenchControllerFinal {
 
 		newDevice.setOnAction(this::handleNewDirectory);
 		
-		// open
+		// on start
 		refreshDeviceList();
 
 	}
@@ -330,11 +328,9 @@ public class WorkBenchControllerFinal {
 				@Override public void handle(ActionEvent e) {
 					currentCaseID = ID;
 					refreshCase(currentCaseID);
-					
 					Project p = new Project(null, currentCaseID, null);
 					projm.setProject(p);
 					pm.setAllPluginMarkedItems(null);
-
 	            }
 			});
 		}
@@ -400,7 +396,11 @@ public class WorkBenchControllerFinal {
 			        public void handle(WorkerStateEvent t)
 			        {
 			            try {
-			            	refreshCase(task.get());
+			            	currentCaseID = task.get();
+			            	Project p = new Project(null, currentCaseID, null);
+							projm.setProject(p);
+							pm.setAllPluginMarkedItems(null);
+							refreshCase(currentCaseID);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

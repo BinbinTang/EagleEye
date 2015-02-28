@@ -96,7 +96,7 @@ public class PluginManager {
 		
 		Map<String, List<List<String>>> pluginsMarkedItems = new HashMap <String, List<List<String>>>();
 		for(Plugin p: plugins){
-			
+			System.out.println(p);
 			Object o = p.getMarkedItems();
 			if(o!=null){
 				try{

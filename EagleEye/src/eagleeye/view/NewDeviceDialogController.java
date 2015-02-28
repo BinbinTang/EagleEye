@@ -37,7 +37,6 @@ public class NewDeviceDialogController {
 	
 	private boolean isImportClickedSuccess = false;
 	private Stage dialogStage;
-	private File file;
 	private Device device;
 	private ArrayList<String> listOfDeviceNames;
 	private DBQueryController dbController;
@@ -119,8 +118,10 @@ public class NewDeviceDialogController {
 	private void handleBrowse() {
 		
 		DirectoryChooser directoryChooser = new DirectoryChooser();
-		file = directoryChooser.showDialog(null);
-		filePathTxtBox.setText(file.getPath());
+		File f = directoryChooser.showDialog(null);
+		if(f==null) return;
+		String filePath = f.getAbsolutePath();
+		filePathTxtBox.setText(filePath);
 	}
 	
 	@FXML
@@ -159,7 +160,7 @@ public class NewDeviceDialogController {
 				device = new Device();
 				device.modifyDeviceName(deviceNameTxtBox.getText());
 				device.modifyDeviceOwner(deviceOwnerTxtBox.getText());
-				device.modifiyDeviceImageFolder(file);
+				device.modifiyDeviceImageFolder(new File(filePathTxtBox.getText()));
 			
 				isImportClickedSuccess = true;
 				dialogStage.close();
