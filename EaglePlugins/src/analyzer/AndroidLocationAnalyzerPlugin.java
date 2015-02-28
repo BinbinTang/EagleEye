@@ -57,10 +57,19 @@ public class AndroidLocationAnalyzerPlugin implements Plugin{
 			}
 		}
 	}
-	private String deviceRoot;
+
 	private List<String> searchPaths;
 	private Plugin sqlreader;
-	private List<Plugin> upperStreamPlugins;
+	private boolean error;
+	
+	public AndroidLocationAnalyzerPlugin(){
+		sqlreader = null;
+		reset();
+	}
+	public void reset(){
+		searchPaths=new ArrayList<String>();
+		error=false;
+	}
 	public static String decodeString(final byte[] arr, final int idx, final int length)
 	{
 		final StringBuilder sb = new StringBuilder(length);
@@ -167,6 +176,9 @@ public class AndroidLocationAnalyzerPlugin implements Plugin{
 
 	@Override
 	public Object getResult() {
+		if (hasError()){
+			return null;
+		}
 		List<List<String>> result = new ArrayList<List<String>>();
 		
 		for(String f: searchPaths){
@@ -204,14 +216,23 @@ public class AndroidLocationAnalyzerPlugin implements Plugin{
 
 	@Override
 	public boolean hasError() {
-		// TODO Auto-generated method stub
-		return false;
+		return error;
 	}
 
 	@Override
 	public int setParameter(List argList) {
-		String upperStreamPlugin = (String) argList.get(0);
-		deviceRoot = (String) argList.get(1);
+		reset();
+		
+		if(argList.size()!=1){
+			System.out.println("["+getName()+"] ERROR: invalid num of input parameter");
+			return 2;
+		}
+		Object o = argList.get(0);
+		if(!(o.getClass().equals(String.class))){
+			System.out.println("["+getName()+"] ERROR: invalid input parameter");
+			return 2;
+		}
+		String deviceRoot = (String) argList.get(0);
 		List<String> paths = new ArrayList<String>();
 		searchPaths = new ArrayList<String>();
 		
@@ -221,8 +242,8 @@ public class AndroidLocationAnalyzerPlugin implements Plugin{
 		
 		//check if files exist
 		for(String s :paths){
-			File f = new File(s);
-			if(f.exists()){
+			System.out.println("["+getName()+"] "+s);
+			if((new File(s)).exists()){
 				searchPaths.add(s);
 			}
 		}

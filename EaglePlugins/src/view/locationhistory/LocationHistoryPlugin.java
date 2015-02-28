@@ -1,22 +1,19 @@
 package view.locationhistory;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import netscape.javascript.JSObject;
 import reader.SQLiteReaderPlugin;
-import view.folderstructure.FolderStructureTreePlugin;
+import tempDBcontroller.DBQueryController;
 import analyzer.AndroidCalendarAnalyzerPlugin;
 import analyzer.AndroidGmailAnalyzerPlugin;
 import analyzer.AndroidLocationAnalyzerPlugin;
 
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
-import com.lynden.gmapsfx.javascript.event.UIEventHandler;
 import com.lynden.gmapsfx.javascript.event.UIEventType;
-import com.lynden.gmapsfx.javascript.object.Animation;
 import com.lynden.gmapsfx.javascript.object.GoogleMap;
 import com.lynden.gmapsfx.javascript.object.LatLong;
 import com.lynden.gmapsfx.javascript.object.MapOptions;
@@ -34,7 +31,7 @@ import eagleeye.api.dbcontroller.*;
 
 //import db.DBQueryController;
 
-public class MapPlugin extends Application implements Plugin,MapComponentInitializedListener{
+public class LocationHistoryPlugin extends Application implements Plugin,MapComponentInitializedListener{
 	public class GeoPoint{
 		public double lat;
 		public double longit;
@@ -51,10 +48,9 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	private GoogleMap map;
 	private List<Plugin> analyzers;
 	private int chosenAnalyzerIdx;
-	private String deviceType;
 	List<GeoPoint> geoPoints;
 	List<Integer> markedPtIdx;
-	public MapPlugin(){
+	public LocationHistoryPlugin(){
 		
 	}
 
@@ -248,7 +244,7 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	/**************************for test*******************************/
 	@Override
 	public void start(Stage stage) throws Exception {
-		MapPlugin tp = new MapPlugin();
+		LocationHistoryPlugin tp = new LocationHistoryPlugin();
 		
 		List<Plugin> pls = new ArrayList<Plugin>();
 		pls.add(tp);
@@ -263,13 +259,13 @@ public class MapPlugin extends Application implements Plugin,MapComponentInitial
 	
 		List params = new ArrayList();
 		
-		/*uncomment for success case
+		//uncomment for success case
 		DBController dc =  new DBQueryController();
 		dc.setDeviceID(3);
-		params.add(dc);*/
-		
+		params.add(dc);
+		/*
 		//failure case
-		params.add("this/is/a/bad/path");
+		params.add("this/is/a/bad/path");*/
 		tp.setParameter(params);
 		
 		Node view = (Node)tp.getResult();
