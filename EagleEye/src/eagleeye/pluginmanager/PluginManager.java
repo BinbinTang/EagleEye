@@ -124,9 +124,8 @@ public class PluginManager {
 			if(pluginsMarkedItems!=null){
 				markedItems = pluginsMarkedItems.get(pluginClassName);
 			}
-			p.setMarkedItems(markedItems);
-			
 			if(markedItems!=null){
+				p.setMarkedItems(markedItems);
 				System.out.println("[Plugin Manager] distributed: "+p.getName()+" "+markedItems.size()+" items");
 			}
 		}

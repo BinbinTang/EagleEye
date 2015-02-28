@@ -170,7 +170,7 @@ public class DBQueryController implements DBController {
 			while(rs.next()){
 				
 				FileEntity f = new FileEntity();
-			
+				f.modifyDeviceID(deviceID);
 				f.modifyFileName(rs.getString("FileName"));
 				f.modifyFileID(rs.getInt("FileID"));
 				f.modifyDirectoryID(rs.getInt("DirectoryID"));
@@ -185,6 +185,7 @@ public class DBQueryController implements DBController {
 				f.modifyIsRecovered(rs.getBoolean("IsRecovered"));
 				f.modifyFilePath(rs.getString("FilePath"));
 				f.modifyCategory(rs.getString("ExtTypeName"));
+				f.modifyIsDirectory(false);
 								
 				listOfFiles.add(f);
 			}
