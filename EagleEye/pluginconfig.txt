@@ -61,6 +61,11 @@ NAME: ContactHistoryPlugin
 # output: GUI view
 USES: 
 
+NAME: MarkableContactHistoryPlugin
+# input : 
+# output: GUI view
+USES: 
+
 NAME: FolderStructureTreePlugin
 # input : DBController
 # output: GUI view

@@ -24,11 +24,16 @@ public class MarkableItems{
 		private Node item;
 		private boolean isMarked;
 		private String comment;
+		private ContextMenu dropDownMenu;
+		private MenuItem mark;
+		private MenuItem addComment;
 		
 		public MarkableItem(Node item){
+			
 			setItem(item);
 			setMarked(false);
 			setComment("");
+			createMenu();
 			attachMenu();
 		}
 		public Node getItem() {
@@ -49,36 +54,41 @@ public class MarkableItems{
 		public void setComment(String comment) {
 			this.comment = comment;
 		}
+		public void createMenu(){
+			dropDownMenu = new ContextMenu();
+			mark = new MenuItem("Mark");
+			addComment = new MenuItem("Add Comment");
+			dropDownMenu.getItems().addAll(mark,addComment);
+		}
 		public void attachMenu(){
 			item.setOnMouseClicked(new EventHandler<MouseEvent>() {
 	            @Override
 	            public void handle(MouseEvent event) {
+	            	if (event.getButton() == MouseButton.PRIMARY) {
+	            		dropDownMenu.hide();
+	            	}
 	                if (event.getButton() == MouseButton.SECONDARY) {
-	                	ContextMenu dropDownMenu = new ContextMenu();
-	                	MenuItem mark = new MenuItem("Mark");
+	                	
 	            		mark.setOnAction(new EventHandler<ActionEvent>() {
 	            		    @Override 
 	            		    public void handle(ActionEvent e) {
-	            		    	setMarked(true);
-	            		        System.out.println(item+" is marked");
+	            		    	setMarked(!isMarked());
+	            		    	if(isMarked()){
+	            		    		mark.setText("Un-mark");
+	            		    		System.out.println(item+" is marked");
+	            		    	}else{
+	            		    		mark.setText("Mark");
+	            		    		System.out.println(item+" is Un-marked");
+	            		    	}
 	            		    }
 	            		});
-	            		MenuItem unmark = new MenuItem("Unmark");
-	            		unmark.setOnAction(new EventHandler<ActionEvent>() {
-	            		    @Override 
-	            		    public void handle(ActionEvent e) {
-	            		    	setMarked(false);
-	            		        System.out.println(item+" is Unmarked");
-	            		    }
-	            		});
-	            		MenuItem comment = new MenuItem("Add Comment");
-	            		comment.setOnAction(new EventHandler<ActionEvent>() {
+	            		
+	            		addComment.setOnAction(new EventHandler<ActionEvent>() {
 	            		    @Override 
 	            		    public void handle(ActionEvent e) {
 	            		    	System.out.println(item+" set comment");
 	            		    }
 	            		});
-	            		dropDownMenu.getItems().addAll(mark, unmark, comment);
 	                    dropDownMenu.show(item, event.getScreenX(), event.getScreenY());
 	                }
 	            }
