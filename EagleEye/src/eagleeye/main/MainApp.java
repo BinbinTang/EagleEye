@@ -35,7 +35,7 @@ public class MainApp extends Application {
         this.primaryStage.setTitle("EagleEye");
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
-
+ 
         primaryStage.setX(bounds.getMinX());
         primaryStage.setY(bounds.getMinY());
         primaryStage.setWidth(bounds.getWidth());
