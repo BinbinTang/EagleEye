@@ -1,5 +1,6 @@
 package view.folderstructure;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -13,7 +14,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -27,29 +27,26 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import eagleeye.api.dbcontroller.DBController;
 import eagleeye.api.entities.*;
-import eagleeye.entities.Filter;
+import eagleeye.api.plugin.MarkableItem;
+import eagleeye.api.plugin.MarkableItemManager;
 import eagleeye.api.plugin.Plugin;
 
 public class FolderStructureTreePlugin extends Application implements Plugin{
+	
 	
 	// Neeeded Reader-type plugin
 	private List<Plugin> readers;
@@ -69,11 +66,12 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
     private AnchorPane rootLayout;   
     
     // Node
-    private Node myNode;
+    //private Node myNode;
     
     // Marked files
     private List<List<String>> markedFilesResult;
-    private ArrayList<MyTreeItem> markedFilesCashe;
+    //private ArrayList<MyTreeItem> markedFilesCashe;
+    private MarkableItemManager markableItemManager;
 
 	// Colors
 	private Color originalColor = Color.web("#2e00ff");
@@ -179,40 +177,17 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private CheckBox isOriginalCheckBox;
 	
 	public FolderStructureTreePlugin(){
-		myNode = new SwingNode();
+		//myNode = new SwingNode();
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
 		popUpViews = new ArrayList<Plugin>();
-		markedFilesResult = new ArrayList<List<String>> ();
-	    markedFilesCashe = new ArrayList<MyTreeItem> ();
+		//markedFilesResult = new ArrayList<List<String>> ();
+	    //markedFilesCashe = new ArrayList<MyTreeItem> ();
+	    markableItemManager = new MarkableItemManager();
 		System.out.println("Folder Structure Plugin Loaded");
 	}
 	
-	@Override
-	public void start(Stage stage) throws Exception {
-		System.out.println("folder structure started");
-		this.primaryStage = stage;
-
-		// Load the root layout from the fxml file
-        //Scene scene = new Scene(rootLayout);
-		Node view = (Node)getResult();
-		BorderPane viewContainer = new BorderPane();
-		viewContainer.setCenter(view);
-		primaryStage.setTitle(this.getName());
-	    primaryStage.setScene(new Scene(viewContainer)); 
-
-        //primaryStage.setScene(scene);
-        primaryStage.show();
-
-	    // Set On Close Window
-	    this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent t) {
-                Platform.exit();
-                System.exit(0);
-            }
-        });	
-	}
+	
 	
 	
 	@FXML
@@ -256,7 +231,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					// check if it is root
 					if (dir.getDirectoryID() == rootDirID) {
 						casePath = dir.getDirectoryName();
-						this.addFiles(dir, rootNode);
+						this.addFiles(dir, rootNode, tree);
 						CopyTreeStructure.remove(dir);
 						break;
 					}else{
@@ -288,7 +263,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 							}
 							tempItem.setExpanded(true);
 						}
-						this.addFiles(dir, newItem);
+						this.addFiles(dir, newItem,tree);
 						CopyTreeStructure.remove(dir);
 						break;
 					} else {
@@ -318,64 +293,12 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					}
 					System.out.println("Selected Text : " + item.getValue().getText());
 					
-					if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-						
-						// Mark file
-						if(mouseEvent.getClickCount() > 0){
-							item.setMark(!item.getMark());
-							if(!item.getMark()){
-								item.getValue().setStyle(unMarkedColor);
-								markedFilesCashe.remove(item);
-							}else{
-								item.getValue().setStyle(markedColor);
-								markedFilesCashe.add(item);
-							}
-							System.out.println("number of files marked = "+markedFilesCashe.size());
-							for(MyTreeItem i : markedFilesCashe){
-								System.out.println(i.file.getFileName()+" "+i.mark);
-							}
-						}
-						
-						// Input comments
-						if(mouseEvent.getClickCount() == 2){
-							final Stage commentView = new Stage();
-			                VBox dialogVbox = new VBox();
-			                ScrollPane commentInputContainer = new ScrollPane();
-			                TextArea commentInput = new TextArea();
-			                
-			                commentView.initModality(Modality.APPLICATION_MODAL);
-			                commentView.initOwner(primaryStage);
-			                dialogVbox.getChildren().add(new Text("My comments."));
-			                commentInputContainer.setContent(commentInput);
-			                commentInput.autosize();
-			                
-			                if(item.getValue().getTooltip() != null){
-			                	commentInput.setText(item.getValue().getTooltip().getText());
-			                }
-			                dialogVbox.getChildren().add(commentInputContainer);
-			                
-			                commentInputContainer.setFitToHeight(true);
-			                commentInputContainer.setFitToWidth(true);
-			                Scene dialogScene = new Scene(dialogVbox, 300, 200);
-			                commentView.setScene(dialogScene);
-			                commentView.show();
-			                commentView.setOnCloseRequest(new EventHandler<WindowEvent>() {			                	
-			                	//TODO: WRITE PROJECT FILE
-			                    @Override
-			                    public void handle(WindowEvent t) {
-			                    	if(!commentInput.getText().equals("")){
-				                    	item.getValue().setTooltip(new Tooltip(commentInput.getText()));			                    		
-			                    	}
-			                    }
-			                });
-						}
-						
-					}else if (mouseEvent.getClickCount() == 2) {
+					if (mouseEvent.getClickCount() == 2) {
 						// Check if it is a file, and open						
 						if (item.isLeaf()) {
 							String filePath = item.getFileEntity().getFilePath() + File.separator + 
 									item.getFileEntity().getFileName() + "." + item.getFileEntity().getFileExt();
-							
+							/*//Uncomment to use eagleeye program
 							List params = new ArrayList();
 							params.add(filePath);
 							for(Plugin pl: popUpViews){
@@ -396,6 +319,13 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 								    stage.show();						
 								    
 								}
+							}
+							*/
+							try {
+								Desktop.getDesktop().open(new File(filePath));
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
 						}	
 					}
@@ -463,12 +393,14 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	}
 
 	// Add files into directory
-	private void addFiles(EagleDirectory dir, MyTreeItem<Label> node) {
+	private void addFiles(EagleDirectory dir, MyTreeItem<Label> node, Node n) {
 		//System.out.println("["+getName()+"] file device ID = " + allFiles.get(11).getDeviceID());
 		for (EagleFile file : allFiles) {
 			if(file.getDirectoryID() == dir.getDirectoryID()){
 				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt() + " [" + file.getDateCreated() + "]");
 				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName);
+				MarkableMyTreeItem mc = new MarkableMyTreeItem(newItem, n);
+				markableItemManager.add(mc);
 				newItem.setFileEntity(file);
 				//Types are: "All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"
 				switch(file.getCategory()){
@@ -502,12 +434,14 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 					for(List<String> i : markedFilesResult){
 						if((newItem.getFileEntity().getDeviceID()+"").equals(i.get(0)) && (newItem.getFileEntity().getFileID()+"").equals(i.get(1))){
 							System.out.println("["+getName()+"] mark:"+i.get(0)+" "+i.get(1));
-							newItem.setMark(true);
-							newItem.getValue().setStyle(markedColor);
-							if(!i.get(i.size()-1).equals("")){
-								newItem.getValue().setTooltip(new Tooltip(i.get(i.size()-1)));
+							//newItem.setMark(true);
+							//newItem.getValue().setStyle(markedColor);
+							String comment = i.get(i.size()-1);
+							if(!comment.equals("")){
+								//newItem.getValue().setTooltip(new Tooltip(comment));
+								mc.setComment(comment);
 							}
-							markedFilesCashe.add(newItem);
+							mc.setMarked(true);
 						}
 					}
 				}
@@ -776,10 +710,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	}
 	
 	
-	public static void main(String[] args){
-		System.out.println("Working Directory = " + System.getProperty("user.dir"));
-		launch(args);
-	}
+	
 	
 	@Override
 	public int setAvailablePlugins(List<Plugin> pls) {
@@ -999,17 +930,17 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	
 	public class MyTreeItem<T> extends TreeItem<T>{
 		
-		private boolean mark = false;
+		//private boolean mark = false;
 		private EagleFile file;
 		private EagleDirectory dir;
 		
-		public void setMark(boolean isMark){
-			mark = isMark;
-		}
+		//public void setMark(boolean isMark){
+		//	mark = isMark;
+		//}
 		
-		public boolean getMark(){
-			return mark;
-		}
+		//public boolean getMark(){
+		//	return mark;
+		//}
 		
 		public void setFileEntity(EagleFile file){
 			this.file = file;
@@ -1037,10 +968,42 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			super(value,graphic);
 		}
 	}
+	
+	public class MarkableMyTreeItem extends MarkableItem<MyTreeItem<Label>>{
+
+		public MarkableMyTreeItem(MyTreeItem<Label> item, Node n) {
+			super(item, n);
+		}
+		
+		@Override
+		protected void setEventHandlers() {
+			getItem().getValue().addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>(){
+
+				@Override
+				public void handle(MouseEvent event) {
+					useDefaultMouseEventBehaviour(event);
+				}
+				
+			});
+			
+		}
+		@Override
+		protected void setLookNFeel() {
+			String unMarkedColor = "-fx-background-color: rgba(0, 0, 0, 0);";
+			String markedColor = "-fx-background-color: rgba(0, 0, 0, 0.31);";
+			if(getItem()==null){
+				return;
+			}else{
+				System.out.println("change look and feel");
+				if(isMarked()) getItem().getValue().setStyle(markedColor);
+				else getItem().getValue().setStyle(unMarkedColor);
+			}
+		}
+	}
 
 	@Override
 	public Object getMarkedItems() {
-		if(markedFilesCashe==null || markedFilesCashe.size()==0) return null;
+		if(markableItemManager == null || markableItemManager.getMarkedItems().size()==0) return null;
 		
 		markedFilesResult = new ArrayList<List<String>>();
 		List<String> headers = new ArrayList<String>();
@@ -1051,18 +1014,16 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		headers.add("Comment");
 		markedFilesResult.add(headers);
 		
-		for(MyTreeItem<Label> treeItem:markedFilesCashe){
+		List<MarkableItem> marked = markableItemManager.getMarkedItems();
+		for(MarkableItem m : marked){
+			MyTreeItem<Label> treeItem = (MyTreeItem<Label>) m.getItem();
 			EagleFile file = treeItem.getFileEntity();
 			List<String> mark = new ArrayList<String>();
 			mark.add(file.getDeviceID()+"");
 			mark.add(file.getFileID()+"");
 			mark.add(file.getFileName());
 			mark.add(""+file.getDateModified());
-			if(treeItem.getValue().getTooltip()!=null){
-				mark.add(treeItem.getValue().getTooltip().getText());
-			}else{
-				mark.add("");
-			}
+			mark.add(m.getComment());
 			markedFilesResult.add(mark);
 			//markedFilesResult.add(Arrays.asList((file.getDeviceID()+""),(file.getFileID()+""),file.getFileName(),(""+file.getDateModified())));
 		}
@@ -1072,7 +1033,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	@Override
 	public void setMarkedItems(Object items) {
 			markedFilesResult = new ArrayList<List<String>>();
-			markedFilesCashe = new ArrayList<MyTreeItem>();
+			markableItemManager.getItems().clear();
 			System.out.println("["+getName()+"] items = "+items);
 			if(items!=null){
 				System.out.println(markedFilesResult.getClass().getName()+ " vs "+items.getClass().getName());
@@ -1081,6 +1042,36 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			}
 				
 
+	}
+	
+	@Override
+	public void start(Stage stage) throws Exception {
+		System.out.println("folder structure started");
+		this.primaryStage = stage;
+
+		// Load the root layout from the fxml file
+        //Scene scene = new Scene(rootLayout);
+		Node view = (Node)getResult();
+		BorderPane viewContainer = new BorderPane();
+		viewContainer.setCenter(view);
+		primaryStage.setTitle(this.getName());
+	    primaryStage.setScene(new Scene(viewContainer)); 
+
+        //primaryStage.setScene(scene);
+        primaryStage.show();
+
+	    // Set On Close Window
+	    this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });	
+	}
+	public static void main(String[] args){
+		System.out.println("Working Directory = " + System.getProperty("user.dir"));
+		launch(args);
 	}
 
 }
