@@ -22,16 +22,39 @@ public class PluginManager {
 	protected Map<String, List<String>> configList;
 	
 	public PluginManager (String _pluginsDir) {
-		if (_pluginsDir!=null)
-			pluginsDir = _pluginsDir;
-		else
-			pluginsDir = "PluginBinaries";
-
 		plugins = new ArrayList<Plugin>();
-		configList = null;
-		loadPlugins();
+		configList = new HashMap<String, List<String>>();
+		setPluginsDir(_pluginsDir);
+			
+		//loadPlugins();
 
 		//System.setSecurityManager(new PluginSecurityManager(pluginsDir));
+	}
+	public void clearData(){
+		plugins.clear();
+		configList.clear();
+	}
+	public void setPluginsDir(String _pluginsDir){
+		clearData();
+		if(_pluginsDir!=null){
+			File dir = new File(_pluginsDir);
+			if (dir.exists() && dir.isDirectory()){
+				pluginsDir = _pluginsDir;
+			}else{
+				pluginsDir = null;
+			}
+		}else{
+			pluginsDir = null;
+		}
+	}
+	public List<Plugin> getPlugins(){
+		return plugins;
+	}
+	public Map<String, List<String>> getConfigList(){
+		return configList; 
+	}
+	public String getPluginsDir(){
+		return pluginsDir;
 	}
 	public Plugin getPluginWithName(String name){
 		for(Plugin pl : plugins){
@@ -49,9 +72,6 @@ public class PluginManager {
 			}
 		}
 		return null;
-	}
-	public List<Plugin> getPlugins(){
-		return plugins;
 	}
 	public List<String> getGUIViewPluginNames(){
 		List<String> ls = new ArrayList<String>();
@@ -131,47 +151,50 @@ public class PluginManager {
 		}
 
 	}
-	public void readConfig(){
-		configList = new HashMap<String,List<String>>();
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("pluginconfig.txt"));
-			String line = br.readLine();
-			String lastReadPlugin="";
-			while(line!=null){
-				int commentIdx = line.indexOf('#');
-				if(commentIdx!=-1){
-					line = line.substring(0,commentIdx);
-				}
-				String[] tokens = line.split("\\:");
-				if(tokens.length>0){
-					if(tokens[0].trim().equalsIgnoreCase("plugindir")){
-						pluginsDir=tokens[1].trim();
-					}else if(tokens[0].trim().equalsIgnoreCase("name")){
-						lastReadPlugin = tokens[1].trim();
-						configList.put(lastReadPlugin, new ArrayList<String>());
-					}else if(tokens[0].trim().equalsIgnoreCase("uses")){
-						List<String> pls = configList.get(lastReadPlugin);
-						for(int i=1; i<tokens.length; i++){
-							pls.add(tokens[i].trim());
-						}
+	public boolean readConfig(){
+		if(getPluginsDir()==null){
+			System.out.println("ERROR: [EagleEye.PluginManager] plugin directory does not exist");
+			return false;
+		}else{
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(pluginsDir+File.separator+"pluginconfig.txt"));
+				String line = br.readLine();
+				clearData();
+				String lastReadPlugin="";
+				while(line!=null){
+					int commentIdx = line.indexOf('#');
+					if(commentIdx!=-1){
+						line = line.substring(0,commentIdx);
 					}
-					line = br.readLine();
+					String[] tokens = line.split("\\:");
+					if(tokens.length>0){
+						if(tokens[0].trim().equalsIgnoreCase("name")){
+							lastReadPlugin = tokens[1].trim();
+							configList.put(lastReadPlugin, new ArrayList<String>());
+						}else if(tokens[0].trim().equalsIgnoreCase("uses")){
+							List<String> pls = configList.get(lastReadPlugin);
+							for(int i=1; i<tokens.length; i++){
+								pls.add(tokens[i].trim());
+							}
+						}
+						line = br.readLine();
+					}
 				}
+				
+				//print plugin config
+				Iterator it = configList.entrySet().iterator();
+			    while (it.hasNext()) {
+			        Map.Entry pairs = (Map.Entry)it.next();
+			        System.out.println(pairs.getKey() + " : " );
+			        List<String> pls = (List<String>)pairs.getValue();
+			        System.out.println ("use = "+pls);
+			    }
+			    return true;
+				
+			} catch (IOException e) {
+				System.out.println("ERROR: [EagleEye.PluginManager] cannot read \"pluginconfig.txt\"");
+				return false;
 			}
-			
-			//print plugin config
-			Iterator it = configList.entrySet().iterator();
-		    while (it.hasNext()) {
-		        Map.Entry pairs = (Map.Entry)it.next();
-		        System.out.println(pairs.getKey() + " : " );
-		        List<String> pls = (List<String>)pairs.getValue();
-		        System.out.println ("use = "+pls);
-		    }
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("ERROR: [EagleEye.PluginManager] cannot read \"pluginconfig.txt\"");
-			e.printStackTrace();
 		}
 	}
 	public void loadJar(String pathToJar) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException{
@@ -203,37 +226,43 @@ public class PluginManager {
 			}
 		}
 	}	
-	public void loadPlugins(){
+	public boolean loadPlugins(){
 		//read configuration of plugin relationships
-		readConfig();
-		
-		//load plugins
-		File dir = new File(pluginsDir);
-		if (dir.exists() && dir.isDirectory()) {
-			String[] files = dir.list();
-			for (int i=0; i<files.length; i++) {
-				if (! files[i].endsWith(".jar"))
-					continue;
-				String[] tokens = files[i].split("\\.");
-				if(configList.get(tokens[0])!=null){
-					try {
-						//load .jar pluginfile
-						System.out.println("find Jar in \""+dir.getName()+"\": "+files[i]);
-						loadJar(pluginsDir+ File.separator+files[i]);
-						
-					} catch (Exception ex) {
-						ex.printStackTrace();
-						System.err.println("File " + files[i] + " does not contain a valid Plugin class.");
+		if(readConfig()){
+
+			File dir = new File(pluginsDir);
+			if (dir.exists() && dir.isDirectory()) {
+				String[] files = dir.list();
+				for (int i=0; i<files.length; i++) {
+					if (! files[i].endsWith(".jar"))
+						continue;
+					String[] tokens = files[i].split("\\.");
+					if(configList.get(tokens[0])!=null){
+						try {
+							//load .jar pluginfile
+							System.out.println("find Jar in \""+dir.getName()+"\": "+files[i]);
+							loadJar(pluginsDir+ File.separator+files[i]);
+							
+						} catch (Exception ex) {
+							ex.printStackTrace();
+							System.err.println("File " + files[i] + " does not contain a valid Plugin class.");
+						}
 					}
 				}
+				connectPlugins();
+				return true;
 			}
+			
+			
+			return false;
+		}else{
+			System.out.println("ERROR: [EagleEye.loadPlugins] readConfig failed");
+			return false;
 		}
-		
-		connectPlugins();
 	}
 	
 	//for each plugin, set up/down stream plugins
-	public void connectPlugins(){
+	public boolean connectPlugins(){
 		for(Plugin pl: plugins){
 			String[] tokens = pl.getClass().getName().split("\\.");
 			System.out.println("---"+tokens[tokens.length-1]+"---");
@@ -248,6 +277,7 @@ public class PluginManager {
 			}
 			pl.setAvailablePlugins(use);
 		}
+		return true;
 	}
 	
 	/****************** for test ***************************/

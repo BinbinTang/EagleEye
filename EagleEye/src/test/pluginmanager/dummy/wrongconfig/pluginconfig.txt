@@ -1,0 +1,15 @@
+# List of plugins & their relationship
+# Syntax: 
+# "#" for comment
+# NAME: <plugin name>
+# USES: <List of useable plugin names separated by ":">
+
+NAME: TimelinePlugin # some comment
+# input : DBController
+# output: GUI view
+USES: FolderStructureTreePlugin
+
+NAME: FolderStructureTreePlugin
+# input : DBController
+# output: GUI view
+USES: ImageViewPlugin : TextViewPlugin

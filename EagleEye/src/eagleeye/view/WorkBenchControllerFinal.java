@@ -103,6 +103,7 @@ public class WorkBenchControllerFinal {
 	@FXML
 	private void initialize() {	
 		pm = new PluginManager("PluginBinaries");
+		pm.loadPlugins();
 		dbController = new DBQueryController();
 		projm = new ProjectManager();
 		
