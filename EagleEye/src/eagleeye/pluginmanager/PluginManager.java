@@ -143,18 +143,20 @@ public class PluginManager {
 					line = line.substring(0,commentIdx);
 				}
 				String[] tokens = line.split("\\:");
-				if(tokens[0].trim().equalsIgnoreCase("plugindir")){
-					pluginsDir=tokens[1].trim();
-				}else if(tokens[0].trim().equalsIgnoreCase("name")){
-					lastReadPlugin = tokens[1].trim();
-					configList.put(lastReadPlugin, new ArrayList<String>());
-				}else if(tokens[0].trim().equalsIgnoreCase("uses")){
-					List<String> pls = configList.get(lastReadPlugin);
-					for(int i=1; i<tokens.length; i++){
-						pls.add(tokens[i].trim());
+				if(tokens.length>0){
+					if(tokens[0].trim().equalsIgnoreCase("plugindir")){
+						pluginsDir=tokens[1].trim();
+					}else if(tokens[0].trim().equalsIgnoreCase("name")){
+						lastReadPlugin = tokens[1].trim();
+						configList.put(lastReadPlugin, new ArrayList<String>());
+					}else if(tokens[0].trim().equalsIgnoreCase("uses")){
+						List<String> pls = configList.get(lastReadPlugin);
+						for(int i=1; i<tokens.length; i++){
+							pls.add(tokens[i].trim());
+						}
 					}
+					line = br.readLine();
 				}
-				line = br.readLine();
 			}
 			
 			//print plugin config
