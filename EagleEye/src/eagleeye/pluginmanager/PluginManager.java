@@ -192,7 +192,7 @@ public class PluginManager {
 			    return true;
 				
 			} catch (IOException e) {
-				System.out.println("ERROR: [EagleEye.PluginManager] cannot read \"pluginconfig.txt\"");
+				System.out.println("ERROR: [EagleEye.PluginManager.readConfig] cannot read \"pluginconfig.txt\"");
 				return false;
 			}
 		}
@@ -256,7 +256,7 @@ public class PluginManager {
 			
 			return false;
 		}else{
-			System.out.println("ERROR: [EagleEye.loadPlugins] readConfig failed");
+			System.out.println("ERROR: [EagleEye.PluginManager.loadPlugins] readConfig failed");
 			return false;
 		}
 	}
@@ -275,7 +275,9 @@ public class PluginManager {
 					System.out.println("use : "+p);
 				}
 			}
-			pl.setAvailablePlugins(use);
+			if(pl.setAvailablePlugins(use)!=0){
+				System.out.println("ERROR: [EagleEye.PluginManager.connectPlugins] configured connection was wrong");
+			}
 		}
 		return true;
 	}

@@ -28,10 +28,16 @@ public class ProjectManager {
 	public Project getProject(){
 		return openedProject;
 	}
-	public void writeProjectFile(String path, Map<String, List<List<String>>> markedItems){
+	public boolean writeProjectFile(String path, Map<String, List<List<String>>> markedItems){
 		if(openedProject == null){
 			System.out.println("[Project Manager] no opened project");
-			return;
+			return false;
+		}
+		
+		//This should not happen
+		if(markedItems == null){
+			System.out.println("[Project Manager] marked items cannot be null. ");
+			return false;
 		}
 		
 		openedProject.setMarkedItems(markedItems);
@@ -54,6 +60,9 @@ public class ProjectManager {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		System.out.println("[Project Manager] project written successfully "+dateFormat.format(date));
+		getProject().setMarkedItems(markedItems);
+		getProject().setProjectPath(projectPath);
+		return true;
 	}
 	public Project readProjectFile(String path){
 		
