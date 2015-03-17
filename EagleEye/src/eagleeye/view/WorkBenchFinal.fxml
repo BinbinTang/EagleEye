@@ -37,6 +37,7 @@
 												<MenuItem fx:id="openProject" mnemonicParsing="false" text="Open Project" />
 												<MenuItem fx:id="saveProject" mnemonicParsing="false" text="Save" />
 												<MenuItem fx:id="saveAsProject" mnemonicParsing="false" text="Save as" />
+												<MenuItem fx:id="generateReport" mnemonicParsing="false" text="Generate Report" />
 											</items>
 										</Menu>
 										<Menu fx:id="analysisMenu" mnemonicParsing="false" style="-fx-font-size: 18;" text="Tools" />

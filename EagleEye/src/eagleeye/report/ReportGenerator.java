@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import eagleeye.api.entities.EagleDevice;
 import eagleeye.entities.Device;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -28,7 +29,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 
 public class ReportGenerator {
 
-	private JasperReportBuilder setUpReport(JasperReportBuilder report, String reportTitle, Device device, String projectFileName) throws FileNotFoundException {
+	private JasperReportBuilder setUpReport(JasperReportBuilder report, String reportTitle, EagleDevice device, String projectFileName) throws FileNotFoundException {
 				
 		// Styles
 		StyleBuilder boldText = DynamicReports.stl.style().bold();
@@ -68,7 +69,11 @@ public class ReportGenerator {
 		
 	}
 	
-	public void generateTableStyleReport(List<List<String>> reportData, Device device, String projectFileName) throws Exception {
+	public boolean generateTableStyleReport(List<List<String>> reportData, EagleDevice device, String projectFileName) throws Exception {
+		if(reportData==null || device==null || projectFileName==null ){
+			//TODO: is projectfile necessary?
+			return false;
+		}
 		
 		JasperReportBuilder tableReport = DynamicReports.report(); 
 		tableReport = setUpReport(tableReport,"Marked Files Report in Table",device,projectFileName);
@@ -113,6 +118,8 @@ public class ReportGenerator {
 		
 		//write to PDF
 		tableReport.toPdf(new FileOutputStream(new File("./TableReport.pdf")));
+		
+		return true;
 	}
 	
 	private JRDataSource createDataSource(List<List<String>> reportData) {

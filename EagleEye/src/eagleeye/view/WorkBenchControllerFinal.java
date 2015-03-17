@@ -2,6 +2,7 @@ package eagleeye.view;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -34,6 +35,7 @@ import eagleeye.main.MainApp;
 import eagleeye.pluginmanager.*;
 import eagleeye.projectmanager.Project;
 import eagleeye.projectmanager.ProjectManager;
+import eagleeye.report.ReportGenerator;
 
 public class WorkBenchControllerFinal {		
 	// DataBase
@@ -62,6 +64,7 @@ public class WorkBenchControllerFinal {
 	@FXML MenuItem openProject;
 	@FXML MenuItem saveProject;
 	@FXML MenuItem saveAsProject;
+	@FXML MenuItem generateReport;
 	
 	@FXML
 	private MenuItem newDevice;
@@ -261,6 +264,47 @@ public class WorkBenchControllerFinal {
 		});
 
 		newDevice.setOnAction(this::handleNewDirectory);
+		
+		//generate report
+		generateReport.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				
+				
+				
+				ReportGenerator RG = new ReportGenerator();
+				
+				List<List<String>> reportData = pm.getAllPluginMarkedItems().get("FolderStructureTreePlugin");
+				Project currentProject = projm.getProject();
+				String projectPath = null;
+				EagleDevice currentDevice=null;
+				if(currentProject!=null){
+					projectPath = currentProject.getProjectPath();
+					int dvID = currentProject.getDeviceID();
+					ArrayList<EagleDevice> devices = dbController.getAllDevices();
+					for(EagleDevice dv: devices ){
+						System.out.println("device id = "+ dv.getDeviceID());
+						if(dv.getDeviceID()==dvID){
+							currentDevice = dv;
+						}
+					}
+				}
+				System.out.println("reportdata ="+reportData);
+				System.out.println("current device = " + currentDevice);
+				System.out.println("project path ="+projectPath);
+				try {
+					if(RG.generateTableStyleReport(reportData,currentDevice,projectPath)){
+						System.out.println("SUCCESSFUL: report generated");
+					}else{
+						System.out.println("UNSUCCESSFUL: report not generated");
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		});
 		
 		// on start
 		refreshDeviceList();
