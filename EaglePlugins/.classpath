@@ -5,6 +5,10 @@
 	<classpathentry kind="lib" path="DBresources/sqlite-jdbc-3.8.7.jar"/>
 	<classpathentry kind="lib" path="src/extractor/yaffs2/tika-app-1.6.jar"/>
 	<classpathentry kind="lib" path="eagleeyeAPI/pluginAPI_v8.jar"/>
+	<classpathentry kind="lib" path="testFX/testFx-3.0.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="testFX/testFx-3.0.0-sources.jar"/>
+	<classpathentry kind="lib" path="testFX/testFx-3.0.0.jar"/>
+	<classpathentry kind="lib" path="testFX/guava-18.0.jar"/>
 	<classpathentry kind="src" path="/EagleEye"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

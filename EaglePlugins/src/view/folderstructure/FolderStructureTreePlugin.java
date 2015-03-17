@@ -958,13 +958,13 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			return dir;
 		}
 		
-		MyTreeItem(){
+		public MyTreeItem(){
 			super();
 		}
-		MyTreeItem(T value){
+		public MyTreeItem(T value){
 			super(value);
 		}
-		MyTreeItem(T value, Node graphic){
+		public MyTreeItem(T value, Node graphic){
 			super(value,graphic);
 		}
 	}
