@@ -266,13 +266,13 @@
                                                             </AnchorPane>
                                                             <AnchorPane>
                                                                <children>
-                                    										<Button fx:id="searchButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleFilter" onMouseClicked="#handleFilter" prefHeight="30.0" prefWidth="120.0" text="Search" textAlignment="CENTER">
+                                    										<Button fx:id="searchButton" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#handleFilter" prefHeight="30.0" prefWidth="120.0" text="Search" textAlignment="CENTER">
                                                                      <font>
                                                                         <Font name="Segoe UI Light" size="18.0" />
                                                                      </font>
                                                                    
                                                                   </Button>
-                                                                  <Button fx:id="resetSearchBtn" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="149.0" layoutY="15.0" mnemonicParsing="false" onAction="#resetFilter" onMouseClicked="#handleFilter" prefHeight="30.0" prefWidth="120.0" text="Reset" textAlignment="CENTER">
+                                                                  <Button fx:id="resetSearchBtn" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="149.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#resetFilter" prefHeight="30.0" prefWidth="120.0" text="Reset" textAlignment="CENTER">
                                                                      <font>
                                                                         <Font name="Segoe UI Light" size="18.0" />
                                                                      </font>
