@@ -114,7 +114,7 @@ public class ReportGenerator {
 		// Add Footer
 		tableReport.pageFooter(DynamicReports.cmp.pageXofY());
 		
-		tableReport.show();
+		//tableReport.show();
 		
 		//write to PDF
 		tableReport.toPdf(new FileOutputStream(new File("./TableReport.pdf")));

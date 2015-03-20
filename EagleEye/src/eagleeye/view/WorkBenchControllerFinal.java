@@ -163,7 +163,7 @@ public class WorkBenchControllerFinal {
 						@Override
 						public void handle(MouseEvent event) {
 							if(dbController.getDeviceID() != -1){
-								System.out.println("[set event]"+ pl.getClass().getName());
+								System.out.println("[set view]"+ pl.getClass().getName());
 								List params = new ArrayList();
 								params.add((DBController) dbController);
 								pl.setParameter(params);

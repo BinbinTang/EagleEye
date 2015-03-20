@@ -56,7 +56,7 @@ public abstract class MarkableItem<T>{
 			if(!(getComment().trim().equals(""))) 
 				setComment("");
 			mark.setText("Mark");
-			System.out.println(getItem()+" is Un-marked");
+			//System.out.println(getItem()+" is Un-marked");
 		}
 		setLookNFeel();
 	}
@@ -82,7 +82,7 @@ public abstract class MarkableItem<T>{
 		dropDownMenu = m;
 	}
 	protected void setDefaultMenu(){
-		System.out.println("menu set");
+		//System.out.println("menu set");
 		dropDownMenu = new ContextMenu();
 		mark = new MenuItem("Mark");
 		addComment = new MenuItem("Edit Comment");

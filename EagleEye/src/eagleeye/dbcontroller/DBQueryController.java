@@ -234,7 +234,7 @@ public class DBQueryController implements DBController {
 				
 				
 				FileEntity f = new FileEntity();
-			
+				f.modifyDeviceID(deviceID);
 				f.modifyFileName(rs.getString("FileName"));
 				f.modifyFileID(rs.getInt("FileID"));
 				f.modifyDirectoryID(rs.getInt("DirectoryID"));
