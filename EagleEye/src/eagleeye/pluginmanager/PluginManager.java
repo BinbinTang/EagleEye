@@ -144,10 +144,11 @@ public class PluginManager {
 			if(pluginsMarkedItems!=null){
 				markedItems = pluginsMarkedItems.get(pluginClassName);
 			}
-			if(markedItems!=null){
-				p.setMarkedItems(markedItems);
-				System.out.println("[Plugin Manager] distributed: "+p.getName()+" "+markedItems.size()+" items");
+			if(markedItems==null){
+				markedItems = new ArrayList<List<String>>();
 			}
+			p.setMarkedItems(markedItems);
+			System.out.println("[Plugin Manager] distributed: "+p.getName()+" "+markedItems.size()+" items");
 		}
 
 	}
