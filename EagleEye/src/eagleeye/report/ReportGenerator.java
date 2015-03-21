@@ -117,7 +117,11 @@ public class ReportGenerator {
 		//tableReport.show();
 		
 		//write to PDF
-		tableReport.toPdf(new FileOutputStream(new File("./TableReport.pdf")));
+		File f = new File("./TableReport.pdf");
+		FileOutputStream fileOutput = new FileOutputStream(f);
+		tableReport.toPdf(fileOutput);
+		fileOutput.flush();
+		fileOutput.close();
 		
 		return true;
 	}
