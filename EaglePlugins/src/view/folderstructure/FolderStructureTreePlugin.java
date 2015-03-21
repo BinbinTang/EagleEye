@@ -73,8 +73,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
     
     // Marked files
     private List<List<String>> markedFilesResult;
-    private Map<Integer, MarkableMyTreeItem> markedItemsHash; //necessary for tracking marked files
-    //private ArrayList<MyTreeItem> markedFilesCashe;
+    private Map<Integer, MarkableMyTreeItem> markedItemsHash; //for performance improvement
     private MarkableItemManager markableItemManager;
 
 	// Colors
@@ -180,12 +179,9 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private CheckBox isOriginalCheckBox;
 	
 	public FolderStructureTreePlugin(){
-		//myNode = new SwingNode();
 		resultListView = new ListView();
 		readers = new ArrayList<Plugin>();
 		popUpViews = new ArrayList<Plugin>();
-		//markedFilesResult = new ArrayList<List<String>> ();
-	    //markedFilesCashe = new ArrayList<MyTreeItem> ();
 	    markableItemManager = new MarkableItemManager();
 		System.out.println("Folder Structure Plugin Loaded");
 	}
@@ -208,21 +204,15 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			allFiles = dbController.getAllFiles();
 		}else{
 			allFiles = dbController.getFilteredFiles(filter);
-			updateMarkedItemsHash();
 		}
-		updateMarkedItemsHash();
-		System.out.println(getMarkedHash());
-		/*if(getMarkedItems()!=null){
-			setMarkedItems(getMarkedItems());
-		}*/
-		buildTree();
-		List<MarkableItem> marked = markableItemManager.getMarkedItems();
-		for(MarkableItem m : marked){
-			System.out.println(m);
+		buildTree();	
+		List<MarkableItem> mti = markableItemManager.getMarkedItems();
+		for(MarkableItem i: mti){
+			System.out.println("MarkedFile = "+i.getItem());
 		}
-		
 	}
 
+	//for debuging purpose
 	private String getMarkedHash(){
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<Integer, MarkableMyTreeItem> entry : markedItemsHash.entrySet()){
@@ -232,58 +222,86 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		}
 		return sb.toString();
 	}
+	
 	//init Hash, called only once for first getAllFiles call
-	private void initMarkedItemsHash(){
-		allFiles = dbController.getAllFiles();
-		markedItemsHash = new HashMap<Integer, MarkableMyTreeItem>();
+	private void initItemList(){
+		ArrayList<EagleFile> allItems = dbController.getAllFiles();
 		markableItemManager.getMarkedItems().clear();
+		markedItemsHash = new HashMap<Integer, MarkableMyTreeItem>();
 		
-		if(allFiles!=null){
-			//init hash table & markableitems
-			for (EagleFile f:allFiles){
-				MyTreeItem<Label> newItem = new MyTreeItem<Label> (new Label("dummy"));
+		if(allItems!=null){
+			for (EagleFile f:allItems){
+				
+				//init tree item
+				Label itemName = new Label(""+ f.getFileName() + "." + f.getFileExt() + " [" + f.getDateCreated() + "]");
+				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName);
 				newItem.setFileEntity(f);
-				MarkableMyTreeItem mc = new MarkableMyTreeItem(newItem, null);
-				//markableItemManager.add(mc);
-				markedItemsHash.put(f.getFileID(),mc);
-			}
-			for(List<String> i : markedFilesResult){
-				try { 
-					int fileID = Integer.parseInt(i.get(1));
-					String comment = i.get(i.size()-1);
-					MarkableMyTreeItem mc = markedItemsHash.get(fileID);
-					if(mc!=null){
-						mc.setMarked(true);
-						if(!comment.equals("")){
-							mc.setComment(comment);
-						}
-					}else{
-						System.out.println("[FolderStructureTreePlugin] ERROR: cannot find this file. this should not happen");
-					}
-				}catch(NumberFormatException e){
+				switch(f.getCategory()){
+					case("Image"): 
+						newItem.setGraphic(new ImageView(imageIcon));
+					break;
+					case("Video"): 
+						newItem.setGraphic(new ImageView(videoIcon));
+					break;
+					case("Audio"): 
+						newItem.setGraphic(new ImageView(audioIcon));
+					break;
+					case("Document"): 
+						newItem.setGraphic(new ImageView(docIcon));
+					break;
+					case("Database"): 
+						newItem.setGraphic(new ImageView(dbIcon));
+					break;
+					case("Compressed Folder"): 
+					break;
+					case("Others"): 
+						newItem.setGraphic(new ImageView(othersIcon));
+					break;
+					
+					default:
+						newItem.setGraphic(new ImageView(fileIcon));
+					break;
 					
 				}
+				if(newItem.getFileEntity().getIsRecovered()){		
+					newItem.getValue().setTextFill(isRecoveredColor);
+				}else if(newItem.getFileEntity().getIsModified()){
+					newItem.getValue().setTextFill(isModifiedColor);
+				}else{
+					newItem.getValue().setTextFill(originalColor);
+				}
+				
+				//add to markable item
+				MarkableMyTreeItem mc = new MarkableMyTreeItem(newItem, null);
+				markableItemManager.add(mc);
+				markedItemsHash.put(f.getFileID(), mc); //for faster search later on
+				
+				//mark from project file
+				//TODO: use HashMap for speed improvement
+				for(List<String> i : markedFilesResult){
+					try { 
+						int fileID = Integer.parseInt(i.get(1));
+						if(fileID == f.getFileID()){
+							String comment = i.get(i.size()-1);
+							mc.setMarked(true);
+							if(!comment.equals("")){
+								mc.setComment(comment);
+							}
+						}
+					}catch(NumberFormatException e){
+						//System.out.println("Header ignored");
+					}
+				}
 			}
-		}else{
-			System.out.println("[FolderStructureTreePlugin] ERROR: no files to construct tree, this should not happen");
-		}
-	}
-	//update Hash
-	private void updateMarkedItemsHash(){
 		
-		List<MarkableItem> items = markableItemManager.getItems();
-		if(items!=null){
-			for(MarkableItem i : items){
-				int key = ((MyTreeItem<Label>)(i.getItem())).getFileEntity().getFileID();
-				String comment = i.getComment();
-				markedItemsHash.get(key).setMarked(i.isMarked());
-				markedItemsHash.get(key).setComment(comment);
-			}
+		}else{
+			System.out.println("[FolderStructureTreePlugin] ERROR: no files get from DB, this should not happen");
 		}
 	}
+	
 	// Build treeView
 	private void buildTree(){
-		markableItemManager.getItems().clear();
+		//markableItemManager.getItems().clear();
 		if (TreeStructure.size() != 0) {
 			// TreeView
 			rootNode = new MyTreeItem<Label>(new Label(TreeStructure.get(0)
@@ -469,83 +487,17 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		//System.out.println("["+getName()+"] file device ID = " + allFiles.get(11).getDeviceID());
 		for (EagleFile file : allFiles) {
 			if(file.getDirectoryID() == dir.getDirectoryID()){
-				Label itemName = new Label(""+ file.getFileName() + "." + file.getFileExt() + " [" + file.getDateCreated() + "]");
-				MyTreeItem<Label> newItem = new MyTreeItem<Label>(itemName);
-				//newItem.getGraphic().setVisible(false);
-				MarkableMyTreeItem mc = new MarkableMyTreeItem(newItem, n);
-				markableItemManager.add(mc);
-				newItem.setFileEntity(file);
-				//Types are: "All", "Image","Video","Audio","Document","Database", "Compressed Folder", "Others"
-				switch(file.getCategory()){
-					case("Image"): 
-						newItem.setGraphic(new ImageView(imageIcon));
-					break;
-					case("Video"): 
-						newItem.setGraphic(new ImageView(videoIcon));
-					break;
-					case("Audio"): 
-						newItem.setGraphic(new ImageView(audioIcon));
-					break;
-					case("Document"): 
-						newItem.setGraphic(new ImageView(docIcon));
-					break;
-					case("Database"): 
-						newItem.setGraphic(new ImageView(dbIcon));
-					break;
-					case("Compressed Folder"): 
-					break;
-					case("Others"): 
-						newItem.setGraphic(new ImageView(othersIcon));
-					break;
-					
-					default:
-						newItem.setGraphic(new ImageView(fileIcon));
-					break;
-					
-				}				
-				/*if(markedFilesResult!=null){
-					//System.out.println(newItem.getFileEntity().getDeviceID()+" "+newItem.getFileEntity().getFileID());
-					for(List<String> i : markedFilesResult){
-						if((newItem.getFileEntity().getDeviceID()+"").equals(i.get(0)) && (newItem.getFileEntity().getFileID()+"").equals(i.get(1))){
-							System.out.println("["+getName()+"] mark:"+i.get(0)+" "+i.get(1));
-							//newItem.setMark(true);
-							//newItem.getValue().setStyle(markedColor);
-							String comment = i.get(i.size()-1);
-							if(!comment.equals("")){
-								//newItem.getValue().setTooltip(new Tooltip(comment));
-								mc.setComment(comment);
-							}
-							mc.setMarked(true);
-						}
-					}
-				}*/
-				MarkableMyTreeItem mti = markedItemsHash.get(newItem.getFileEntity().getFileID());
-				if(mti!=null && mti.isMarked()){
-					System.out.println("["+getName()+"] mark:"+newItem.getFileEntity().getDeviceID()+" "+newItem.getFileEntity().getFileID());
-					//newItem.setMark(true);
-					//newItem.getValue().setStyle(markedColor);
-					String comment = mti.getComment();
-					if(!comment.equals("")){
-						//newItem.getValue().setTooltip(new Tooltip(comment));
-						mc.setComment(comment);
-					}
-					mc.setMarked(true);
+				MarkableMyTreeItem mti = markedItemsHash.get(file.getFileID());
+				if(mti!=null){
+					mti.setDisplayNode(n);
+					MyTreeItem<Label> newItem = mti.getItem();
+					node.getChildren().add(newItem);
+					TreeItem<Label> nodeCopy = node;
+					do{
+						nodeCopy.setExpanded(true);
+						nodeCopy = nodeCopy.getParent();
+					}while(nodeCopy!= null);
 				}
-				
-				if(newItem.getFileEntity().getIsRecovered()){		
-					newItem.getValue().setTextFill(isRecoveredColor);
-				}else if(newItem.getFileEntity().getIsModified()){
-					newItem.getValue().setTextFill(isModifiedColor);
-				}else{
-					newItem.getValue().setTextFill(originalColor);
-				}
-			
-				node.getChildren().add(newItem);
-				TreeItem<Label> nodeCopy = node;
-				do{
-					nodeCopy.setExpanded(true);
-					nodeCopy = nodeCopy.getParent();
-				}while(nodeCopy!= null);
 				
 			}
 		}
@@ -846,7 +798,6 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	@Override
 	public int setParameter(List params) {
-		System.out.println("======called set parameter =========");
 		if(params.size()!=1)
 			return 1;
 		Object o = params.get(0);
@@ -854,7 +805,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 		if(interfaces[0].equals(DBController.class)){
 			dbController = (DBController) o;
 			if(markedItemsHash == null){
-				initMarkedItemsHash();
+				initItemList();
 			}
 			return 0;
 		}
@@ -1093,36 +1044,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 
 	@Override
 	public Object getMarkedItems() {
-		if(markedItemsHash==null) return null;
-		updateMarkedItemsHash();
-		markedFilesResult = new ArrayList<List<String>>();
-		List<String> headers = new ArrayList<String>();
-		headers.add("DeviceID");
-		headers.add("FileID");
-		headers.add("Name");
-		headers.add("Time");
-		headers.add("Comment");
-		markedFilesResult.add(headers);
-		
-		for (Map.Entry<Integer, MarkableMyTreeItem> entry : markedItemsHash.entrySet()){
-			if(entry.getValue().isMarked()){
-				MyTreeItem<Label> treeItem = (MyTreeItem<Label>) entry.getValue().getItem();
-				EagleFile file = treeItem.getFileEntity();
-				List<String> mark = new ArrayList<String>();
-				mark.add(file.getDeviceID()+"");
-				mark.add(file.getFileID()+"");
-				mark.add(file.getFileName());
-				mark.add(""+file.getDateModified());
-				mark.add(entry.getValue().getComment());
-				markedFilesResult.add(mark);
-			}
-		}
-		if(markedFilesResult.size()<=1) return null;
-		else{
-			return (Object)markedFilesResult;
-		}
-		
-		/*
+
 		if(markableItemManager == null || markableItemManager.getMarkedItems().size()==0) return null;
 		
 		markedFilesResult = new ArrayList<List<String>>();
@@ -1147,29 +1069,12 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 			markedFilesResult.add(mark);
 			//markedFilesResult.add(Arrays.asList((file.getDeviceID()+""),(file.getFileID()+""),file.getFileName(),(""+file.getDateModified())));
 		}
-		return (Object)markedFilesResult;*/
+		return (Object)markedFilesResult;
 	}
-	
-	/*
-	private void integrateMarkedItems(){
-		List<MarkableItem> marked = markableItemManager.getMarkedItems();
-		for(MarkableItem m : marked){
-			MyTreeItem<Label> treeItem = (MyTreeItem<Label>) m.getItem();
-			EagleFile file = treeItem.getFileEntity();
-			List<String> mark = new ArrayList<String>();
-			mark.add(file.getDeviceID()+"");
-			mark.add(file.getFileID()+"");
-			mark.add(file.getFileName());
-			mark.add(""+file.getDateModified());
-			mark.add(m.getComment());
-			markedFilesResult.add(mark);
-			//markedFilesResult.add(Arrays.asList((file.getDeviceID()+""),(file.getFileID()+""),file.getFileName(),(""+file.getDateModified())));
-		}
-	}*/
 
 	@Override
 	public void setMarkedItems(Object items) {
-			System.out.println("======called set marked items =========");
+
 			markedFilesResult = new ArrayList<List<String>>();
 			System.out.println("["+getName()+"] items = "+items);
 			if(items!=null){
