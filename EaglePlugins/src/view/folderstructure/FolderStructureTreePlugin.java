@@ -136,7 +136,7 @@ public class FolderStructureTreePlugin extends Application implements Plugin{
 	private Button resetSearchButton;
 	
 	// DatePicker
-	private LocalDate startDate = LocalDate.parse("1992-05-08");
+	private LocalDate startDate = LocalDate.parse("1800-05-08");
 	private LocalDate endDate = LocalDate.now();
 	private final Image calendarIcon = new Image("file:Icons/fileIcon.jpg");
 	@FXML
