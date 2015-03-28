@@ -12,12 +12,16 @@ import java.util.List;
 
 import eagleeye.api.entities.EagleDevice;
 import eagleeye.entities.Device;
+import net.sf.dynamicreports.jasper.builder.JasperConcatenatedReportBuilder;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.jasper.builder.export.Exporters;
 import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.chart.Bar3DChartBuilder;
 import net.sf.dynamicreports.report.builder.column.Columns;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.FillerBuilder;
 import net.sf.dynamicreports.report.builder.component.ImageBuilder;
+import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
 import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
@@ -25,6 +29,7 @@ import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
+
 
 
 public class ReportGenerator {
@@ -70,6 +75,7 @@ public class ReportGenerator {
 	}
 	
 	public boolean generateTableStyleReport(List<List<String>> reportData, EagleDevice device, String projectFileName) throws Exception {
+		
 		if(reportData==null || device==null || projectFileName==null ){
 			//TODO: is projectfile necessary?
 			return false;
@@ -158,7 +164,133 @@ public class ReportGenerator {
 		
 	}
 	
-	//The main mehtod is only used for testing
+	private JRDataSource createBarChartCounterDataSource(List<List<String>> reportData, String groupBy) {
+		
+		int groupByIndex = -1;
+		boolean existGroupName = false;
+		List<ChartCounter> BarChartCounter = new ArrayList<ChartCounter>();
+		
+		for(int i = 0; i<reportData.get(0).size();i++) {
+			
+			String groupByName = reportData.get(0).get(i);
+			if(groupByName.equals(groupBy)) {
+				groupByIndex = i;
+				break;
+			}
+		}
+		
+		if(groupByIndex == -1)
+			return null;
+		
+		for(int i = 0; i<reportData.size(); i++) {
+			
+			String groupName = reportData.get(i).get(groupByIndex);
+			
+			for(ChartCounter counter : BarChartCounter) {
+				
+				if(groupName.equals(counter.getName())) {
+					counter.addCount();
+					existGroupName = true;
+					break;
+				}
+			}
+			
+			if(!existGroupName) {
+				ChartCounter newCounter = new ChartCounter(groupName);
+				BarChartCounter.add(newCounter);
+			}
+			
+			existGroupName = false;
+		}
+		
+		DRDataSource dataSource = new DRDataSource(groupBy, "Quantity");
+		
+		for(ChartCounter counter : BarChartCounter) {
+			
+			System.out.println(counter.getName() + " " + counter.getCount());
+			dataSource.add(counter.getName(),counter.getCount());
+		}
+		
+		return dataSource;
+		
+	}
+	
+	public boolean generateBarChartReport (List<List<String>> reportData, EagleDevice device, String projectFileName, String groupBy) throws Exception {
+		
+		if(reportData==null || device==null || projectFileName==null ){
+			//TODO: is projectfile necessary?
+			return false;
+		}
+		
+		JasperConcatenatedReportBuilder mainReport = DynamicReports.concatenatedReport();
+		JasperReportBuilder barChartReport = DynamicReports.report();
+		JasperReportBuilder dataDetailReport = DynamicReports.report();
+		
+		String reportTitle = "Marked Files Report in 3D Bar Chart group by " + groupBy;
+		
+		barChartReport = setUpReport(barChartReport,reportTitle,device,projectFileName);
+		dataDetailReport.setPageFormat(PageType.A4, PageOrientation.LANDSCAPE);
+		TextColumnBuilder<String> groupByColumn = null;
+		
+		// Styles
+		StyleBuilder boldStyle = DynamicReports.stl.style().bold();
+		StyleBuilder boldStyleCenter = DynamicReports.stl.style(boldStyle).setHorizontalAlignment(HorizontalAlignment.CENTER);
+		StyleBuilder centerText = DynamicReports.stl.style().setHorizontalAlignment(HorizontalAlignment.CENTER);
+		StyleBuilder columnHeaderStyle = DynamicReports.stl.style(boldStyleCenter).setBorder(
+					DynamicReports.stl.pen1Point()
+					).setBackgroundColor(Color.LIGHT_GRAY);
+		
+		//initialize column for bar Chart Data
+		TextColumnBuilder<String> groupColumn = Columns.column(groupBy, groupBy,DynamicReports.type.stringType());
+		TextColumnBuilder<Integer> quantityColumn = Columns.column("Quantity", "Quantity",DynamicReports.type.integerType());
+		barChartReport.addColumn(groupColumn);
+		barChartReport.addColumn(quantityColumn);
+		
+		// set column header Style
+		barChartReport.setColumnTitleStyle(columnHeaderStyle);
+		
+		// Highlight rows for better outlook
+		barChartReport.highlightDetailEvenRows();
+				
+		// add data source
+		JRDataSource barChartData = createBarChartCounterDataSource(reportData, groupBy);
+		barChartReport.setDataSource(barChartData).setColumnStyle(centerText);
+						
+		//add Charts
+		Bar3DChartBuilder chart = DynamicReports.cht.bar3DChart().setTitle("Bar Chart Report").setCategory(groupColumn).addSerie(DynamicReports.cht.serie(quantityColumn));
+		barChartReport.summary(chart);
+		
+		//DETAIL DATA SECTION
+		
+		// add columns
+		List<String> columnNames = getColumnNames(reportData);
+		for(String columnName : columnNames){
+			
+			TextColumnBuilder<String> column = Columns.column(columnName, columnName,DynamicReports.type.stringType());
+			dataDetailReport.addColumn(column);
+			if(columnName.equals(groupBy))
+				groupByColumn = column;
+		}
+		
+		// set column header Style
+		dataDetailReport.setColumnTitleStyle(columnHeaderStyle);
+		
+		// add data source
+		JRDataSource data = createDataSource(reportData);
+		dataDetailReport.setDataSource(data).setColumnStyle(centerText);
+		
+		// Highlight rows for better outlook
+		dataDetailReport.highlightDetailEvenRows();
+		dataDetailReport.groupBy(groupByColumn).setTextStyle(boldStyle);
+		
+		mainReport.concatenate(barChartReport,dataDetailReport);
+		mainReport.toPdf(Exporters.pdfExporter("./barChartReport.pdf"));
+			
+		return true;
+	}
+	
+	
+	//The main method is only used for testing
 	//run generateTableStyleReport.
 	public static void main(String[] args) throws Exception {
 		
@@ -186,7 +318,8 @@ public class ReportGenerator {
 		device.modifyDeviceName("Jack Android Phone");
 		device.modifyDeviceOwner("Jack");
 		
-		RG.generateTableStyleReport(reportData,device,"Jack Project File 1");
+		//RG.generateTableStyleReport(reportData,device,"Jack Project File 1");
+		RG.generateBarChartReport(reportData, device, "Jack Project File 1 ", "Plugin Name");
 	}
 
 }
