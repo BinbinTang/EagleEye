@@ -80,3 +80,8 @@ NAME: AndroidYaffs2ImageExtractorPlugin
 # input : List{String diskImgFolderPath}
 # output: List<List<EagleFile>> entityList(partition(files))
 USES: 
+
+NAME: TableViewPlugin
+# input : DBController
+# output: GUI view
+USES: SQLiteReaderPlugin
