@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javafx.concurrent.Task;
@@ -274,7 +275,7 @@ public class WorkBenchControllerFinal {
 				
 				ReportGenerator RG = new ReportGenerator();
 				
-				List<List<String>> reportData = pm.getAllPluginMarkedItems().get("FolderStructureTreePlugin");
+				Map<String, List<List<String>>> reportData = pm.getAllPluginMarkedItems();
 				Project currentProject = projm.getProject();
 				String projectPath = null;
 				EagleDevice currentDevice=null;
@@ -293,7 +294,7 @@ public class WorkBenchControllerFinal {
 				System.out.println("current device = " + currentDevice);
 				System.out.println("project path ="+projectPath);
 				try {
-					if(RG.generateTableStyleReport(reportData,currentDevice,projectPath)){
+					if(RG.generateReport(reportData,currentDevice,projectPath)){
 						System.out.println("SUCCESSFUL: report generated");
 					}else{
 						System.out.println("UNSUCCESSFUL: report not generated");

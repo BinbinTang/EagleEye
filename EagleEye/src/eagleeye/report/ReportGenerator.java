@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import eagleeye.api.entities.EagleDevice;
 import eagleeye.entities.Device;
@@ -289,6 +290,30 @@ public class ReportGenerator {
 		return true;
 	}
 	
+	public boolean generateReport(Map<String, List<List<String>>> reportData, EagleDevice device, String projectFileName){
+		if(reportData==null || device==null || projectFileName==null ){
+			return false;
+		}
+		
+		//iterate through reportData map, get the marked items for each plugins.
+		for (Map.Entry<String, List<List<String>>> entry : reportData.entrySet()) {
+			String pluginName = entry.getKey();
+			List<List<String>> markedItems = entry.getValue();
+			
+			//TODO: check for pluginName=FolderStructurePlugin -> generate talbe
+			//		check for pluginName=TableViewPlugin	-> generate timeline
+			
+			
+			
+			//content in TableViewPlugin's List<List<String>>:
+			//"Key","DeviceID","FileID","EventID","Time","event","Comment"
+			//
+			//To plot graph, use "Time" field which is in the format: "2011-05-10 15:19:15"
+			//There will be case that the Time field is empty, null or other values, exclude these from the plot but include in the table 
+		}
+		
+		return true;
+	}
 	
 	//The main method is only used for testing
 	//run generateTableStyleReport.
@@ -321,5 +346,5 @@ public class ReportGenerator {
 		//RG.generateTableStyleReport(reportData,device,"Jack Project File 1");
 		RG.generateBarChartReport(reportData, device, "Jack Project File 1 ", "Plugin Name");
 	}
-
+	
 }
