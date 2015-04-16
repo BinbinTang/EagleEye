@@ -310,7 +310,8 @@ public class WorkBenchControllerFinal {
 				System.out.println("current device = " + currentDevice);
 				System.out.println("project path ="+projectPath);
 				try {
-					if(RG.generateReport(reportData,currentDevice,projectPath)){
+					//if(RG.generateReport(reportData,currentDevice,projectPath)){
+					if(RG.generateTableStyleReport(reportData.get("FolderStructureTreePlugin"),currentDevice,projectPath)){
 						System.out.println("SUCCESSFUL: report generated");
 					}else{
 						System.out.println("UNSUCCESSFUL: report not generated");
