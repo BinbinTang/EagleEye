@@ -12,11 +12,15 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
@@ -24,7 +28,11 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import eagleeye.api.dbcontroller.DBController;
 import eagleeye.api.entities.EagleDevice;
 import eagleeye.api.entities.EagleFile;
@@ -38,7 +46,8 @@ import eagleeye.projectmanager.Project;
 import eagleeye.projectmanager.ProjectManager;
 import eagleeye.report.ReportGenerator;
 
-public class WorkBenchControllerFinal {		
+public class WorkBenchControllerFinal {	
+
 	// DataBase
 	private DBController dbController;
 	
@@ -78,6 +87,12 @@ public class WorkBenchControllerFinal {
 	@FXML
 	private HBox functionHBox;
 	
+	//status bar
+	@FXML private MenuBar statusBar;
+
+	//Status bar's Progress bar, shown when main program is doing things
+	@FXML private ProgressBar progressBar;
+	
 	// Progress information label
 	@FXML private Label progressLabel;
 
@@ -106,6 +121,7 @@ public class WorkBenchControllerFinal {
 
 	@FXML
 	private void initialize() {	
+		progressBar.setVisible(false);
 		pm = new PluginManager("PluginBinaries");
 		pm.loadPlugins();
 		dbController = new DBQueryController();
@@ -418,23 +434,14 @@ public class WorkBenchControllerFinal {
 			int status = p.setParameter(params);
 			if(status==0){
 				
-				Task<Integer> task = new Task<Integer>() {
+				Task<List<List<EagleFile>>> task = new Task<List<List<EagleFile>>>() {
 				    @Override 
-				    protected Integer call() {
+				    protected List<List<EagleFile>> call() {
 				    	//extract
 				    	List<List<EagleFile>> entityList = (List<List<EagleFile>>) p.getResult();
 				    	System.out.println("partition written = "+entityList.size());
-				    	
-				    	//insert to db
-				    	if(entityList.size() > 0)
-						{
-							DBInsertTransaction transaction = new DBInsertTransaction();
-							transaction.insertNewDeviceData(newDevice, entityList);
-							System.out.println("inserted new device to db");
-							return transaction.getDeviceID();
-						}
-				    	
-						return -1;
+				    	return entityList;
+						//return -1;
 				    }
 				};
 				task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -442,7 +449,22 @@ public class WorkBenchControllerFinal {
 			        public void handle(WorkerStateEvent t)
 			        {
 			            try {
-			            	currentCaseID = task.get();
+			            	List<List<EagleFile>> entityList = task.get();
+
+			            	//insert to db
+					    	if(entityList.size() > 0)
+							{
+								DBInsertTransaction transaction = new DBInsertTransaction();
+								progressBar.setVisible(true);
+								progressLabel.setText("Updating database...");
+								transaction.insertNewDeviceData(newDevice, entityList);
+								progressBar.setVisible(false);
+								progressLabel.setText("Welcome to EagleEye.");
+								System.out.println("inserted new device to db");
+								currentCaseID =  transaction.getDeviceID();
+							}else{
+								currentCaseID = -1;
+							}
 			            	Project p = new Project(null, currentCaseID, null);
 							projm.setProject(p);
 							pm.setAllPluginMarkedItems(null);
@@ -456,10 +478,29 @@ public class WorkBenchControllerFinal {
 						}
 			        }
 			    });
+				task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+					@Override
+					public void handle(WorkerStateEvent event) {
+						progressBar.setVisible(false);
+						progressLabel.setText("Welcome to EagleEye.");
+					}
+					
+				});
+				task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+
+					@Override
+					public void handle(WorkerStateEvent event) {
+						progressBar.setVisible(false);
+						progressLabel.setText("Welcome to EagleEye.");
+					}
+					
+				});
 				Thread th = new Thread(task);
 		        th.setDaemon(true);
 		        th.start();
-		        
+		        progressBar.setVisible(true);
+				progressLabel.setText("Extracting data...");
 				
 				break;
 			}
@@ -658,12 +699,12 @@ public class WorkBenchControllerFinal {
 		fsService.start();
 		dialog.show();*/
 	}
-/*	
+	
 	private Stage createProgressDialog()
 	{
 		Stage dialog = new Stage();
-		dialog.initModality(Modality.APPLICATION_MODAL);
-		dialog.initStyle(StageStyle.UTILITY);
+		//dialog.initModality(Modality.APPLICATION_MODAL);
+		//dialog.initStyle(StageStyle.UTILITY);
 		dialog.setTitle("Import in Progress...");
 		dialog.setWidth(150);
 		dialog.setHeight(70);
@@ -695,7 +736,8 @@ public class WorkBenchControllerFinal {
 
 		return dialog;
 	}
-	*/
+	
+	
 	public boolean validationOfFilters () {
 		
 		return true;

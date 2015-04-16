@@ -68,6 +68,7 @@
           <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="0.0" prefHeight="20.0" prefWidth="160.0" GridPane.rowIndex="3">
                <children>
                   <MenuBar prefHeight="20.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0"></ProgressBar>
                   <Label fx:id="progressLabel" prefHeight="20.0" prefWidth="800.0" style="-fx-text-fill: black;" text="Welcome to EagleEye." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="Segoe UI" size="14.0" />
