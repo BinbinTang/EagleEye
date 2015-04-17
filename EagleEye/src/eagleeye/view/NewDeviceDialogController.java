@@ -18,6 +18,8 @@ public class NewDeviceDialogController {
 	private final String EMPTY_DEVICE_NAME_WARNING = "Please Enter a Device Name";
 	private final String EMPTY_OWNER_NAME_WARNING = "Please Enter Device Owner";
 	private final String EMPTY_PATH_WARNING = "Please Specify the Image Path";
+	private final String INPUT_OVER_LIMIT_WARNING = "Input is too long";
+	private final int INPUT_SIZE_LIMIT = 100;
 	
 	@FXML
 	private TextField deviceNameTxtBox;
@@ -114,6 +116,15 @@ public class NewDeviceDialogController {
 		return false;
 	}
 	
+	private boolean isInputOverLimit(String newInput){
+		
+		if(newInput.length()>INPUT_SIZE_LIMIT)
+			return true;
+		else
+			return false;
+		
+	}
+	
 	@FXML
 	private void handleBrowse() {
 		
@@ -146,6 +157,10 @@ public class NewDeviceDialogController {
 	@FXML
 	private void handleImport() {
 		
+		deviceNameWarning.setVisible(false);
+		ownerNameWarning.setVisible(false);
+		pathWarning.setVisible(false);
+		
 		if(!isAnyFieldsEmpty()) {
 			
 			if(isDeviceNameExist(deviceNameTxtBox.getText()))
@@ -157,19 +172,38 @@ public class NewDeviceDialogController {
 			}
 			else
 			{
-				device = new Device();
-				device.modifyDeviceName(deviceNameTxtBox.getText());
-				device.modifyDeviceOwner(deviceOwnerTxtBox.getText());
-				device.modifiyDeviceImageFolder(new File(filePathTxtBox.getText()));
+				if(isInputOverLimit(deviceNameTxtBox.getText()) || isInputOverLimit(deviceOwnerTxtBox.getText()))
+				{
+					if(isInputOverLimit(deviceNameTxtBox.getText())) {
+						
+						deviceNameWarning.setText(INPUT_OVER_LIMIT_WARNING);
+						deviceNameWarning.setVisible(true);
+						deviceNameTxtBox.getStyleClass().add("custom-wrong-textField");
+					}
+					if(isInputOverLimit(deviceOwnerTxtBox.getText())) {
+						
+						ownerNameWarning.setText(INPUT_OVER_LIMIT_WARNING);
+						ownerNameWarning.setVisible(true);
+						deviceOwnerTxtBox.getStyleClass().add("custom-wrong-textField");
+					}
+					
+				}
+				else
+				{
+					device = new Device();
+					device.modifyDeviceName(deviceNameTxtBox.getText());
+					device.modifyDeviceOwner(deviceOwnerTxtBox.getText());
+					device.modifiyDeviceImageFolder(new File(filePathTxtBox.getText()));
 			
-				isImportClickedSuccess = true;
-				dialogStage.close();
+					isImportClickedSuccess = true;
+					dialogStage.close();
+				}
 			}
 		}
 		else
 		{
 			if(isDeviceNameExist(deviceNameTxtBox.getText()))
-			{
+			{				
 				deviceNameWarning.setText(SAME_DEVICE_NAME_WARNING);
 				deviceNameWarning.setVisible(true);
 			}
