@@ -195,6 +195,25 @@ public class DBInsertController {
 		return extList;
 	}
 	
+	//DELETE SECTION
+	public boolean deleteDevice(int deviceID) {
+		
+		Connection conn = DBConnection.dbConnector();
+		PreparedStatement stmt = null;
+		
+		try {
+			stmt = conn.prepareStatement(queryMaker.getDeleteDeviceQuery());
+			stmt.setInt(1, deviceID);
+			
+			stmt.execute();
+			
+		} catch (Exception e) {
+			return false;
+		}
+		
+		return true;
+	}
+
 
 	
 }

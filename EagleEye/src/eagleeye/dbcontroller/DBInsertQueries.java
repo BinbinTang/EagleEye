@@ -90,5 +90,13 @@ public class DBInsertQueries {
 		return script;
 	}
 	
+	//DELETE SECTION
+	public String getDeleteDeviceQuery() {
+		
+		String script = "DELETE FROM Device WHERE DeviceID = ?";
+		
+		return script;
+		
+	}
 }
 
