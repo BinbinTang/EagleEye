@@ -44,6 +44,7 @@ public class ReportGenerator {
 	private final String SPACE = " ";
 	private final String DASH = "-";
 	private final String COLON = ":";
+	private final String DOT = ".";
 	private final int TIME_DATE_INDEX = 4;
 	private final int COMMENT_INDEX = 6;
 	private final int KEY_INDEX = 0;
@@ -51,6 +52,8 @@ public class ReportGenerator {
 	private final int FILEID_INDEX = 2;
 	private final int EVENTID_INDEX = 3;
 	private final int EVENT_INDEX = 5;
+	private double maxRange = 0.0;
+	private double minRange = 12.40;
 	
 	
 	private JasperReportBuilder setUpReport(JasperReportBuilder report, String reportTitle, EagleDevice device, String projectFileName) throws FileNotFoundException {
@@ -142,7 +145,8 @@ public class ReportGenerator {
 		//tableReport.show();
 		
 		//write to PDF
-		String fileName = "./" + projectFileName + "_" + "TableReport.pdf";
+		
+		String fileName = "./" + "TableReport.pdf";
 		File f = new File(fileName);
 		FileOutputStream fileOutput = new FileOutputStream(f);
 		tableReport.toPdf(fileOutput);
@@ -191,7 +195,9 @@ public class ReportGenerator {
 		JasperConcatenatedReportBuilder mainReport = DynamicReports.concatenatedReport();
 		
 		ArrayList<TimeLineEventNode> eventList = createTimeLineEventNodes(reportData);
+		System.out.println("EventList = " + eventList.size());
 		ArrayList<ArrayList<TimeLineEventNode>> eventListByYear =  classifyEventByYear(eventList); 
+		System.out.println("EventListYear = " + eventListByYear.size());
 		int count = 0;
 		
 		for(ArrayList<TimeLineEventNode> eventListYearly : eventListByYear)
@@ -215,7 +221,7 @@ public class ReportGenerator {
 				
 			//initialize column for timeLine Data
 			TextColumnBuilder<Integer> keyColumn = Columns.column("Key","Key", DynamicReports.type.integerType());
-			TextColumnBuilder<Integer> dateMonthColumn = Columns.column("Event Node","Date Month", DynamicReports.type.integerType());
+			TextColumnBuilder<Double> dateMonthColumn = Columns.column("Event Node","Date Month", DynamicReports.type.doubleType());
 			TextColumnBuilder<String> eventColumn = Columns.column("Event","Event", DynamicReports.type.stringType());
 			TextColumnBuilder<String> commentColumn = Columns.column("Comment","Comment", DynamicReports.type.stringType());
 			TextColumnBuilder<String> dateColumn = Columns.column("Date","Date", DynamicReports.type.stringType());
@@ -250,8 +256,9 @@ public class ReportGenerator {
 					.setXAxisFormat(
 							DynamicReports.cht.axisFormat().setLabel("Event Key ID"))
 					.setYAxisFormat(
-							DynamicReports.cht.axisFormat().setLabel("Month of Year " + year)
-	        		.setRangeMinValueExpression(1)));
+							DynamicReports.cht.axisFormat().setLabel("Date of Year " + year + " (Mth.Day)")
+					.setRangeMinValueExpression(minRange)
+					.setRangeMaxValueExpression(maxRange)));
 	        		
 			//set data source
 			timeEventReport.setDataSource(timeEventReportData).setColumnStyle(centerText);
@@ -261,7 +268,7 @@ public class ReportGenerator {
 		}
 		
 		//write to PDF
-		String fileName = "./" + projectFileName + "_" + "EventTimeLineReport.pdf";
+		String fileName = "./" + "EventTimeLineReport.pdf";
 		File f = new File(fileName);
 		FileOutputStream fileOutput = new FileOutputStream(f);
 		mainReport.toPdf(fileOutput);
@@ -273,20 +280,33 @@ public class ReportGenerator {
 	
 	private JRDataSource createTimeLineEventDataSource(ArrayList<TimeLineEventNode> eventList) {
 		
+		  double max = 0, min = 12.40;
 		  DRDataSource dataSource = new DRDataSource("Key","Date Month","Event","Comment","Event Hour","Date", "Time");
 		  
 		  for(TimeLineEventNode event : eventList) {
 			  
-			  dataSource.add(event.getKey(),event.getDateMonth(),event.getEvent(),event.getComment(),event.getHour(),event.getDate(),event.getTimeValue());
+			  double dateAndMonth = event.getDateAndMonth();
+			  if(dateAndMonth > max)
+				  max = dateAndMonth;
+			  if(dateAndMonth < min)
+				  min = dateAndMonth;
+			  
+			  dataSource.add(event.getKey(),event.getDateAndMonth(),event.getEvent(),event.getComment(),event.getHour(),event.getDate(),event.getTimeValue());
 			  
 			  
 		  }
+		  
+		  this.maxRange = max;
+		  this.minRange = min;
 		  
 		  return dataSource;
 		
 	}
 	
 	public ArrayList<ArrayList<TimeLineEventNode>> classifyEventByYear(List<TimeLineEventNode> eventList) {
+		
+		if(eventList.size()==0)
+			return null;
 		
 		Collections.sort(eventList); 
 		ArrayList<ArrayList<TimeLineEventNode>> eventListByYear = new ArrayList<ArrayList<TimeLineEventNode>>();
@@ -314,6 +334,7 @@ public class ReportGenerator {
 	public ArrayList<TimeLineEventNode> createTimeLineEventNodes(List<List<String>> reportData) {
 		
 		ArrayList<TimeLineEventNode> eventList = new ArrayList<TimeLineEventNode>();
+		int key = 0;
 		
 		
 		for(int i = 1; i < reportData.size(); i++) {
@@ -333,17 +354,20 @@ public class ReportGenerator {
 					String timeValString = timeDateSplit[1];
 					
 					int [] dateVal = processDateData(dateValString);
+					String [] dateValStr = dateValString.split(DASH);
 					int [] timeVal = processTimeData(timeValString);
+					double dateMonth = Double.parseDouble(dateValStr[1]+DOT+dateValStr[2]);
 					
 					if(dateVal == null || timeVal == null)
 						continue;
 					else {
+						key++;
 						TimeLineEventNode newEvent = new TimeLineEventNode();
 						newEvent.setComment(data.get(COMMENT_INDEX));
 						newEvent.setDate(dateValString);
-						newEvent.setDateMonth(dateVal[1]);
+						newEvent.setDateAndMonth(dateMonth);
 						newEvent.setEvent(data.get(EVENT_INDEX));
-						newEvent.setKey(Integer.parseInt(data.get(KEY_INDEX)));
+						newEvent.setKey(key);
 						newEvent.setTimeValue(timeValString);
 						newEvent.setHour(timeVal[0]);
 						newEvent.setYear(dateVal[0]);
@@ -395,6 +419,7 @@ public class ReportGenerator {
 	}
 	
 	public boolean generateReport(Map<String, List<List<String>>> reportData, EagleDevice device, String projectFileName) throws Exception{
+		
 		if(reportData==null || device==null || projectFileName==null ){
 			return false;
 		}
@@ -407,11 +432,11 @@ public class ReportGenerator {
 			
 			if(pluginName.equals(FOLDER_STRUCTURE_PLUGIN))
 				generateTableStyleReport(markedItems,device,projectFileName);
-			else if (pluginName.equals(TABLE_VIEW_PLUGIN))
+			else if (pluginName.equals(TABLE_VIEW_PLUGIN)) {
 				generateDateTimeReport(markedItems, device, projectFileName);
-			else
-				return false;
-			
+			} else {
+				
+			}
 			//TODO: check for pluginName=FolderStructurePlugin -> generate talbe
 			//		check for pluginName=TableViewPlugin	-> generate timeline
 			

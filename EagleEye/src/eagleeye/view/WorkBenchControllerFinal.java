@@ -292,6 +292,11 @@ public class WorkBenchControllerFinal {
 				ReportGenerator RG = new ReportGenerator();
 				
 				Map<String, List<List<String>>> reportData = pm.getAllPluginMarkedItems();
+				
+				System.out.println("WB:Size of marked = " + reportData.size());
+				System.out.println("WB:Size of marked internal = " + reportData.get(0));
+				System.out.println("WB:Size of marked internal = " + reportData.get(1));
+				
 				Project currentProject = projm.getProject();
 				String projectPath = null;
 				EagleDevice currentDevice=null;
@@ -311,7 +316,7 @@ public class WorkBenchControllerFinal {
 				System.out.println("project path ="+projectPath);
 				try {
 					//if(RG.generateReport(reportData,currentDevice,projectPath)){
-					if(RG.generateTableStyleReport(reportData.get("FolderStructureTreePlugin"),currentDevice,projectPath)){
+					if(RG.generateReport(reportData, currentDevice,projectPath)){
 						System.out.println("SUCCESSFUL: report generated");
 					}else{
 						System.out.println("UNSUCCESSFUL: report not generated");

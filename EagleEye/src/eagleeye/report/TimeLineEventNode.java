@@ -14,7 +14,7 @@ public class TimeLineEventNode implements Comparable<TimeLineEventNode> {
 	private String event;
 	private String comment;
 	private String date;
-	private int dateMonth;
+	private double dateMonth;
 	private int timeHour;
 	private int year;
 	
@@ -79,13 +79,13 @@ public class TimeLineEventNode implements Comparable<TimeLineEventNode> {
 		this.date = date;
 	}
 	
-	public int getDateMonth() {
+	public double getDateAndMonth() {
 		return dateMonth;
 	}
 
-	public void setDateMonth(int month) {
+	public void setDateAndMonth(double dateMonth) {
 		
-		this.dateMonth = month;
+		this.dateMonth = dateMonth;
 		
 	}
 		
