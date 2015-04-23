@@ -38,7 +38,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 
 public class ReportGenerator {
 
-	private final String FOLDER_STRUCTURE_PLUGIN = "FolderStructurePlugin";
+	private final String FOLDER_STRUCTURE_PLUGIN = "FolderStructureTreePlugin";
 	private final String TABLE_VIEW_PLUGIN = "TableViewPlugin";
 	private final String EMPTY_STRING = "";
 	private final String SPACE = " ";
@@ -430,8 +430,11 @@ public class ReportGenerator {
 			String pluginName = entry.getKey();
 			List<List<String>> markedItems = entry.getValue();
 			
-			if(pluginName.equals(FOLDER_STRUCTURE_PLUGIN))
+			
+			if(pluginName.equals(FOLDER_STRUCTURE_PLUGIN)) {
+				System.out.println("Table Report");
 				generateTableStyleReport(markedItems,device,projectFileName);
+			}
 			else if (pluginName.equals(TABLE_VIEW_PLUGIN)) {
 				generateDateTimeReport(markedItems, device, projectFileName);
 			} else {
